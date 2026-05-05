@@ -10,12 +10,12 @@ import heroImg from "@/assets/hero.jpg";
 import { useAuth } from "@/contexts/AuthContext";
 
 const categories = [
-  { type: "prompt", label: "Prompts", icon: Wand2, desc: "Battle-tested prompts" },
-  { type: "tool", label: "Tools", icon: Wrench, desc: "Curated AI software" },
-  { type: "tutorial", label: "Tutorials", icon: BookOpen, desc: "Build, step by step" },
-  { type: "lesson", label: "Lessons", icon: GraduationCap, desc: "Track your progress" },
-  { type: "guide", label: "Guides", icon: Compass, desc: "Deep, opinionated" },
-  { type: "article", label: "Articles", icon: Newspaper, desc: "Editorial dispatches" },
+  { type: "prompt", label: "Prompts", icon: Wand2, desc: "Prompts testados e refinados" },
+  { type: "tool", label: "Ferramentas", icon: Wrench, desc: "Softwares de IA selecionados" },
+  { type: "tutorial", label: "Tutoriais", icon: BookOpen, desc: "Construa, passo a passo" },
+  { type: "lesson", label: "Aulas", icon: GraduationCap, desc: "Acompanhe seu progresso" },
+  { type: "guide", label: "Guias", icon: Compass, desc: "Profundos e opinativos" },
+  { type: "article", label: "Artigos", icon: Newspaper, desc: "Editoriais e reflexões" },
 ];
 
 const Index = () => {
@@ -43,25 +43,25 @@ const Index = () => {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <img src={heroImg} alt="" width={1920} height={1080}
-          className="absolute inset-0 w-full h-full object-cover opacity-50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
+          className="absolute inset-0 w-full h-full object-cover opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background" />
         <div className="container-editorial relative py-24 md:py-36 max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs uppercase tracking-[0.2em] text-muted-foreground animate-in-up">
-            <Sparkles className="h-3.5 w-3.5 text-primary" /> Issue 01 · A new editorial for AI
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs uppercase tracking-[0.22em] text-muted-foreground animate-in-up">
+            <Sparkles className="h-3.5 w-3.5 text-primary" /> Edição 01 · Um novo editorial para IA
           </div>
-          <h1 className="mt-6 font-display text-5xl md:text-7xl lg:text-8xl leading-[0.95] animate-in-up" style={{ animationDelay: "0.1s" }}>
-            The studio for those who <span className="text-gradient-gold italic">craft</span> with intelligence.
+          <h1 className="mt-6 font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98] animate-in-up" style={{ animationDelay: "0.1s" }}>
+            O estúdio de quem <span className="text-gradient-gold italic">cria</span> com inteligência.
           </h1>
           <p className="mt-7 text-lg text-muted-foreground max-w-2xl leading-relaxed animate-in-up" style={{ animationDelay: "0.2s" }}>
-            Speculum Studio is a curated library of prompts, tools, lessons and guides — published like a magazine, designed for makers shaping what comes next.
+            Speculum Studio é uma biblioteca curada de prompts, ferramentas, aulas e guias — publicada como uma revista, desenhada para quem está construindo o próximo capítulo da IA.
           </p>
           <div className="mt-10 flex flex-wrap gap-3 animate-in-up" style={{ animationDelay: "0.3s" }}>
             <Button asChild size="lg" className="bg-gradient-gold text-primary-foreground hover:opacity-90 shadow-glow">
-              <Link to="/explore">Explore the studio <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <Link to="/explore">Explorar o estúdio <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
             {!user && (
               <Button asChild variant="outline" size="lg">
-                <Link to="/login">Create an account</Link>
+                <Link to="/login">Criar minha conta</Link>
               </Button>
             )}
           </div>
@@ -72,11 +72,11 @@ const Index = () => {
       <section className="container-editorial py-20">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-2">Sections</p>
-            <h2 className="font-display text-3xl md:text-4xl">Six ways to learn.</h2>
+            <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-2">Seções</p>
+            <h2 className="font-display text-3xl md:text-4xl">Seis caminhos para aprender.</h2>
           </div>
           <Link to="/explore" className="text-sm text-muted-foreground hover:text-primary hidden md:inline-flex items-center gap-1">
-            All sections <ArrowRight className="h-4 w-4" />
+            Ver tudo <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -98,8 +98,8 @@ const Index = () => {
         <section className="container-editorial py-10">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-2">Featured</p>
-              <h2 className="font-display text-3xl md:text-4xl">From the editor's desk.</h2>
+              <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-2">Destaques</p>
+              <h2 className="font-display text-3xl md:text-4xl">Da mesa do editor.</h2>
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-5 auto-rows-fr">
@@ -113,8 +113,8 @@ const Index = () => {
         <section className="container-editorial py-20">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-2">Trending</p>
-              <h2 className="font-display text-3xl md:text-4xl">What the community is reading.</h2>
+              <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-2">Em alta</p>
+              <h2 className="font-display text-3xl md:text-4xl">O que a comunidade está lendo.</h2>
             </div>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -129,13 +129,13 @@ const Index = () => {
           <div className="absolute inset-0 bg-gradient-aurora opacity-10" />
           <div className="relative">
             <h2 className="font-display text-4xl md:text-5xl max-w-2xl mx-auto leading-tight">
-              Join a studio of <span className="text-gradient-gold italic">curious minds</span>.
+              Faça parte de um estúdio de <span className="text-gradient-gold italic">mentes curiosas</span>.
             </h2>
             <p className="mt-5 text-muted-foreground max-w-xl mx-auto">
-              Save what inspires you, track your learning, and become a contributor. Premium soon — early members shape it with us.
+              Salve o que te inspira, acompanhe seu aprendizado e torne-se contribuidor. O modo Premium chega em breve — membros iniciais ajudam a moldá-lo.
             </p>
             <Button asChild size="lg" className="mt-8 bg-gradient-gold text-primary-foreground shadow-glow">
-              <Link to={user ? "/explore" : "/login"}>{user ? "Continue exploring" : "Create your account"} <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <Link to={user ? "/explore" : "/login"}>{user ? "Continuar explorando" : "Criar minha conta"} <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
         </div>
