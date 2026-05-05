@@ -17,8 +17,8 @@ export interface PostCardData {
 }
 
 const typeLabel: Record<string, string> = {
-  prompt: "Prompt", tool: "Tool", tutorial: "Tutorial",
-  lesson: "Lesson", guide: "Guide", article: "Article",
+  prompt: "Prompt", tool: "Ferramenta", tutorial: "Tutorial",
+  lesson: "Aula", guide: "Guia", article: "Artigo",
 };
 
 export const PostCard = ({ post, featured = false }: { post: PostCardData; featured?: boolean }) => (

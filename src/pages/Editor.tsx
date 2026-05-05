@@ -14,6 +14,11 @@ import { toast } from "sonner";
 
 const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
 
+const TYPE_LABELS: Record<string, string> = {
+  prompt: "Prompt", tool: "Ferramenta", tutorial: "Tutorial",
+  lesson: "Aula", guide: "Guia", article: "Artigo",
+};
+
 const Editor = () => {
   const { id } = useParams();
   const nav = useNavigate();
@@ -43,12 +48,12 @@ const Editor = () => {
     const { data } = supabase.storage.from("media").getPublicUrl(path);
     set("cover_image_url", data.publicUrl);
     await supabase.from("media").insert({ url: data.publicUrl, type: file.type, uploaded_by: user.id });
-    toast.success("Uploaded");
+    toast.success("Enviado");
   };
 
   const save = async (status?: string) => {
     if (!user) return;
-    if (!form.title) return toast.error("Title required");
+    if (!form.title) return toast.error("Título é obrigatório");
     setLoading(true);
     const slug = form.slug || slugify(form.title);
     const payload: any = {
@@ -63,7 +68,7 @@ const Editor = () => {
       : await supabase.from("posts").insert(payload).select().single();
     setLoading(false);
     if (res.error) return toast.error(res.error.message);
-    toast.success("Saved");
+    toast.success("Salvo");
     nav(`/editor/${res.data.id}`, { replace: true });
   };
 
@@ -71,46 +76,46 @@ const Editor = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <section className="container-editorial pt-14 pb-20 max-w-4xl">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-2">Composition</p>
-        <h1 className="font-display text-4xl">{id ? "Edit post" : "New post"}</h1>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-2">Composição</p>
+        <h1 className="font-display text-4xl">{id ? "Editar conteúdo" : "Novo conteúdo"}</h1>
 
         <div className="mt-10 glass rounded-2xl p-6 md:p-8 space-y-5">
-          <div><Label>Title</Label><Input value={form.title} onChange={(e)=>set("title", e.target.value)} maxLength={200} /></div>
+          <div><Label>Título</Label><Input value={form.title} onChange={(e)=>set("title", e.target.value)} maxLength={200} /></div>
           <div className="grid md:grid-cols-2 gap-4">
             <div><Label>Slug</Label><Input value={form.slug} onChange={(e)=>set("slug", e.target.value)} placeholder={slugify(form.title)} /></div>
             <div>
-              <Label>Type</Label>
+              <Label>Tipo</Label>
               <Select value={form.type} onValueChange={(v)=>set("type", v)}>
                 <SelectTrigger><SelectValue/></SelectTrigger>
-                <SelectContent>{["prompt","tool","tutorial","lesson","guide","article"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                <SelectContent>{Object.entries(TYPE_LABELS).map(([t, l]) => <SelectItem key={t} value={t}>{l}</SelectItem>)}</SelectContent>
               </Select>
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            <div><Label>Category</Label><Input value={form.category} onChange={(e)=>set("category", e.target.value)} /></div>
-            <div><Label>Tags (comma-separated)</Label><Input value={form.tags} onChange={(e)=>set("tags", e.target.value)} /></div>
+            <div><Label>Categoria</Label><Input value={form.category} onChange={(e)=>set("category", e.target.value)} /></div>
+            <div><Label>Tags (separadas por vírgula)</Label><Input value={form.tags} onChange={(e)=>set("tags", e.target.value)} /></div>
           </div>
-          <div><Label>Excerpt</Label><Textarea value={form.excerpt} onChange={(e)=>set("excerpt", e.target.value)} maxLength={500} /></div>
+          <div><Label>Resumo</Label><Textarea value={form.excerpt} onChange={(e)=>set("excerpt", e.target.value)} maxLength={500} /></div>
           <div>
-            <Label>Cover image</Label>
+            <Label>Imagem de capa</Label>
             <div className="flex gap-2 items-center">
               <Input value={form.cover_image_url} onChange={(e)=>set("cover_image_url", e.target.value)} placeholder="https://…" />
               <Input type="file" accept="image/*" className="max-w-xs" onChange={(e)=>e.target.files?.[0] && upload(e.target.files[0])} />
             </div>
           </div>
-          <div><Label>YouTube URL</Label><Input value={form.youtube_url} onChange={(e)=>set("youtube_url", e.target.value)} /></div>
-          <div><Label>Prompt text</Label><Textarea value={form.prompt_text} onChange={(e)=>set("prompt_text", e.target.value)} className="font-mono text-sm" /></div>
-          <div><Label>Content (HTML)</Label><Textarea rows={14} value={form.content} onChange={(e)=>set("content", e.target.value)} className="font-mono text-sm" /></div>
+          <div><Label>URL do YouTube</Label><Input value={form.youtube_url} onChange={(e)=>set("youtube_url", e.target.value)} /></div>
+          <div><Label>Texto do prompt</Label><Textarea value={form.prompt_text} onChange={(e)=>set("prompt_text", e.target.value)} className="font-mono text-sm" /></div>
+          <div><Label>Conteúdo (HTML)</Label><Textarea rows={14} value={form.content} onChange={(e)=>set("content", e.target.value)} className="font-mono text-sm" /></div>
 
           <div className="flex flex-wrap gap-6 pt-2">
             <label className="flex items-center gap-2 text-sm"><Switch checked={form.is_premium} onCheckedChange={(v)=>set("is_premium", v)} />Premium</label>
-            <label className="flex items-center gap-2 text-sm"><Switch checked={form.is_featured} onCheckedChange={(v)=>set("is_featured", v)} />Featured</label>
-            <label className="flex items-center gap-2 text-sm"><Switch checked={form.is_trending} onCheckedChange={(v)=>set("is_trending", v)} />Trending</label>
+            <label className="flex items-center gap-2 text-sm"><Switch checked={form.is_featured} onCheckedChange={(v)=>set("is_featured", v)} />Destaque</label>
+            <label className="flex items-center gap-2 text-sm"><Switch checked={form.is_trending} onCheckedChange={(v)=>set("is_trending", v)} />Em alta</label>
           </div>
 
           <div className="flex justify-end gap-2 pt-4 border-t border-border/60">
-            <Button variant="outline" onClick={() => save("draft")} disabled={loading}>Save draft</Button>
-            <Button onClick={() => save("published")} disabled={loading} className="bg-gradient-gold text-primary-foreground">Publish</Button>
+            <Button variant="outline" onClick={() => save("draft")} disabled={loading}>Salvar rascunho</Button>
+            <Button onClick={() => save("published")} disabled={loading} className="bg-gradient-gold text-primary-foreground">Publicar</Button>
           </div>
         </div>
       </section>

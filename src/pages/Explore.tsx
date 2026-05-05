@@ -8,8 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search } from "lucide-react";
 
+const TYPE_LABELS: Record<string, string> = {
+  all: "Todos os tipos", prompt: "Prompts", tool: "Ferramentas",
+  tutorial: "Tutoriais", lesson: "Aulas", guide: "Guias", article: "Artigos",
+};
 const TYPES = ["all", "prompt", "tool", "tutorial", "lesson", "guide", "article"];
-const SORTS = [{ v: "recent", l: "Most recent" }, { v: "popular", l: "Most popular" }];
+const SORTS = [{ v: "recent", l: "Mais recentes" }, { v: "popular", l: "Mais populares" }];
 
 const Explore = () => {
   const [params, setParams] = useSearchParams();
@@ -49,19 +53,19 @@ const Explore = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <section className="container-editorial pt-14 pb-10">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-3">The library</p>
-        <h1 className="font-display text-5xl md:text-6xl">Explore everything.</h1>
-        <p className="mt-4 text-muted-foreground max-w-2xl">Search across prompts, tools, lessons, tutorials and guides. Filter by type, sort by what's resonating.</p>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3">A biblioteca</p>
+        <h1 className="font-display text-5xl md:text-6xl">Explore tudo.</h1>
+        <p className="mt-4 text-muted-foreground max-w-2xl">Pesquise entre prompts, ferramentas, aulas, tutoriais e guias. Filtre por tipo e ordene pelo que está em alta.</p>
 
         <div className="mt-10 glass rounded-2xl p-4 md:p-5 grid gap-3 md:grid-cols-[1fr_auto_auto]">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input value={q} onChange={(e) => update("q", e.target.value)}
-              placeholder="Search prompts, tools, ideas…" className="pl-9 bg-background/40 border-border/60 h-11" />
+              placeholder="Buscar prompts, ferramentas, ideias…" className="pl-9 bg-background/40 border-border/60 h-11" />
           </div>
           <Select value={type} onValueChange={(v) => update("type", v)}>
             <SelectTrigger className="w-full md:w-44 h-11"><SelectValue /></SelectTrigger>
-            <SelectContent>{TYPES.map(t => <SelectItem key={t} value={t}>{t === "all" ? "All types" : t.charAt(0).toUpperCase()+t.slice(1)}</SelectItem>)}</SelectContent>
+            <SelectContent>{TYPES.map(t => <SelectItem key={t} value={t}>{TYPE_LABELS[t]}</SelectItem>)}</SelectContent>
           </Select>
           <Select value={sort} onValueChange={(v) => update("sort", v)}>
             <SelectTrigger className="w-full md:w-44 h-11"><SelectValue /></SelectTrigger>
@@ -76,7 +80,7 @@ const Explore = () => {
             {Array.from({ length: 6 }).map((_, i) => <div key={i} className="glass rounded-2xl aspect-[4/5] animate-pulse" />)}
           </div>
         ) : posts.length === 0 ? (
-          <div className="text-center py-24 text-muted-foreground">No posts found. Try adjusting your filters.</div>
+          <div className="text-center py-24 text-muted-foreground">Nenhum resultado encontrado. Ajuste seus filtros.</div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {posts.map(p => <PostCard key={p.id} post={p} />)}

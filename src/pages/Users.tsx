@@ -9,6 +9,8 @@ import { toast } from "sonner";
 
 type Role = "user" | "contributor" | "admin";
 
+const ROLE_LABEL: Record<Role, string> = { user: "Usuário", contributor: "Contribuidor", admin: "Admin" };
+
 const Users = () => {
   const [rows, setRows] = useState<any[]>([]);
 
@@ -23,20 +25,20 @@ const Users = () => {
   const toggleRole = async (uid: string, role: Role, has: boolean) => {
     if (has) await supabase.from("user_roles").delete().eq("user_id", uid).eq("role", role);
     else await supabase.from("user_roles").insert({ user_id: uid, role });
-    toast.success("Updated"); load();
+    toast.success("Atualizado"); load();
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <section className="container-editorial pt-14 pb-20">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-2">Admin</p>
-        <h1 className="font-display text-5xl">Users & roles</h1>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-2">Admin</p>
+        <h1 className="font-display text-5xl">Usuários e permissões</h1>
 
         <div className="mt-10 glass rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground bg-muted/30">
-              <tr><th className="p-4">Member</th><th className="p-4">Roles</th><th className="p-4 text-right">Actions</th></tr>
+              <tr><th className="p-4">Membro</th><th className="p-4">Permissões</th><th className="p-4 text-right">Ações</th></tr>
             </thead>
             <tbody>
               {rows.map(r => (
@@ -49,14 +51,14 @@ const Users = () => {
                   </td>
                   <td className="p-4">
                     <div className="flex flex-wrap gap-1">
-                      {(r.roles as Role[]).map(role => <Badge key={role} variant="outline" className="capitalize">{role}</Badge>)}
+                      {(r.roles as Role[]).map(role => <Badge key={role} variant="outline">{ROLE_LABEL[role]}</Badge>)}
                     </div>
                   </td>
                   <td className="p-4 text-right space-x-2">
                     {(["contributor","admin"] as Role[]).map(role => {
                       const has = r.roles.includes(role);
                       return <Button key={role} size="sm" variant={has ? "default" : "outline"} onClick={() => toggleRole(r.id, role, has)} className={has ? "bg-gradient-gold text-primary-foreground" : ""}>
-                        {has ? `Remove ${role}` : `Make ${role}`}
+                        {has ? `Remover ${ROLE_LABEL[role]}` : `Tornar ${ROLE_LABEL[role]}`}
                       </Button>;
                     })}
                   </td>

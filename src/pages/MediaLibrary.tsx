@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Copy, Trash2 } from "lucide-react";
+import { Copy } from "lucide-react";
 
 const MediaLibrary = () => {
   const { user } = useAuth();
@@ -22,15 +22,15 @@ const MediaLibrary = () => {
     if (error) return toast.error(error.message);
     const { data } = supabase.storage.from("media").getPublicUrl(path);
     await supabase.from("media").insert({ url: data.publicUrl, type: file.type, uploaded_by: user.id });
-    toast.success("Uploaded"); load();
+    toast.success("Enviado"); load();
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <section className="container-editorial pt-14 pb-20">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-2">Studio</p>
-        <h1 className="font-display text-5xl">Media library</h1>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-2">Estúdio</p>
+        <h1 className="font-display text-5xl">Biblioteca de mídia</h1>
         <div className="mt-8 glass rounded-2xl p-5">
           <Input type="file" accept="image/*,video/*" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
         </div>
@@ -41,7 +41,7 @@ const MediaLibrary = () => {
                 {m.type?.startsWith("image") ? <img src={m.url} alt="" className="w-full h-full object-cover" loading="lazy" /> : <div className="grid place-items-center h-full text-muted-foreground text-xs">{m.type}</div>}
               </div>
               <div className="p-2 flex gap-1">
-                <Button size="icon" variant="ghost" onClick={() => { navigator.clipboard.writeText(m.url); toast.success("URL copied"); }}><Copy className="h-3.5 w-3.5"/></Button>
+                <Button size="icon" variant="ghost" onClick={() => { navigator.clipboard.writeText(m.url); toast.success("URL copiada"); }} aria-label="Copiar URL"><Copy className="h-3.5 w-3.5"/></Button>
               </div>
             </div>
           ))}

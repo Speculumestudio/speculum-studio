@@ -6,8 +6,10 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import { Image, Plus, Users, FileText, Trash2, Pencil } from "lucide-react";
+import { Image, Plus, Users, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
+
+const STATUS_LABEL: Record<string, string> = { draft: "Rascunho", published: "Publicado", archived: "Arquivado" };
 
 const Dashboard = () => {
   const { user, isAdmin } = useAuth();
@@ -22,9 +24,9 @@ const Dashboard = () => {
   }, [user, isAdmin]);
 
   const del = async (id: string) => {
-    if (!confirm("Delete this post?")) return;
+    if (!confirm("Excluir este conteúdo?")) return;
     const { error } = await supabase.from("posts").delete().eq("id", id);
-    if (error) toast.error(error.message); else { setPosts(posts.filter(p => p.id !== id)); toast.success("Deleted"); }
+    if (error) toast.error(error.message); else { setPosts(posts.filter(p => p.id !== id)); toast.success("Excluído"); }
   };
 
   return (
@@ -33,33 +35,33 @@ const Dashboard = () => {
       <section className="container-editorial pt-14 pb-20">
         <div className="flex items-end justify-between flex-wrap gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-2">Studio</p>
-            <h1 className="font-display text-5xl">Dashboard</h1>
+            <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-2">Estúdio</p>
+            <h1 className="font-display text-5xl">Painel</h1>
           </div>
           <div className="flex gap-2 flex-wrap">
-            <Button asChild variant="outline"><Link to="/media"><Image className="h-4 w-4 mr-2" />Media</Link></Button>
-            {isAdmin && <Button asChild variant="outline"><Link to="/users"><Users className="h-4 w-4 mr-2" />Users</Link></Button>}
-            <Button asChild className="bg-gradient-gold text-primary-foreground"><Link to="/editor"><Plus className="h-4 w-4 mr-2"/>New post</Link></Button>
+            <Button asChild variant="outline"><Link to="/media"><Image className="h-4 w-4 mr-2" />Mídia</Link></Button>
+            {isAdmin && <Button asChild variant="outline"><Link to="/users"><Users className="h-4 w-4 mr-2" />Usuários</Link></Button>}
+            <Button asChild className="bg-gradient-gold text-primary-foreground"><Link to="/editor"><Plus className="h-4 w-4 mr-2"/>Novo conteúdo</Link></Button>
           </div>
         </div>
 
         <div className="mt-10 glass rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground bg-muted/30">
-              <tr><th className="p-4">Title</th><th className="p-4">Type</th><th className="p-4">Status</th><th className="p-4">Views</th><th className="p-4">Likes</th><th className="p-4"></th></tr>
+              <tr><th className="p-4">Título</th><th className="p-4">Tipo</th><th className="p-4">Status</th><th className="p-4">Visualizações</th><th className="p-4">Curtidas</th><th className="p-4"></th></tr>
             </thead>
             <tbody>
-              {posts.length === 0 && <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No posts yet. <Link to="/editor" className="text-primary">Create your first.</Link></td></tr>}
+              {posts.length === 0 && <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">Nenhum conteúdo ainda. <Link to="/editor" className="text-primary">Crie o primeiro.</Link></td></tr>}
               {posts.map(p => (
                 <tr key={p.id} className="border-t border-border/60 hover:bg-muted/20">
                   <td className="p-4 font-medium">{p.title}</td>
                   <td className="p-4 capitalize text-muted-foreground">{p.type}</td>
-                  <td className="p-4"><Badge variant={p.status === "published" ? "default" : "outline"}>{p.status}</Badge>{p.is_premium && <Badge className="ml-2 bg-gradient-gold text-primary-foreground">Premium</Badge>}</td>
+                  <td className="p-4"><Badge variant={p.status === "published" ? "default" : "outline"}>{STATUS_LABEL[p.status] ?? p.status}</Badge>{p.is_premium && <Badge className="ml-2 bg-gradient-gold text-primary-foreground">Premium</Badge>}</td>
                   <td className="p-4 text-muted-foreground">{p.views}</td>
                   <td className="p-4 text-muted-foreground">{p.likes_count}</td>
                   <td className="p-4 text-right">
-                    <Button size="icon" variant="ghost" onClick={() => nav(`/editor/${p.id}`)}><Pencil className="h-4 w-4"/></Button>
-                    <Button size="icon" variant="ghost" onClick={() => del(p.id)}><Trash2 className="h-4 w-4"/></Button>
+                    <Button size="icon" variant="ghost" onClick={() => nav(`/editor/${p.id}`)} aria-label="Editar"><Pencil className="h-4 w-4"/></Button>
+                    <Button size="icon" variant="ghost" onClick={() => del(p.id)} aria-label="Excluir"><Trash2 className="h-4 w-4"/></Button>
                   </td>
                 </tr>
               ))}
