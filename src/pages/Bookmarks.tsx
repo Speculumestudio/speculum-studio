@@ -17,12 +17,12 @@ const Bookmarks = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <section className="container-editorial pt-14 pb-20">
-        <p className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-3">Library</p>
-        <h1 className="font-display text-5xl">Your bookmarks.</h1>
-        <p className="mt-3 text-muted-foreground">Everything you've saved, in one quiet place.</p>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3">Biblioteca</p>
+        <h1 className="font-display text-5xl">Seus salvos.</h1>
+        <p className="mt-3 text-muted-foreground">Tudo o que você guardou, em um só lugar.</p>
         <div className="mt-10">
           {posts.length === 0 ? (
-            <p className="text-muted-foreground">Nothing saved yet. Browse the studio and tap the bookmark icon.</p>
+            <p className="text-muted-foreground">Nada salvo ainda. Explore o estúdio e toque no ícone de marcador.</p>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">{posts.map(p => <PostCard key={p.id} post={p} />)}</div>
           )}

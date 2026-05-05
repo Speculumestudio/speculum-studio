@@ -49,7 +49,6 @@ const Post = () => {
       const { data: p } = await supabase.from("posts").select("*").eq("slug", slug).maybeSingle();
       if (!p) return;
       setPost(p as any);
-      supabase.rpc as any; // noop
       await supabase.from("posts").update({ views: (p as any).views + 1 }).eq("id", (p as any).id);
       const { data: a } = await supabase.from("profiles").select("id,full_name,avatar_url,bio").eq("id", (p as any).author_id ?? "").maybeSingle();
       setAuthor(a);
@@ -74,7 +73,7 @@ const Post = () => {
   };
 
   const toggleLike = async () => {
-    if (!user || !post) { toast.error("Sign in to like"); return; }
+    if (!user || !post) { toast.error("Entre para curtir"); return; }
     if (liked) {
       await supabase.from("likes").delete().eq("user_id", user.id).eq("post_id", post.id);
       setLiked(false);
@@ -85,21 +84,21 @@ const Post = () => {
   };
 
   const toggleBookmark = async () => {
-    if (!user || !post) { toast.error("Sign in to bookmark"); return; }
+    if (!user || !post) { toast.error("Entre para salvar"); return; }
     if (bookmarked) {
       await supabase.from("bookmarks").delete().eq("user_id", user.id).eq("post_id", post.id);
       setBookmarked(false);
     } else {
       await supabase.from("bookmarks").insert({ user_id: user.id, post_id: post.id });
       setBookmarked(true);
-      toast.success("Saved to bookmarks");
+      toast.success("Salvo na biblioteca");
     }
   };
 
   const submitComment = async () => {
-    if (!user || !post) { toast.error("Sign in to comment"); return; }
+    if (!user || !post) { toast.error("Entre para comentar"); return; }
     const parsed = z.string().trim().min(1).max(2000).safeParse(newComment);
-    if (!parsed.success) { toast.error("Invalid comment"); return; }
+    if (!parsed.success) { toast.error("Comentário inválido"); return; }
     const { error } = await supabase.from("comments").insert({
       post_id: post.id, user_id: user.id, content: parsed.data, parent_id: replyTo,
     });
@@ -113,12 +112,12 @@ const Post = () => {
     await supabase.from("progress").upsert({
       user_id: user.id, post_id: post.id, progress_percent: 100, completed_at: new Date().toISOString(),
     });
-    setProgress(100); toast.success("Marked complete");
+    setProgress(100); toast.success("Marcado como concluído");
   };
 
-  if (!post) return <div className="min-h-screen grid place-items-center text-muted-foreground">Loading…</div>;
+  if (!post) return <div className="min-h-screen grid place-items-center text-muted-foreground">Carregando…</div>;
 
-  const locked = post.is_premium && !post.content; // RLS hides fields would be future; here we display
+  const locked = post.is_premium && !post.content;
   const ytid = ytId(post.youtube_url);
   const roots = comments.filter(c => !c.parent_id);
   const repliesOf = (id: string) => comments.filter(c => c.parent_id === id);
@@ -129,7 +128,7 @@ const Post = () => {
       <article className="container-editorial pt-12 pb-20 max-w-4xl">
         <div className="flex items-center gap-2 mb-5">
           <Badge variant="secondary" className="capitalize">{post.type}</Badge>
-          {post.category && <span className="text-xs uppercase tracking-[0.2em] text-primary/80">{post.category}</span>}
+          {post.category && <span className="text-xs uppercase tracking-[0.22em] text-primary/80">{post.category}</span>}
           {post.is_premium && <Badge className="bg-gradient-gold text-primary-foreground border-0"><Lock className="h-3 w-3 mr-1" />Premium</Badge>}
         </div>
         <h1 className="font-display text-4xl md:text-6xl leading-[1.05]">{post.title}</h1>
@@ -139,15 +138,15 @@ const Post = () => {
           <Link to={`/profile/${post.author_id}`} className="flex items-center gap-3 group">
             <Avatar className="h-10 w-10"><AvatarImage src={author?.avatar_url}/><AvatarFallback>{(author?.full_name ?? "?").slice(0,2)}</AvatarFallback></Avatar>
             <div>
-              <div className="text-sm group-hover:text-primary transition">{author?.full_name ?? "Anonymous"}</div>
-              <div className="text-xs text-muted-foreground">{post.published_at ? new Date(post.published_at).toLocaleDateString() : "Draft"}</div>
+              <div className="text-sm group-hover:text-primary transition">{author?.full_name ?? "Anônimo"}</div>
+              <div className="text-xs text-muted-foreground">{post.published_at ? new Date(post.published_at).toLocaleDateString("pt-BR") : "Rascunho"}</div>
             </div>
           </Link>
           <div className="flex items-center gap-2">
             <Button variant={liked ? "default" : "outline"} size="sm" onClick={toggleLike} className={liked ? "bg-gradient-gold text-primary-foreground" : ""}>
               <Heart className={`h-4 w-4 mr-1.5 ${liked ? "fill-current" : ""}`} /> {post.likes_count + (liked ? 1 : 0)}
             </Button>
-            <Button variant={bookmarked ? "default" : "outline"} size="sm" onClick={toggleBookmark} className={bookmarked ? "bg-gradient-gold text-primary-foreground" : ""}>
+            <Button variant={bookmarked ? "default" : "outline"} size="sm" onClick={toggleBookmark} className={bookmarked ? "bg-gradient-gold text-primary-foreground" : ""} aria-label="Salvar">
               <Bookmark className={`h-4 w-4 ${bookmarked ? "fill-current" : ""}`} />
             </Button>
             <span className="text-xs text-muted-foreground inline-flex items-center gap-1 ml-2"><Eye className="h-3.5 w-3.5"/>{post.views}</span>
@@ -162,22 +161,22 @@ const Post = () => {
 
         {ytid && (
           <div className="mt-10 rounded-2xl overflow-hidden glass aspect-video">
-            <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${ytid}`} title="Video" allowFullScreen />
+            <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${ytid}`} title="Vídeo" allowFullScreen />
           </div>
         )}
 
         {locked ? (
           <div className="mt-12 glass rounded-2xl p-10 text-center">
             <Lock className="h-8 w-8 mx-auto text-primary" />
-            <h3 className="font-display text-2xl mt-4">Premium content</h3>
-            <p className="text-muted-foreground mt-2">This piece is reserved for premium members. Sign up — premium opens soon.</p>
-            <Button className="mt-5 bg-gradient-gold text-primary-foreground" asChild><Link to="/login">Become a member</Link></Button>
+            <h3 className="font-display text-2xl mt-4">Conteúdo Premium</h3>
+            <p className="text-muted-foreground mt-2">Este conteúdo é reservado para membros Premium. Cadastre-se — o Premium chega em breve.</p>
+            <Button className="mt-5 bg-gradient-gold text-primary-foreground" asChild><Link to="/login">Tornar-se membro</Link></Button>
           </div>
         ) : (
           <>
             {post.prompt_text && (
               <div className="mt-10 glass rounded-2xl p-6">
-                <div className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-3">The prompt</div>
+                <div className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3">O prompt</div>
                 <pre className="whitespace-pre-wrap text-sm font-mono text-foreground/90">{post.prompt_text}</pre>
               </div>
             )}
@@ -196,28 +195,27 @@ const Post = () => {
         {post.type === "lesson" && user && (
           <div className="mt-10 glass rounded-2xl p-5 flex items-center justify-between">
             <div>
-              <div className="text-sm">Your progress</div>
+              <div className="text-sm">Seu progresso</div>
               <div className="h-2 w-48 rounded bg-muted mt-2 overflow-hidden">
                 <div className="h-full bg-gradient-gold" style={{ width: `${progress}%` }} />
               </div>
             </div>
-            <Button onClick={markComplete} className="bg-gradient-gold text-primary-foreground">Mark complete</Button>
+            <Button onClick={markComplete} className="bg-gradient-gold text-primary-foreground">Marcar como concluído</Button>
           </div>
         )}
 
-        {/* COMMENTS */}
         <section className="mt-16">
-          <h2 className="font-display text-2xl flex items-center gap-2"><MessageCircle className="h-5 w-5"/> {comments.length} comments</h2>
+          <h2 className="font-display text-2xl flex items-center gap-2"><MessageCircle className="h-5 w-5"/> {comments.length} comentários</h2>
           {user ? (
             <div className="mt-5 glass rounded-2xl p-4">
-              {replyTo && <div className="text-xs text-muted-foreground mb-2">Replying… <button className="underline" onClick={()=>setReplyTo(null)}>cancel</button></div>}
-              <Textarea value={newComment} onChange={(e)=>setNewComment(e.target.value)} placeholder="Share your thoughts…" maxLength={2000} className="bg-background/40" />
+              {replyTo && <div className="text-xs text-muted-foreground mb-2">Respondendo… <button className="underline" onClick={()=>setReplyTo(null)}>cancelar</button></div>}
+              <Textarea value={newComment} onChange={(e)=>setNewComment(e.target.value)} placeholder="Compartilhe sua perspectiva…" maxLength={2000} className="bg-background/40" />
               <div className="flex justify-end mt-3">
-                <Button onClick={submitComment} className="bg-gradient-gold text-primary-foreground"><Send className="h-4 w-4 mr-2"/>Post</Button>
+                <Button onClick={submitComment} className="bg-gradient-gold text-primary-foreground"><Send className="h-4 w-4 mr-2"/>Publicar</Button>
               </div>
             </div>
           ) : (
-            <p className="mt-4 text-sm text-muted-foreground"><Link to="/login" className="text-primary">Sign in</Link> to join the conversation.</p>
+            <p className="mt-4 text-sm text-muted-foreground"><Link to="/login" className="text-primary">Entre</Link> para participar da conversa.</p>
           )}
 
           <div className="mt-8 space-y-6">
@@ -226,10 +224,10 @@ const Post = () => {
                 <div className="flex items-start gap-3">
                   <Avatar className="h-9 w-9"><AvatarImage src={c.profiles?.avatar_url ?? undefined}/><AvatarFallback>{(c.profiles?.full_name ?? "U").slice(0,2)}</AvatarFallback></Avatar>
                   <div className="flex-1">
-                    <div className="text-sm">{c.profiles?.full_name ?? "User"} {c.is_answer && <Badge className="ml-2 bg-gradient-gold text-primary-foreground">Helpful</Badge>}</div>
-                    <div className="text-xs text-muted-foreground">{new Date(c.created_at).toLocaleString()}</div>
+                    <div className="text-sm">{c.profiles?.full_name ?? "Usuário"} {c.is_answer && <Badge className="ml-2 bg-gradient-gold text-primary-foreground">Útil</Badge>}</div>
+                    <div className="text-xs text-muted-foreground">{new Date(c.created_at).toLocaleString("pt-BR")}</div>
                     <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap">{c.content}</p>
-                    <button className="text-xs text-primary mt-2" onClick={()=>setReplyTo(c.id)}>Reply</button>
+                    <button className="text-xs text-primary mt-2" onClick={()=>setReplyTo(c.id)}>Responder</button>
                   </div>
                 </div>
                 {repliesOf(c.id).map(r => (
@@ -237,7 +235,7 @@ const Post = () => {
                     <div className="flex items-start gap-3">
                       <Avatar className="h-8 w-8"><AvatarImage src={r.profiles?.avatar_url ?? undefined}/><AvatarFallback>{(r.profiles?.full_name ?? "U").slice(0,2)}</AvatarFallback></Avatar>
                       <div>
-                        <div className="text-sm">{r.profiles?.full_name ?? "User"}</div>
+                        <div className="text-sm">{r.profiles?.full_name ?? "Usuário"}</div>
                         <p className="mt-1 text-sm whitespace-pre-wrap">{r.content}</p>
                       </div>
                     </div>

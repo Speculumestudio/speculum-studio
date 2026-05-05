@@ -5,7 +5,7 @@ export const ProtectedRoute = ({
   children, requireAdmin = false, requireContributor = false,
 }: { children: React.ReactNode; requireAdmin?: boolean; requireContributor?: boolean }) => {
   const { user, loading, isAdmin, isContributor } = useAuth();
-  if (loading) return <div className="min-h-screen grid place-items-center text-muted-foreground">Loading…</div>;
+  if (loading) return <div className="min-h-screen grid place-items-center text-muted-foreground">Carregando…</div>;
   if (!user) return <Navigate to="/login" replace />;
   if (requireAdmin && !isAdmin) return <Navigate to="/" replace />;
   if (requireContributor && !isContributor) return <Navigate to="/" replace />;

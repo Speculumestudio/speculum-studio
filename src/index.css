@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,62 +6,62 @@
 
 @layer base {
   :root {
-    /* Speculum Studio - Dark Luxury Editorial */
-    --background: 230 25% 6%;
-    --foreground: 40 30% 94%;
+    /* Speculum Studio — Editorial. Deep navy + ouro + marfim */
+    --background: 222 79% 9%;            /* #071739 deep navy */
+    --foreground: 36 38% 93%;            /* ivory */
 
-    --card: 230 22% 9%;
-    --card-foreground: 40 30% 94%;
+    --card: 222 55% 12%;
+    --card-foreground: 36 38% 93%;
 
-    --popover: 230 25% 8%;
-    --popover-foreground: 40 30% 94%;
+    --popover: 222 60% 11%;
+    --popover-foreground: 36 38% 93%;
 
-    --primary: 38 60% 65%;          /* warm gold */
-    --primary-foreground: 230 30% 8%;
-    --primary-glow: 35 80% 70%;
+    --primary: 43 60% 52%;               /* Speculum gold #C8A24B / D4AF37 */
+    --primary-foreground: 222 79% 9%;
+    --primary-glow: 43 75% 65%;
 
-    --secondary: 260 35% 22%;        /* deep purple */
-    --secondary-foreground: 40 30% 94%;
+    --secondary: 222 40% 18%;
+    --secondary-foreground: 36 38% 93%;
 
-    --muted: 230 18% 14%;
-    --muted-foreground: 40 12% 65%;
+    --muted: 222 35% 16%;
+    --muted-foreground: 36 18% 72%;
 
-    --accent: 260 60% 60%;
-    --accent-foreground: 40 30% 96%;
+    --accent: 43 60% 52%;
+    --accent-foreground: 222 79% 9%;
 
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 40 30% 96%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 36 38% 96%;
 
-    --border: 230 20% 16%;
-    --input: 230 20% 14%;
-    --ring: 38 60% 65%;
+    --border: 222 30% 20%;
+    --input: 222 35% 15%;
+    --ring: 43 60% 52%;
 
     --radius: 0.875rem;
 
     /* Editorial gradients */
-    --gradient-hero: radial-gradient(ellipse at top right, hsl(38 70% 55% / 0.18), transparent 55%),
-                     radial-gradient(ellipse at bottom left, hsl(260 70% 50% / 0.22), transparent 60%),
-                     linear-gradient(180deg, hsl(230 30% 7%), hsl(230 25% 5%));
-    --gradient-gold: linear-gradient(135deg, hsl(38 70% 65%), hsl(28 65% 55%));
-    --gradient-aurora: linear-gradient(135deg, hsl(260 60% 55%) 0%, hsl(220 60% 45%) 50%, hsl(38 70% 60%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(230 22% 11% / 0.85), hsl(230 22% 8% / 0.65));
+    --gradient-hero: radial-gradient(ellipse at top right, hsl(43 70% 55% / 0.16), transparent 55%),
+                     radial-gradient(ellipse at bottom left, hsl(222 70% 25% / 0.55), transparent 60%),
+                     linear-gradient(180deg, hsl(222 79% 10%), hsl(222 79% 7%));
+    --gradient-gold: linear-gradient(135deg, hsl(43 70% 60%), hsl(38 60% 45%));
+    --gradient-aurora: linear-gradient(135deg, hsl(222 70% 22%) 0%, hsl(222 60% 32%) 50%, hsl(43 65% 55%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(222 50% 13% / 0.85), hsl(222 60% 9% / 0.65));
 
     /* Shadows */
-    --shadow-glow: 0 20px 60px -20px hsl(38 70% 55% / 0.35);
-    --shadow-elegant: 0 30px 80px -30px hsl(230 50% 2% / 0.8);
-    --shadow-card: 0 1px 0 0 hsl(40 30% 90% / 0.04) inset, 0 30px 60px -30px hsl(230 60% 2% / 0.6);
+    --shadow-glow: 0 20px 60px -20px hsl(43 70% 50% / 0.35);
+    --shadow-elegant: 0 30px 80px -30px hsl(222 80% 2% / 0.85);
+    --shadow-card: 0 1px 0 0 hsl(36 38% 90% / 0.04) inset, 0 30px 60px -30px hsl(222 80% 2% / 0.7);
 
     /* Motion */
     --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
 
-    --sidebar-background: 230 25% 7%;
-    --sidebar-foreground: 40 20% 85%;
-    --sidebar-primary: 38 60% 65%;
-    --sidebar-primary-foreground: 230 30% 8%;
-    --sidebar-accent: 230 20% 12%;
-    --sidebar-accent-foreground: 40 30% 94%;
-    --sidebar-border: 230 20% 14%;
-    --sidebar-ring: 38 60% 65%;
+    --sidebar-background: 222 70% 8%;
+    --sidebar-foreground: 36 28% 88%;
+    --sidebar-primary: 43 60% 52%;
+    --sidebar-primary-foreground: 222 79% 9%;
+    --sidebar-accent: 222 45% 14%;
+    --sidebar-accent-foreground: 36 38% 93%;
+    --sidebar-border: 222 30% 18%;
+    --sidebar-ring: 43 60% 52%;
   }
 }
 
@@ -75,11 +75,11 @@
     background-attachment: fixed;
   }
   h1, h2, h3, h4, .font-display {
-    font-family: 'Fraunces', Georgia, serif;
-    font-feature-settings: "ss01", "ss02";
-    letter-spacing: -0.02em;
+    font-family: 'Cormorant Garamond', 'Fraunces', Georgia, serif;
+    letter-spacing: -0.01em;
+    font-weight: 600;
   }
-  ::selection { background: hsl(var(--primary) / 0.3); color: hsl(var(--foreground)); }
+  ::selection { background: hsl(var(--primary) / 0.35); color: hsl(var(--foreground)); }
 }
 
 @layer components {
