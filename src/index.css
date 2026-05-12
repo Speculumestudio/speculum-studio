@@ -6,61 +6,61 @@
 
 @layer base {
   :root {
-    /* Speculum Studio — Editorial. Deep navy + ouro + marfim */
-    --background: 222 79% 9%;            /* #071739 deep navy */
-    --foreground: 36 38% 93%;            /* ivory */
+    /* Speculum Studio — Editorial. Obsidiana quente + ouro + marfim */
+    --background: 30 8% 6%;              /* near-black com leve calor */
+    --foreground: 36 38% 93%;            /* marfim */
 
-    --card: 222 55% 12%;
+    --card: 30 8% 9%;
     --card-foreground: 36 38% 93%;
 
-    --popover: 222 60% 11%;
+    --popover: 30 8% 8%;
     --popover-foreground: 36 38% 93%;
 
-    --primary: 43 60% 52%;               /* Speculum gold #C8A24B / D4AF37 */
-    --primary-foreground: 222 79% 9%;
+    --primary: 43 60% 52%;               /* Speculum gold */
+    --primary-foreground: 30 10% 6%;
     --primary-glow: 43 75% 65%;
 
-    --secondary: 222 40% 18%;
+    --secondary: 30 6% 14%;
     --secondary-foreground: 36 38% 93%;
 
-    --muted: 222 35% 16%;
-    --muted-foreground: 36 18% 72%;
+    --muted: 30 6% 12%;
+    --muted-foreground: 36 14% 68%;
 
     --accent: 43 60% 52%;
-    --accent-foreground: 222 79% 9%;
+    --accent-foreground: 30 10% 6%;
 
     --destructive: 0 65% 55%;
     --destructive-foreground: 36 38% 96%;
 
-    --border: 222 30% 20%;
-    --input: 222 35% 15%;
+    --border: 30 8% 16%;
+    --input: 30 8% 12%;
     --ring: 43 60% 52%;
 
     --radius: 0.875rem;
 
-    /* Editorial gradients */
-    --gradient-hero: radial-gradient(ellipse at top right, hsl(43 70% 55% / 0.16), transparent 55%),
-                     radial-gradient(ellipse at bottom left, hsl(222 70% 25% / 0.55), transparent 60%),
-                     linear-gradient(180deg, hsl(222 79% 10%), hsl(222 79% 7%));
+    /* Editorial gradients — sem azul */
+    --gradient-hero: radial-gradient(ellipse at top right, hsl(43 70% 55% / 0.14), transparent 55%),
+                     radial-gradient(ellipse at bottom left, hsl(28 30% 12% / 0.55), transparent 60%),
+                     linear-gradient(180deg, hsl(30 8% 7%), hsl(30 10% 4%));
     --gradient-gold: linear-gradient(135deg, hsl(43 70% 60%), hsl(38 60% 45%));
-    --gradient-aurora: linear-gradient(135deg, hsl(222 70% 22%) 0%, hsl(222 60% 32%) 50%, hsl(43 65% 55%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(222 50% 13% / 0.85), hsl(222 60% 9% / 0.65));
+    --gradient-aurora: linear-gradient(135deg, hsl(30 10% 10%) 0%, hsl(28 25% 18%) 50%, hsl(43 65% 55%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(30 8% 10% / 0.85), hsl(30 10% 6% / 0.65));
 
     /* Shadows */
     --shadow-glow: 0 20px 60px -20px hsl(43 70% 50% / 0.35);
-    --shadow-elegant: 0 30px 80px -30px hsl(222 80% 2% / 0.85);
-    --shadow-card: 0 1px 0 0 hsl(36 38% 90% / 0.04) inset, 0 30px 60px -30px hsl(222 80% 2% / 0.7);
+    --shadow-elegant: 0 30px 80px -30px hsl(0 0% 0% / 0.85);
+    --shadow-card: 0 1px 0 0 hsl(36 38% 90% / 0.04) inset, 0 30px 60px -30px hsl(0 0% 0% / 0.7);
 
     /* Motion */
     --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
 
-    --sidebar-background: 222 70% 8%;
+    --sidebar-background: 30 8% 5%;
     --sidebar-foreground: 36 28% 88%;
     --sidebar-primary: 43 60% 52%;
-    --sidebar-primary-foreground: 222 79% 9%;
-    --sidebar-accent: 222 45% 14%;
+    --sidebar-primary-foreground: 30 10% 6%;
+    --sidebar-accent: 30 6% 11%;
     --sidebar-accent-foreground: 36 38% 93%;
-    --sidebar-border: 222 30% 18%;
+    --sidebar-border: 30 8% 14%;
     --sidebar-ring: 43 60% 52%;
   }
 }
