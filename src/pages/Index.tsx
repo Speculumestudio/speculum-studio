@@ -37,7 +37,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-emerald-950">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
 
       {/* HERO */}
@@ -51,7 +51,7 @@ const Index = () => {
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
         <div className="container-editorial relative py-24 md:py-36 max-w-4xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs uppercase tracking-[0.22em] text-muted-foreground animate-in-up">
             <Sparkles className="h-3.5 w-3.5 text-primary" /> Edição 01 · Um novo editorial para IA
