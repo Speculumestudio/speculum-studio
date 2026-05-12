@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Logo } from "@/components/Logo";
 
 export const Footer = () => (
-  <footer className="mt-24 border-t border-border/60">
+  <footer className="mt-24 border-t border-border/60 bg-green-950">
     <div className="container-editorial py-14 grid gap-10 md:grid-cols-4">
       <div className="md:col-span-2">
         <Logo size={40} />
