@@ -42,9 +42,16 @@ const Index = () => {
 
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <img src={heroImg} alt="" width={1920} height={1080}
-          className="absolute inset-0 w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background text-gray-600 bg-green-600 rounded-none shadow-none" />
+        <video
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_155101_f2540600-6fe9-433e-8e48-b3f4b72f0727.mp4"
+          poster={heroImg}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
         <div className="container-editorial relative py-24 md:py-36 max-w-4xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs uppercase tracking-[0.22em] text-muted-foreground animate-in-up">
             <Sparkles className="h-3.5 w-3.5 text-primary" /> Edição 01 · Um novo editorial para IA
