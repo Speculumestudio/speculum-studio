@@ -22,7 +22,7 @@ export const Navbar = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/60">
+    <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/60 bg-green-950">
       <div className="container-editorial flex h-16 items-center justify-between gap-6">
         <Logo size={34} />
 

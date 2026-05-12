@@ -37,14 +37,14 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-emerald-950">
       <Navbar />
 
       {/* HERO */}
       <section className="relative overflow-hidden">
         <img src={heroImg} alt="" width={1920} height={1080}
           className="absolute inset-0 w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background text-gray-600 bg-green-600 rounded-none shadow-none" />
         <div className="container-editorial relative py-24 md:py-36 max-w-4xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs uppercase tracking-[0.22em] text-muted-foreground animate-in-up">
             <Sparkles className="h-3.5 w-3.5 text-primary" /> Edição 01 · Um novo editorial para IA
