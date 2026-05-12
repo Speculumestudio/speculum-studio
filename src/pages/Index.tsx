@@ -7,7 +7,6 @@ import { PostCard, PostCardData } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, BookOpen, Wand2, Wrench, GraduationCap, Compass, Newspaper } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
-import logoSpeculum from "@/assets/logo-speculum.png";
 import { useAuth } from "@/contexts/AuthContext";
 
 const categories = [
@@ -53,14 +52,6 @@ const Index = () => {
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
-        {/* Logo Speculum sobreposto no centro do vídeo (cobrindo a estrela) */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <img
-            src={logoSpeculum}
-            alt="Speculum Studio"
-            className="w-[18vw] max-w-[260px] min-w-[120px] opacity-90 drop-shadow-[0_8px_30px_rgba(0,0,0,0.6)] animate-in-up"
-          />
-        </div>
         <div className="container-editorial relative py-24 md:py-36 max-w-4xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs uppercase tracking-[0.22em] text-muted-foreground animate-in-up">
             <Sparkles className="h-3.5 w-3.5 text-primary" /> Edição 01 · Um novo editorial para IA
