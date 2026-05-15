@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Seo } from "@/components/Seo";
 import { PostCard, PostCardData } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, BookOpen, Wand2, Wrench, GraduationCap, Compass, Newspaper } from "lucide-react";
@@ -38,6 +39,15 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Seo
+        title="Speculum Studio — Hub editorial de IA"
+        description="Biblioteca curada de prompts, ferramentas, aulas e guias de IA — publicada como uma revista para quem cria com inteligência."
+        path="/"
+        jsonLd={[
+          { "@context": "https://schema.org", "@type": "Organization", name: "Speculum Studio", url: "/" },
+          { "@context": "https://schema.org", "@type": "WebSite", name: "Speculum Studio", url: "/" },
+        ]}
+      />
       <Navbar />
 
       {/* HERO */}

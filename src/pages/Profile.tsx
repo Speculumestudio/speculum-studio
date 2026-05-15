@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Seo } from "@/components/Seo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { PostCard, PostCardData } from "@/components/PostCard";
@@ -51,6 +52,11 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Seo
+        title={`${profile.full_name ?? "Perfil"} — Speculum Studio`}
+        description={profile.bio ?? `Perfil de ${profile.full_name ?? "membro"} no Speculum Studio.`}
+        path={`/profile/${id}`}
+      />
       <Navbar />
       <section className="container-editorial pt-14 pb-10">
         <div className="glass rounded-3xl p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start">
@@ -58,9 +64,9 @@ const Profile = () => {
           <div className="flex-1">
             {editing ? (
               <div className="space-y-3 max-w-md">
-                <Input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Nome completo" />
-                <Input value={avatar} onChange={(e)=>setAvatar(e.target.value)} placeholder="URL do avatar" />
-                <Textarea value={bio} onChange={(e)=>setBio(e.target.value)} placeholder="Mini bio" maxLength={500} />
+                <Input aria-label="Nome completo" value={name} onChange={(e)=>setName(e.target.value)} placeholder="Nome completo" />
+                <Input aria-label="URL do avatar" value={avatar} onChange={(e)=>setAvatar(e.target.value)} placeholder="URL do avatar" />
+                <Textarea aria-label="Mini bio" value={bio} onChange={(e)=>setBio(e.target.value)} placeholder="Mini bio" maxLength={500} />
                 <div className="flex gap-2"><Button onClick={save} className="bg-gradient-gold text-primary-foreground">Salvar</Button><Button variant="ghost" onClick={()=>setEditing(false)}>Cancelar</Button></div>
               </div>
             ) : (

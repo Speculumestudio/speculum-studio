@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Seo } from "@/components/Seo";
 import { PostCard, PostCardData } from "@/components/PostCard";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -51,6 +52,11 @@ const Explore = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Seo
+        title={`Explorar ${type !== "all" ? TYPE_LABELS[type] : "tudo"} — Speculum Studio`}
+        description="Pesquise entre prompts, ferramentas, aulas, tutoriais e guias de IA. Filtre por tipo e ordene pelo que está em alta."
+        path={`/explore${type !== "all" ? `?type=${type}` : ""}`}
+      />
       <Navbar />
       <section className="container-editorial pt-14 pb-10">
         <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3">A biblioteca</p>
@@ -61,6 +67,7 @@ const Explore = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input value={q} onChange={(e) => update("q", e.target.value)}
+              aria-label="Buscar conteúdos"
               placeholder="Buscar prompts, ferramentas, ideias…" className="pl-9 bg-background/40 border-border/60 h-11" />
           </div>
           <Select value={type} onValueChange={(v) => update("type", v)}>

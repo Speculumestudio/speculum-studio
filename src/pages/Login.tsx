@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,6 +58,11 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Seo
+        title="Entrar no Speculum Studio"
+        description="Acesse sua conta no Speculum Studio para salvar conteúdos, comentar e acompanhar seu progresso."
+        path="/login"
+      />
       <Navbar />
       <section className="container-editorial flex-1 grid place-items-center py-16">
         <div className="w-full max-w-md glass rounded-3xl p-8 md:p-10">
@@ -82,16 +88,16 @@ const Login = () => {
               <TabsTrigger value="signup">Cadastrar</TabsTrigger>
             </TabsList>
             <TabsContent value="signin" className="space-y-3 mt-5">
-              <div><Label>E-mail</Label><Input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} /></div>
-              <div><Label>Senha</Label><Input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} /></div>
+              <div><Label htmlFor="signin-email">E-mail</Label><Input id="signin-email" type="email" value={email} onChange={(e)=>setEmail(e.target.value)} /></div>
+              <div><Label htmlFor="signin-password">Senha</Label><Input id="signin-password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} /></div>
               <Button onClick={() => handleEmail("signin")} disabled={loading} className="w-full bg-gradient-gold text-primary-foreground">
                 {loading ? "…" : "Entrar"}
               </Button>
             </TabsContent>
             <TabsContent value="signup" className="space-y-3 mt-5">
-              <div><Label>Nome completo</Label><Input value={name} onChange={(e)=>setName(e.target.value)} /></div>
-              <div><Label>E-mail</Label><Input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} /></div>
-              <div><Label>Senha</Label><Input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} /></div>
+              <div><Label htmlFor="signup-name">Nome completo</Label><Input id="signup-name" value={name} onChange={(e)=>setName(e.target.value)} /></div>
+              <div><Label htmlFor="signup-email">E-mail</Label><Input id="signup-email" type="email" value={email} onChange={(e)=>setEmail(e.target.value)} /></div>
+              <div><Label htmlFor="signup-password">Senha</Label><Input id="signup-password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} /></div>
               <Button onClick={() => handleEmail("signup")} disabled={loading} className="w-full bg-gradient-gold text-primary-foreground">
                 {loading ? "…" : "Criar conta"}
               </Button>
