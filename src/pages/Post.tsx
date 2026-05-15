@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Seo } from "@/components/Seo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -124,6 +125,22 @@ const Post = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Seo
+        title={`${post.title} — Speculum Studio`}
+        description={post.excerpt ?? `${post.title} no Speculum Studio.`}
+        path={`/post/${post.slug}`}
+        type="article"
+        image={post.cover_image_url ?? undefined}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": post.type === "lesson" ? "Course" : "Article",
+          headline: post.title,
+          description: post.excerpt ?? undefined,
+          image: post.cover_image_url ?? undefined,
+          datePublished: post.published_at ?? undefined,
+          author: author?.full_name ? { "@type": "Person", name: author.full_name } : undefined,
+        }}
+      />
       <Navbar />
       <article className="container-editorial pt-12 pb-20 max-w-4xl">
         <div className="flex items-center gap-2 mb-5">
@@ -209,7 +226,7 @@ const Post = () => {
           {user ? (
             <div className="mt-5 glass rounded-2xl p-4">
               {replyTo && <div className="text-xs text-muted-foreground mb-2">Respondendo… <button className="underline" onClick={()=>setReplyTo(null)}>cancelar</button></div>}
-              <Textarea value={newComment} onChange={(e)=>setNewComment(e.target.value)} placeholder="Compartilhe sua perspectiva…" maxLength={2000} className="bg-background/40" />
+              <Textarea aria-label="Escrever comentário" value={newComment} onChange={(e)=>setNewComment(e.target.value)} placeholder="Compartilhe sua perspectiva…" maxLength={2000} className="bg-background/40" />
               <div className="flex justify-end mt-3">
                 <Button onClick={submitComment} className="bg-gradient-gold text-primary-foreground"><Send className="h-4 w-4 mr-2"/>Publicar</Button>
               </div>
