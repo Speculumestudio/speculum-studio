@@ -172,7 +172,7 @@ const Post = () => {
 
         {post.cover_image_url && (
           <div className="mt-10 rounded-2xl overflow-hidden glass">
-            <img src={post.cover_image_url} alt={post.title} className="w-full aspect-[16/9] object-cover" loading="lazy" />
+            <img src={post.cover_image_url} alt={post.title} className="w-full h-auto max-h-[500px] object-contain rounded-2xl mx-auto" loading="lazy" />
           </div>
         )}
 

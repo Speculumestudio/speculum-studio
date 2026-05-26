@@ -24,7 +24,7 @@ const typeLabel: Record<string, string> = {
 export const PostCard = ({ post, featured = false }: { post: PostCardData; featured?: boolean }) => (
   <Link to={`/post/${post.slug}`}
     className={`group glass rounded-2xl overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-1 hover:shadow-glow ${featured ? "md:col-span-2 md:row-span-2" : ""}`}>
-    <div className={`relative overflow-hidden ${featured ? "aspect-[16/10]" : "aspect-[16/10]"}`}>
+    <div className={`relative overflow-hidden ${featured ? "aspect-[16/10]" : "aspect-square"}`}>
       {post.cover_image_url ? (
         <img src={post.cover_image_url} alt={post.title} loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
