@@ -39,8 +39,9 @@ const Explore = () => {
       let query = supabase.from("posts")
         .select("id,slug,title,excerpt,cover_image_url,type,category,tags,is_premium,views,likes_count")
         .eq("status", "published");
-      if (type !== "all") query = query.eq("type", type as any);
-      if (category) query = query.eq("category", category);
+      if (type !== "all" && type !== "studio") query = query.eq("type", type as any);
+      if (type === "studio") query = query.eq("category", "Nosso Studio");
+      if (category && type !== "studio") query = query.eq("category", category);
       if (q) query = query.or(`title.ilike.%${q}%,excerpt.ilike.%${q}%`);
       query = sort === "popular"
         ? query.order("views", { ascending: false })
