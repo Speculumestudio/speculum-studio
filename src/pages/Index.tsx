@@ -11,6 +11,7 @@ import heroImg from "@/assets/hero.jpg";
 import { useAuth } from "@/contexts/AuthContext";
 
 const categories = [
+  { type: "studio", label: "Nosso Studio", icon: Sparkles, desc: "Bastidores e criações exclusivas" },
   { type: "prompt", label: "Prompts", icon: Wand2, desc: "Prompts testados e refinados" },
   { type: "tool", label: "Ferramentas", icon: Wrench, desc: "Softwares de IA selecionados" },
   { type: "tutorial", label: "Tutoriais", icon: BookOpen, desc: "Construa, passo a passo" },

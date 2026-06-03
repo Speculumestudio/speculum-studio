@@ -19,6 +19,7 @@ export const Navbar = () => {
     { to: "/explore?type=tutorial", label: "Tutoriais" },
     { to: "/explore?type=prompt", label: "Prompts" },
     { to: "/explore?type=tool", label: "Ferramentas" },
+    { to: "/explore?type=studio", label: "Nosso Studio" },
   ];
 
   return (

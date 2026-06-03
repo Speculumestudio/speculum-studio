@@ -12,8 +12,9 @@ import { Search } from "lucide-react";
 const TYPE_LABELS: Record<string, string> = {
   all: "Todos os tipos", prompt: "Prompts", tool: "Ferramentas",
   tutorial: "Tutoriais", lesson: "Aulas", guide: "Guias", article: "Artigos",
+  studio: "Nosso Studio",
 };
-const TYPES = ["all", "prompt", "tool", "tutorial", "lesson", "guide", "article"];
+const TYPES = ["all", "studio", "prompt", "tool", "tutorial", "lesson", "guide", "article"];
 const SORTS = [{ v: "recent", l: "Mais recentes" }, { v: "popular", l: "Mais populares" }];
 
 const Explore = () => {
