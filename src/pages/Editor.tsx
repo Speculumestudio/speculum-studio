@@ -56,12 +56,15 @@ const Editor = () => {
     if (!form.title) return toast.error("Título é obrigatório");
     setLoading(true);
     const slug = form.slug || slugify(form.title);
+    const targetStatus = status ?? form.status;
     const payload: any = {
       ...form, slug,
       tags: form.tags.split(",").map(t => t.trim()).filter(Boolean),
       author_id: user.id,
-      status: status ?? form.status,
-      published_at: (status === "published" || form.status === "published") ? new Date().toISOString() : null,
+      status: targetStatus,
+      published_at: targetStatus === "published"
+        ? ((form as any).published_at || new Date().toISOString())
+        : null,
     };
     const res = id
       ? await supabase.from("posts").update(payload).eq("id", id).select().single()
