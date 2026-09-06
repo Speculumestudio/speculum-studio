@@ -14,6 +14,11 @@ const entries: SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/nosso-estudio", changefreq: "monthly", priority: "0.9" },
   { path: "/explore", changefreq: "daily", priority: "0.9" },
+  { path: "/servicos/construcao-de-marca", changefreq: "monthly", priority: "0.8" },
+  { path: "/servicos/producao-audiovisual", changefreq: "monthly", priority: "0.8" },
+  { path: "/servicos/retratos-profissionais", changefreq: "monthly", priority: "0.8" },
+  { path: "/servicos/conteudo-e-presenca-digital", changefreq: "monthly", priority: "0.8" },
+  { path: "/servicos/mentorias-e-consultorias", changefreq: "monthly", priority: "0.8" },
 ];
 
 const xml = [

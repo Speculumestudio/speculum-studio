@@ -1,16 +1,29 @@
 # Speculum Studio
 
-> Hub editorial de IA — prompts, tutoriais, ferramentas, aulas e guias para quem cria com inteligência.
+> Estúdio de construção de marca, conteúdo, retratos profissionais e produção audiovisual, dirigido por Fabiano Pereira.
 
-Speculum Studio é uma biblioteca curada para criadores que trabalham com IA: conteúdos publicados como uma revista, com edições, autores e seções claras.
+Site oficial: https://speculumstudio.com/
+Idioma principal: português do Brasil
+Contato: contato@speculumstudio.com
 
-## Pages
+## Sobre
 
-- [Home](/): Apresentação do estúdio e destaques editoriais.
-- [Explorar](/explore): Biblioteca completa com filtros por tipo (prompts, ferramentas, tutoriais, aulas, guias, artigos).
-- [Entrar](/login): Login e cadastro de membros.
+A Speculum Studio ajuda profissionais e empresas a organizar posicionamento, imagem e comunicação. O trabalho conecta estratégia de marca, direção criativa, fotografia, audiovisual e conteúdo.
 
-## Optional
+## Serviços
 
-- [Painel](/dashboard): Área do contribuidor (requer login).
-- [Salvos](/bookmarks): Conteúdos salvos pelo usuário (requer login).
+- [Construção de marca](https://speculumstudio.com/servicos/construcao-de-marca): posicionamento, identidade, narrativa e aplicações de marca.
+- [Produção audiovisual](https://speculumstudio.com/servicos/producao-audiovisual): planejamento, roteiro, direção, captação e edição de filmes de marca, entrevistas, depoimentos e conteúdo.
+- [Retratos profissionais](https://speculumstudio.com/servicos/retratos-profissionais): retratos para marca pessoal, equipes e comunicação institucional, com direção de imagem.
+- [Conteúdo e presença digital](https://speculumstudio.com/servicos/conteudo-e-presenca-digital): estratégia editorial, roteiros, produção e acompanhamento.
+- [Mentorias e consultorias](https://speculumstudio.com/servicos/mentorias-e-consultorias): orientação com Fabiano Pereira sobre marca, imagem e comunicação.
+
+## Páginas principais
+
+- [Início](https://speculumstudio.com/): apresentação do estúdio e conteúdos em destaque.
+- [Nosso Estúdio](https://speculumstudio.com/nosso-estudio): visão institucional, serviços, processo e contato.
+- [Matérias](https://speculumstudio.com/explore): artigos, guias, tutoriais, ferramentas, aulas e materiais editoriais.
+
+## Identidade editorial
+
+A Speculum parte do contexto e da identidade antes de escolher estética, formato ou ferramenta. O site publica repertório e processos ligados a marca, imagem, criação e uso consciente de tecnologia.

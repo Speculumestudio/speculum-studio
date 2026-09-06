@@ -45,8 +45,17 @@ const Index = () => {
         description="Construção de marca, conteúdo, fotografia e audiovisual. Conheça a Speculum Studio e explore artigos, processos e materiais de criação."
         path="/"
         jsonLd={[
-          { "@context": "https://schema.org", "@type": "Organization", name: "Speculum Studio", url: "/" },
-          { "@context": "https://schema.org", "@type": "WebSite", name: "Speculum Studio", url: "/" },
+          {
+            "@context": "https://schema.org",
+            "@type": "ProfessionalService",
+            name: "Speculum Studio",
+            url: "https://speculumstudio.com/",
+            description: "Estúdio de construção de marca, conteúdo, fotografia e produção audiovisual.",
+            email: "contato@speculumstudio.com",
+            telephone: "+55 13 99615-8177",
+            sameAs: ["https://www.instagram.com/studiospeculum/"],
+          },
+          { "@context": "https://schema.org", "@type": "WebSite", name: "Speculum Studio", url: "https://speculumstudio.com/", inLanguage: "pt-BR" },
         ]}
       />
       <Navbar />

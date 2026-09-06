@@ -9,6 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 import Index from "./pages/Index";
 import Studio from "./pages/Studio";
+import Service from "./pages/Service";
 import Explore from "./pages/Explore";
 import Post from "./pages/Post";
 import Profile from "./pages/Profile";
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/nosso-estudio" element={<Studio />} />
+            <Route path="/servicos/:slug" element={<Service />} />
             <Route path="/post/:slug" element={<Post />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/login" element={<Login />} />

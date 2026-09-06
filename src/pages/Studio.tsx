@@ -5,26 +5,35 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/button";
-
-const services = [
-  { id: "marca", name: "Construção de marca", description: "Posicionamento, identidade visual e narrativa para tornar mais claro o que sua marca representa e como ela se apresenta.", context: "Para quem precisa organizar a identidade da marca ou rever a forma como ela é percebida." },
-  { id: "conteudo", name: "Conteúdo e presença digital", description: "Estratégia editorial, roteiros e produção de conteúdo para dar continuidade à comunicação da marca.", context: "Para quem precisa conectar o que publica ao momento do negócio e ao público que quer alcançar." },
-  { id: "audiovisual", name: "Fotografia e audiovisual", description: "Retratos, vídeos e filmes de marca com direção de imagem e intenção narrativa.", context: "Para profissionais e empresas que precisam apresentar pessoas, produtos e histórias por meio de imagens." },
-  { id: "mentorias", name: "Mentorias e consultorias", description: "Orientação com Fabiano Pereira para tomar decisões sobre marca, imagem e comunicação.", context: "Para quem busca uma leitura do próprio contexto e uma direção para os próximos passos." },
-];
+import { services } from "@/data/services";
 
 export default function Studio() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen flex flex-col">
-        <Seo title="Nosso Estúdio | Marca, conteúdo e audiovisual | Speculum Studio" description="Conheça a Speculum Studio: construção de marca, conteúdo, fotografia, audiovisual e orientação estratégica com Fabiano Pereira." path="/nosso-estudio" />
+        <Seo
+          title="Nosso Estúdio | Marca, conteúdo e audiovisual | Speculum Studio"
+          description="Conheça a Speculum Studio: construção de marca, conteúdo, retratos, produção audiovisual e orientação estratégica com Fabiano Pereira."
+          path="/nosso-estudio"
+          jsonLd={{
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "Serviços da Speculum Studio",
+            itemListElement: services.map((service, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              name: service.shortName,
+              url: `https://speculumstudio.com/servicos/${service.slug}`,
+            })),
+          }}
+        />
         <Navbar />
         <main>
           <section className="container-editorial pt-16 pb-16 md:pt-24 md:pb-24">
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <p className="text-xs uppercase tracking-[0.2em] text-primary mb-6">Nosso Estúdio / Speculum Studio</p>
               <h1 className="font-display text-5xl md:text-7xl max-w-4xl leading-[1.02]">Clareza para sua marca.<br /><span className="text-primary">Direção para o que ela comunica.</span></h1>
-              <p className="mt-7 text-lg text-muted-foreground max-w-2xl leading-relaxed">Construção de marca, conteúdo, fotografia e audiovisual para profissionais e empresas que querem comunicar o valor do seu trabalho.</p>
+              <p className="mt-7 text-lg text-muted-foreground max-w-2xl leading-relaxed">Construção de marca, conteúdo, retratos e produção audiovisual para profissionais e empresas que querem comunicar o valor do seu trabalho.</p>
               <div className="flex flex-wrap gap-4 mt-9">
                 <Button asChild size="lg"><a href="#contato">Conversar sobre um projeto <ArrowUpRight className="ml-2 h-4 w-4" /></a></Button>
                 <Button asChild size="lg" variant="outline"><a href="#servicos">Conhecer os serviços</a></Button>
@@ -37,12 +46,12 @@ export default function Studio() {
             <h2 className="font-display text-4xl md:text-5xl mb-6">O trabalho que sua marca precisa agora.</h2>
             <p className="text-muted-foreground max-w-2xl mb-10">Podemos começar por um desafio específico ou conectar as diferentes frentes da sua comunicação. A primeira conversa ajuda a definir o escopo.</p>
             <div className="grid md:grid-cols-2 gap-5">{services.map((service, index) => (
-              <motion.article id={service.id} key={service.id} className="glass rounded-2xl p-7 md:p-9 scroll-mt-24" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.4 }}>
+              <motion.article id={service.slug} key={service.slug} className="glass rounded-2xl p-7 md:p-9 scroll-mt-24" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.4 }}>
                 <p className="text-xs tracking-widest text-primary mb-5">0{index + 1}</p>
-                <h3 className="font-display text-3xl">{service.name}</h3>
+                <h3 className="font-display text-3xl">{service.shortName}</h3>
                 <p className="mt-4 leading-relaxed">{service.description}</p>
-                <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{service.context}</p>
-                <a href="#contato" className="inline-flex items-center gap-2 mt-6 text-sm text-primary hover:underline">Conversar sobre esta frente <ArrowUpRight className="h-4 w-4" /></a>
+                <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{service.lead}</p>
+                <Link to={`/servicos/${service.slug}`} className="inline-flex items-center gap-2 mt-6 text-sm text-primary hover:underline">Entender este trabalho <ArrowRight className="h-4 w-4" /></Link>
               </motion.article>
             ))}</div>
           </section>

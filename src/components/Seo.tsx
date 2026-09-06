@@ -8,7 +8,7 @@ interface SeoProps {
   path: string;
   type?: "website" | "article";
   image?: string;
-  jsonLd?: Record<string, any> | Record<string, any>[];
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 export const Seo = ({ title, description, path, type = "website", image, jsonLd }: SeoProps) => {
@@ -19,7 +19,10 @@ export const Seo = ({ title, description, path, type = "website", image, jsonLd 
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
       <link rel="canonical" href={canonicalUrl} />
+      <meta property="og:site_name" content="Speculum Studio" />
+      <meta property="og:locale" content="pt_BR" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonicalUrl} />
