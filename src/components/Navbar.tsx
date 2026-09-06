@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Bookmark, LayoutDashboard, LogOut, Search, User as UserIcon } from "lucide-react";
+import { Bookmark, LayoutDashboard, LogOut, Menu, Search, User as UserIcon } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -15,11 +15,8 @@ export const Navbar = () => {
 
   const links = [
     { to: "/", label: "Início" },
-    { to: "/explore", label: "Explorar" },
-    { to: "/explore?type=tutorial", label: "Tutoriais" },
-    { to: "/explore?type=prompt", label: "Prompts" },
-    { to: "/explore?type=tool", label: "Ferramentas" },
-    { to: "/explore?type=studio", label: "Nosso Studio" },
+    { to: "/explore", label: "Matérias" },
+    { to: "/nosso-estudio", label: "Nosso Estúdio" },
   ];
 
   return (
@@ -27,7 +24,7 @@ export const Navbar = () => {
       <div className="container-editorial flex h-16 items-center justify-between gap-6">
         <Logo size={34} />
 
-        <nav className="hidden md:flex items-center gap-7 text-sm">
+        <nav aria-label="Principal" className="hidden md:flex items-center gap-6 text-sm">
           {links.map((l) => (
             <NavLink key={l.label} to={l.to} end={l.to === "/"}
               className={({ isActive }) =>
@@ -38,6 +35,14 @@ export const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir navegação"><Menu className="h-5 w-5" /></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {links.map((link) => <DropdownMenuItem key={link.label} onClick={() => nav(link.to)}>{link.label}</DropdownMenuItem>)}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button variant="ghost" size="icon" onClick={() => nav("/explore")} aria-label="Buscar">
             <Search className="h-4 w-4" />
           </Button>

@@ -1,5 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
+const SITE_URL = "https://speculumstudio.com";
+
 interface SeoProps {
   title: string;
   description: string;
@@ -11,17 +13,19 @@ interface SeoProps {
 
 export const Seo = ({ title, description, path, type = "website", image, jsonLd }: SeoProps) => {
   const ldArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+  const canonicalUrl = new URL(path, SITE_URL).toString();
+  const imageUrl = image ? new URL(image, SITE_URL).toString() : undefined;
   return (
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <link rel="canonical" href={path} />
+      <link rel="canonical" href={canonicalUrl} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:url" content={path} />
+      <meta property="og:url" content={canonicalUrl} />
       <meta property="og:type" content={type} />
-      {image && <meta property="og:image" content={image} />}
-      {image && <meta name="twitter:image" content={image} />}
+      {imageUrl && <meta property="og:image" content={imageUrl} />}
+      {imageUrl && <meta name="twitter:image" content={imageUrl} />}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />

@@ -7,7 +7,7 @@ export const Footer = () => (
       <div className="md:col-span-2">
         <Logo size={40} />
         <p className="mt-5 text-sm text-muted-foreground max-w-md leading-relaxed">
-          Um espaço editorial para quem cria com inteligência — prompts, tutoriais, aulas, ferramentas e guias selecionados para os criadores que estão moldando a próxima década.
+          Construção de marca, conteúdo, fotografia e audiovisual. Um estúdio que compartilha o que aprende criando.
         </p>
         <p className="mt-4 text-xs uppercase tracking-[0.25em] text-primary/70">
           Lux Imaginis · Vox Interioris
@@ -16,7 +16,7 @@ export const Footer = () => (
       <div>
         <h4 className="font-display text-sm mb-3">Descobrir</h4>
         <ul className="space-y-2 text-sm text-muted-foreground">
-          <li><Link to="/explore" className="hover:text-primary">Explorar</Link></li>
+          <li><Link to="/explore" className="hover:text-primary">Todas as matérias</Link></li>
           <li><Link to="/explore?type=prompt" className="hover:text-primary">Prompts</Link></li>
           <li><Link to="/explore?type=tutorial" className="hover:text-primary">Tutoriais</Link></li>
           <li><Link to="/explore?type=tool" className="hover:text-primary">Ferramentas</Link></li>
@@ -26,6 +26,8 @@ export const Footer = () => (
       <div>
         <h4 className="font-display text-sm mb-3">Estúdio</h4>
         <ul className="space-y-2 text-sm text-muted-foreground">
+          <li><Link to="/nosso-estudio" className="hover:text-primary">Nosso Estúdio e serviços</Link></li>
+          <li><a href="https://speculum-atelie.vercel.app" className="hover:text-primary" target="_blank" rel="noopener noreferrer">Acessar o Ateliê</a></li>
           <li><Link to="/login" className="hover:text-primary">Entrar</Link></li>
           <li><Link to="/dashboard" className="hover:text-primary">Painel</Link></li>
           <li><Link to="/bookmarks" className="hover:text-primary">Salvos</Link></li>

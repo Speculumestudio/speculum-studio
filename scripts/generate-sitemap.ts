@@ -2,8 +2,7 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 
-// TODO: replace with your project URL once a project name or custom domain is set.
-const BASE_URL = "";
+const BASE_URL = "https://speculumstudio.com";
 
 interface SitemapEntry {
   path: string;
@@ -13,8 +12,8 @@ interface SitemapEntry {
 
 const entries: SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
+  { path: "/nosso-estudio", changefreq: "monthly", priority: "0.9" },
   { path: "/explore", changefreq: "daily", priority: "0.9" },
-  { path: "/login", changefreq: "monthly", priority: "0.4" },
 ];
 
 const xml = [

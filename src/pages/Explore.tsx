@@ -12,7 +12,7 @@ import { Search } from "lucide-react";
 const TYPE_LABELS: Record<string, string> = {
   all: "Todos os tipos", prompt: "Prompts", tool: "Ferramentas",
   tutorial: "Tutoriais", lesson: "Aulas", guide: "Guias", article: "Artigos",
-  studio: "Nosso Studio",
+  studio: "Bastidores do estúdio",
 };
 const TYPES = ["all", "studio", "prompt", "tool", "tutorial", "lesson", "guide", "article"];
 const SORTS = [{ v: "recent", l: "Mais recentes" }, { v: "popular", l: "Mais populares" }];
@@ -55,29 +55,29 @@ const Explore = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Seo
-        title={`Explorar ${type !== "all" ? TYPE_LABELS[type] : "tudo"} — Speculum Studio`}
-        description="Pesquise entre prompts, ferramentas, aulas, tutoriais e guias de IA. Filtre por tipo e ordene pelo que está em alta."
+        title={`Matérias${type !== "all" ? `: ${TYPE_LABELS[type]}` : ""} | Speculum Studio`}
+        description="Artigos, tutoriais, prompts, ferramentas, aulas e guias. Encontre uma matéria por assunto ou filtre pelo tipo de conteúdo."
         path={`/explore${type !== "all" ? `?type=${type}` : ""}`}
       />
       <Navbar />
       <section className="container-editorial pt-14 pb-10">
-        <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3">A biblioteca</p>
-        <h1 className="font-display text-5xl md:text-6xl">Explore tudo.</h1>
-        <p className="mt-4 text-muted-foreground max-w-2xl">Pesquise entre prompts, ferramentas, aulas, tutoriais e guias. Filtre por tipo e ordene pelo que está em alta.</p>
+        <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3">Marca, imagem e criação</p>
+        <h1 className="font-display text-5xl md:text-6xl">Matérias</h1>
+        <p className="mt-4 text-muted-foreground max-w-2xl">Artigos, tutoriais, prompts e outros materiais para ampliar seu repertório. Busque um assunto ou escolha o tipo de conteúdo.</p>
 
         <div className="mt-10 glass rounded-2xl p-4 md:p-5 grid gap-3 md:grid-cols-[1fr_auto_auto]">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input value={q} onChange={(e) => update("q", e.target.value)}
-              aria-label="Buscar conteúdos"
-              placeholder="Buscar prompts, ferramentas, ideias…" className="pl-9 bg-background/40 border-border/60 h-11" />
+              aria-label="Buscar matérias"
+              placeholder="Buscar um assunto…" className="pl-9 bg-background/40 border-border/60 h-11" />
           </div>
           <Select value={type} onValueChange={(v) => update("type", v)}>
-            <SelectTrigger className="w-full md:w-44 h-11"><SelectValue /></SelectTrigger>
+            <SelectTrigger aria-label="Tipo de conteúdo" className="w-full md:w-52 h-11"><SelectValue /></SelectTrigger>
             <SelectContent>{TYPES.map(t => <SelectItem key={t} value={t}>{TYPE_LABELS[t]}</SelectItem>)}</SelectContent>
           </Select>
           <Select value={sort} onValueChange={(v) => update("sort", v)}>
-            <SelectTrigger className="w-full md:w-44 h-11"><SelectValue /></SelectTrigger>
+            <SelectTrigger aria-label="Ordenar matérias" className="w-full md:w-44 h-11"><SelectValue /></SelectTrigger>
             <SelectContent>{SORTS.map(s => <SelectItem key={s.v} value={s.v}>{s.l}</SelectItem>)}</SelectContent>
           </Select>
         </div>

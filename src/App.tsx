@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 import Index from "./pages/Index";
+import Studio from "./pages/Studio";
 import Explore from "./pages/Explore";
 import Post from "./pages/Post";
 import Profile from "./pages/Profile";
@@ -20,16 +22,26 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    if (!window.location.hash) window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/nosso-estudio" element={<Studio />} />
             <Route path="/post/:slug" element={<Post />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/login" element={<Login />} />
