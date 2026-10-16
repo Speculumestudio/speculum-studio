@@ -111,7 +111,7 @@ const Editor = () => {
           <div><Label>Conteúdo (HTML)</Label><Textarea rows={14} value={form.content} onChange={(e)=>set("content", e.target.value)} className="font-mono text-sm" /></div>
 
           <div className="flex flex-wrap gap-6 pt-2">
-            <label className="flex items-center gap-2 text-sm"><Switch checked={form.is_premium} onCheckedChange={(v)=>set("is_premium", v)} />Premium</label>
+            <label className="flex items-center gap-2 text-sm"><Switch checked={form.is_premium} onCheckedChange={(v)=>set("is_premium", v)} />Somente para membros</label>
             <label className="flex items-center gap-2 text-sm"><Switch checked={form.is_featured} onCheckedChange={(v)=>set("is_featured", v)} />Destaque</label>
             <label className="flex items-center gap-2 text-sm"><Switch checked={form.is_trending} onCheckedChange={(v)=>set("is_trending", v)} />Em alta</label>
           </div>

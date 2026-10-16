@@ -56,7 +56,7 @@ const Dashboard = () => {
                 <tr key={p.id} className="border-t border-border/60 hover:bg-muted/20">
                   <td className="p-4 font-medium">{p.title}</td>
                   <td className="p-4 capitalize text-muted-foreground">{p.type}</td>
-                  <td className="p-4"><Badge variant={p.status === "published" ? "default" : "outline"}>{STATUS_LABEL[p.status] ?? p.status}</Badge>{p.is_premium && <Badge className="ml-2 bg-gradient-gold text-primary-foreground">Premium</Badge>}</td>
+                  <td className="p-4"><Badge variant={p.status === "published" ? "default" : "outline"}>{STATUS_LABEL[p.status] ?? p.status}</Badge>{p.is_premium && <Badge className="ml-2 bg-gradient-gold text-primary-foreground">Membros</Badge>}</td>
                   <td className="p-4 text-muted-foreground">{p.views}</td>
                   <td className="p-4 text-muted-foreground">{p.likes_count}</td>
                   <td className="p-4 text-right">

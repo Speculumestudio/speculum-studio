@@ -19,6 +19,7 @@ interface PostFull {
   youtube_url: string|null; type: string; category: string|null; tags: string[]|null;
   is_premium: boolean; views: number; likes_count: number; author_id: string|null;
   published_at: string|null;
+  updated_at: string;
 }
 interface CommentRow {
   id: string; user_id: string; parent_id: string|null; content: string;
@@ -118,7 +119,7 @@ const Post = () => {
 
   if (!post) return <div className="min-h-screen grid place-items-center text-muted-foreground">Carregando…</div>;
 
-  const locked = post.is_premium && !post.content;
+  const locked = post.is_premium && !user;
   const ytid = ytId(post.youtube_url);
   const roots = comments.filter(c => !c.parent_id);
   const repliesOf = (id: string) => comments.filter(c => c.parent_id === id);
@@ -131,6 +132,8 @@ const Post = () => {
         path={`/post/${post.slug}`}
         type="article"
         image={post.cover_image_url ?? undefined}
+        publishedTime={post.published_at ?? undefined}
+        modifiedTime={post.updated_at}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": post.type === "lesson" ? "Course" : "Article",
@@ -138,7 +141,12 @@ const Post = () => {
           description: post.excerpt ?? undefined,
           image: post.cover_image_url ?? undefined,
           datePublished: post.published_at ?? undefined,
-          author: author?.full_name ? { "@type": "Person", name: author.full_name } : undefined,
+          dateModified: post.updated_at ?? post.published_at ?? undefined,
+          mainEntityOfPage: `https://speculumstudio.com/post/${post.slug}`,
+          author: author?.full_name
+            ? { "@type": "Person", name: author.full_name }
+            : { "@type": "Organization", name: "Speculum Studio", url: "https://speculumstudio.com" },
+          keywords: post.tags?.join(", ") || undefined,
         }}
       />
       <Navbar />
@@ -146,7 +154,7 @@ const Post = () => {
         <div className="flex items-center gap-2 mb-5">
           <Badge variant="secondary" className="capitalize">{post.type}</Badge>
           {post.category && <span className="text-xs uppercase tracking-[0.22em] text-primary/80">{post.category}</span>}
-          {post.is_premium && <Badge className="bg-gradient-gold text-primary-foreground border-0"><Lock className="h-3 w-3 mr-1" />Premium</Badge>}
+          {post.is_premium && <Badge className="bg-gradient-gold text-primary-foreground border-0"><Lock className="h-3 w-3 mr-1" />Membros</Badge>}
         </div>
         <h1 className="font-display text-4xl md:text-6xl leading-[1.05]">{post.title}</h1>
         {post.excerpt && <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{post.excerpt}</p>}
@@ -176,21 +184,20 @@ const Post = () => {
           </div>
         )}
 
-        {ytid && (
-          <div className="mt-10 rounded-2xl overflow-hidden glass aspect-video">
-            <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${ytid}`} title="Vídeo" allowFullScreen />
-          </div>
-        )}
-
         {locked ? (
           <div className="mt-12 glass rounded-2xl p-10 text-center">
             <Lock className="h-8 w-8 mx-auto text-primary" />
-            <h3 className="font-display text-2xl mt-4">Conteúdo Premium</h3>
-            <p className="text-muted-foreground mt-2">Este conteúdo é reservado para membros Premium. Cadastre-se — o Premium chega em breve.</p>
-            <Button className="mt-5 bg-gradient-gold text-primary-foreground" asChild><Link to="/login">Tornar-se membro</Link></Button>
+            <h3 className="font-display text-2xl mt-4">Conteúdo para membros</h3>
+            <p className="text-muted-foreground mt-2">Crie uma conta gratuita para acessar este material e salvar conteúdos para consultar depois.</p>
+            <Button className="mt-5 bg-gradient-gold text-primary-foreground" asChild><Link to={`/login?next=${encodeURIComponent(`/post/${post.slug}`)}`}>Criar conta gratuita</Link></Button>
           </div>
         ) : (
           <>
+            {ytid && (
+              <div className="mt-10 rounded-2xl overflow-hidden glass aspect-video">
+                <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${ytid}`} title="Vídeo" allowFullScreen />
+              </div>
+            )}
             {post.prompt_text && (
               <div className="mt-10 glass rounded-2xl p-6">
                 <div className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3">O prompt</div>

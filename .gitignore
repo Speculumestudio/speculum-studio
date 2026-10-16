@@ -24,3 +24,11 @@ dist-ssr
 *.sw?
 .vercel
 .env*
+.agents
+scratch_ref*.html
+MANIFESTO_SPECULUM_DRAFT.md
+SEO_EDITORIAL_PLAN.md
+scripts/fetch_post.ts
+scripts/insert_post.ts
+scripts/update_post_carousel.ts
+

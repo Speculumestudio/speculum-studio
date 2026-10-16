@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Eye, Heart, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { getCoverImage } from "@/lib/cover-images";
 
 export interface PostCardData {
   id: string;
@@ -26,7 +27,8 @@ export const PostCard = ({ post, featured = false }: { post: PostCardData; featu
     className={`group glass rounded-2xl overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-1 hover:shadow-glow ${featured ? "md:col-span-2 md:row-span-2" : ""}`}>
     <div className={`relative overflow-hidden ${featured ? "aspect-[16/10]" : "aspect-[4/5]"}`}>
       {post.cover_image_url ? (
-        <img src={post.cover_image_url} alt={post.title} loading="lazy"
+        <img {...getCoverImage(post.slug, post.cover_image_url, featured)} alt={post.title} loading="lazy" decoding="async"
+          sizes={featured ? "(min-width: 768px) 66vw, 100vw" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
       ) : (
         <div className="w-full h-full bg-gradient-aurora animate-shimmer" />
@@ -37,7 +39,7 @@ export const PostCard = ({ post, featured = false }: { post: PostCardData; featu
         </Badge>
         {post.is_premium && (
           <Badge className="bg-gradient-gold text-primary-foreground border-0">
-            <Lock className="h-3 w-3 mr-1" /> Premium
+            <Lock className="h-3 w-3 mr-1" /> Membros
           </Badge>
         )}
       </div>

@@ -24,6 +24,12 @@ A Speculum Studio ajuda profissionais e empresas a organizar posicionamento, ima
 - [Nosso Estúdio](https://speculumstudio.com/nosso-estudio): visão institucional, serviços, processo e contato.
 - [Matérias](https://speculumstudio.com/explore): artigos, guias, tutoriais, ferramentas, aulas e materiais editoriais.
 
+## Matéria institucional
+
+- [A Fronteira da Criação: Bem-vindo à Speculum Studio](https://speculumstudio.com/post/manifesto-speculum-studio): apresentação da visão do estúdio, da relação entre estratégia, imagem, conteúdo e tecnologia, e do tipo de trabalho desenvolvido para marcas e profissionais.
+
+As matérias publicadas têm URLs próprias no formato `https://speculumstudio.com/post/{slug}`. O sitemap lista as matérias publicadas e cada página informa título, resumo, imagem, autoria e datas de publicação e atualização.
+
 ## Identidade editorial
 
 A Speculum parte do contexto e da identidade antes de escolher estética, formato ou ferramenta. O site publica repertório e processos ligados a marca, imagem, criação e uso consciente de tecnologia.

@@ -3,9 +3,31 @@ import { motion, MotionConfig } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { trackEvent } from "@/lib/analytics";
 import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/button";
 import { services } from "@/data/services";
+
+const portraitTestimonials = [
+  {
+    src: "https://assets.zyrosite.com/m5Kvj54gbpTW2gLw/02112023-img_8328-Awv9DqlVn8HPMjz1.jpg",
+    alt: "Retrato profissional em estúdio",
+    quote: "Melhorei meu posicionamento e aumentei meus seguidores após realizar minhas fotos com esse fotógrafo. Muito além de cliques de fotografia, um grande parceiro!",
+    name: "Liliane Oliveira",
+  },
+  {
+    src: "https://assets.zyrosite.com/m5Kvj54gbpTW2gLw/16012024-img_9458-AoPe1JZreVUG4la1.jpg",
+    alt: "Retrato autoral com direção de luz",
+    quote: "Tive o prazer de trabalhar com o Fabiano Pereira em uma sessão de fotos profissionais e fiquei extremamente impressionado com o resultado.",
+    name: "Felipe Ramos Barboza",
+  },
+  {
+    src: "https://assets.zyrosite.com/m5Kvj54gbpTW2gLw/humberto-cordella-9-m2WEaewBJGsKBpGL.jpg",
+    alt: "Retrato editorial em preto e branco",
+    quote: "Tive uma experiência simplesmente incrível com esse retratista. Desde o início, ele buscou compreender meu arquétipo e trabalhou isso de forma surreal.",
+    name: "Humberto Cordella",
+  },
+];
 
 export default function Studio() {
   return (
@@ -56,6 +78,30 @@ export default function Studio() {
             ))}</div>
           </section>
 
+          <section id="portfolio-retratos" className="container-editorial py-16 md:py-24 border-t border-border scroll-mt-24">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-primary mb-4">Retratos / Depoimentos</p>
+                <h2 className="font-display text-4xl md:text-5xl max-w-2xl">Pessoas também constroem marcas.</h2>
+              </div>
+                <p className="text-muted-foreground max-w-md leading-relaxed">Retratos dirigidos para apresentar profissionais com identidade, contexto e coerência com o trabalho que realizam.</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-5">
+              {portraitTestimonials.map((testimonial) => (
+                <figure key={testimonial.name} className="group flex flex-col">
+                  <div className="aspect-[3/4] overflow-hidden rounded-xl bg-muted">
+                    <img src={testimonial.src} alt={testimonial.alt} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  </div>
+                  <figcaption className="glass rounded-2xl p-6 mt-4 flex flex-1 flex-col justify-between gap-5">
+                    <p className="font-display text-xl leading-relaxed">“{testimonial.quote}”</p>
+                    <span className="text-sm text-primary">{testimonial.name}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+            <Link to="/servicos/retratos-profissionais" className="inline-flex items-center gap-2 mt-8 text-sm text-primary hover:underline">Conhecer retratos profissionais <ArrowRight className="h-4 w-4" /></Link>
+          </section>
+
           <section className="container-editorial py-16 md:py-24">
             <p className="text-xs uppercase tracking-[0.2em] text-primary mb-4">Como trabalhamos</p>
             <h2 className="font-display text-4xl md:text-5xl max-w-2xl">O contexto vem antes da criação.</h2>
@@ -76,8 +122,8 @@ export default function Studio() {
             <p className="text-xs uppercase tracking-[0.2em] text-primary mb-5">Vamos falar do seu projeto</p>
             <h2 className="font-display text-4xl md:text-6xl">O que sua marca precisa comunicar?</h2>
             <p className="mt-5 text-muted-foreground max-w-xl mx-auto">Conte o momento do seu negócio e o que você quer construir. A conversa começa pelo seu contexto.</p>
-            <Button asChild size="lg" className="mt-8"><a href="https://wa.me/5513996158177" target="_blank" rel="noopener noreferrer">Conversar pelo WhatsApp <ArrowUpRight className="ml-2 h-4 w-4" /></a></Button>
-            <a className="block mt-5 text-sm text-muted-foreground hover:text-primary" href="mailto:contato@speculumstudio.com">contato@speculumstudio.com</a>
+            <Button asChild size="lg" className="mt-8"><a href="https://wa.me/5513996158177" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("generate_lead", { contact_method: "whatsapp", cta_location: "studio_contact" })}>Conversar pelo WhatsApp <ArrowUpRight className="ml-2 h-4 w-4" /></a></Button>
+            <a className="block mt-5 text-sm text-muted-foreground hover:text-primary" href="mailto:contato@speculumstudio.com" onClick={() => trackEvent("generate_lead", { contact_method: "email", cta_location: "studio_contact" })}>contato@speculumstudio.com</a>
           </section>
         </main>
         <Footer />

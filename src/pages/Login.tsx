@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Navbar } from "@/components/Navbar";
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
 import { z } from "zod";
 import logo from "@/assets/logo-speculum.png";
@@ -21,13 +22,18 @@ const schema = z.object({
 
 const Login = () => {
   const nav = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const requestedDestination = searchParams.get("next");
+  const destination = requestedDestination?.startsWith("/") && !requestedDestination.startsWith("//")
+    ? requestedDestination
+    : "/";
 
-  useEffect(() => { if (user) nav("/", { replace: true }); }, [user, nav]);
+  useEffect(() => { if (user) nav(destination, { replace: true }); }, [user, nav, destination]);
 
   const handleEmail = async (mode: "signin" | "signup") => {
     const parsed = schema.safeParse({ email, password });
@@ -37,15 +43,16 @@ const Login = () => {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: window.location.origin, data: { full_name: name } },
+          options: { emailRedirectTo: `${window.location.origin}/login?next=${encodeURIComponent(destination)}`, data: { full_name: name } },
         });
         if (error) throw error;
+        trackEvent("sign_up", { method: "email" });
         toast.success("Bem-vindo ao Speculum Studio.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
-      nav("/");
+      nav(destination);
     } catch (e: any) {
       toast.error(e.message ?? "Falha na autenticação");
     } finally { setLoading(false); }
@@ -55,7 +62,7 @@ const Login = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: `${window.location.origin}/login?next=${encodeURIComponent(destination)}`,
       }
     });
     if (error) toast.error("Falha no login com Google");

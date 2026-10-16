@@ -1,0 +1,13 @@
+.env
+.env.*
+.git
+.agents
+.vercel
+node_modules
+dist
+dist-ssr
+scratch_ref.html
+scratch_ref_utf8.html
+MANIFESTO_SPECULUM_DRAFT.md
+SEO_EDITORIAL_PLAN.md
+*.log

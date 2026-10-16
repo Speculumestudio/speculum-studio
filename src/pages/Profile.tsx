@@ -76,7 +76,6 @@ const Profile = () => {
                 <div className="mt-5 flex flex-wrap gap-2">
                   <Badge variant="outline">{stats.posts} contribuições</Badge>
                   <Badge variant="outline">{stats.completed} aulas concluídas</Badge>
-                  {profile.is_premium && <Badge className="bg-gradient-gold text-primary-foreground">Premium</Badge>}
                 </div>
                 {isOwn && <Button variant="outline" className="mt-5" onClick={()=>setEditing(true)}>Editar perfil</Button>}
               </>

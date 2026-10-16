@@ -1,23 +1,128 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Seo } from "@/components/Seo";
 import { PostCard, PostCardData } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, BookOpen, Wand2, Wrench, GraduationCap, Compass, Newspaper } from "lucide-react";
-import heroImg from "@/assets/hero.jpg";
+import { ArrowRight, Sparkles } from "lucide-react";
+import coverBrand from "@/assets/covers/optimized/cover-brand.webp";
+import coverAudiovisual from "@/assets/covers/optimized/cover-audiovisual.webp";
+import coverRetratos from "@/assets/covers/optimized/cover-retratos.webp";
+import coverConteudo from "@/assets/covers/optimized/cover-conteudo.webp";
+import coverEstudio from "@/assets/covers/optimized/cover-estudio.webp";
+import coverPrompts from "@/assets/covers/optimized/cover-prompts.webp";
+import coverFerramentas from "@/assets/covers/optimized/cover-ferramentas.webp";
+import coverTutoriais from "@/assets/covers/optimized/cover-tutoriais.webp";
+import coverAulas from "@/assets/covers/optimized/cover-aulas.webp";
+import coverGuias from "@/assets/covers/optimized/cover-guias.webp";
+import coverArtigos from "@/assets/covers/optimized/cover-artigos.webp";
 import { useAuth } from "@/contexts/AuthContext";
+import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
 
-const categories = [
-  { type: "studio", label: "Nosso Estúdio", icon: Sparkles, desc: "Conheça a Speculum e nossos serviços" },
-  { type: "prompt", label: "Prompts", icon: Wand2, desc: "Prompts testados e refinados" },
-  { type: "tool", label: "Ferramentas", icon: Wrench, desc: "Softwares de IA selecionados" },
-  { type: "tutorial", label: "Tutoriais", icon: BookOpen, desc: "Construa, passo a passo" },
-  { type: "lesson", label: "Aulas", icon: GraduationCap, desc: "Acompanhe seu progresso" },
-  { type: "guide", label: "Guias", icon: Compass, desc: "Profundos e opinativos" },
-  { type: "article", label: "Artigos", icon: Newspaper, desc: "Editoriais e reflexões" },
+const studioAreas = [
+  {
+    tag: "#Estratégia",
+    titleLine1: "CONSTRUÇÃO DE MARCAS",
+    titleLine2: "– POSICIONAMENTO",
+    desc: "Clareza estratégica para transformar identidade, percepção e comunicação em direção de marca.",
+    img: coverBrand,
+    ctaText: "Ver serviço",
+    ctaUrl: "/servicos/construcao-de-marca",
+  },
+  {
+    tag: "#Cinema",
+    titleLine1: "PRODUÇÃO AUDIOVISUAL",
+    titleLine2: "– IMAGEM EM MOVIMENTO",
+    desc: "Filmes, vídeos e narrativas visuais para apresentar ideias com clareza e intenção.",
+    img: coverAudiovisual,
+    ctaText: "Ver serviço",
+    ctaUrl: "/servicos/producao-audiovisual",
+  },
+  {
+    tag: "#Identidade",
+    titleLine1: "RETRATOS",
+    titleLine2: "– DEPOIMENTOS",
+    desc: "Retratos dirigidos para aproximar imagem, personalidade e posicionamento profissional.",
+    img: coverRetratos,
+    ctaText: "Ver serviço",
+    ctaUrl: "/servicos/retratos-profissionais",
+  },
+  {
+    tag: "#Editorial",
+    titleLine1: "CONTEÚDO E COMUNICAÇÃO",
+    titleLine2: "– REPERTÓRIO VIVO",
+    desc: "Conteúdo com consistência editorial para fazer sua marca ser encontrada e lembrada.",
+    img: coverConteudo,
+    ctaText: "Ver serviço",
+    ctaUrl: "/servicos/conteudo-e-presenca-digital",
+  },
+];
+
+const editorialAreas = [
+  {
+    tag: "#Institucional",
+    titleLine1: "NOSSO ESTÚDIO",
+    titleLine2: "– A SPECULUM",
+    desc: "Conheça a visão, os serviços e o modo de criar da Speculum Studio.",
+    img: coverEstudio,
+    ctaText: "Conhecer",
+    ctaUrl: "/nosso-estudio",
+  },
+  {
+    tag: "#Prática",
+    titleLine1: "PROMPTS",
+    titleLine2: "– TESTADOS",
+    desc: "Prompts refinados para transformar intenção em resultado visual.",
+    img: coverPrompts,
+    ctaText: "Explorar",
+    ctaUrl: "/explore?type=prompt",
+  },
+  {
+    tag: "#Curadoria",
+    titleLine1: "FERRAMENTAS",
+    titleLine2: "– ESCOLHAS",
+    desc: "Softwares e recursos de IA selecionados para criar com mais critério.",
+    img: coverFerramentas,
+    ctaText: "Explorar",
+    ctaUrl: "/explore?type=tool",
+  },
+  {
+    tag: "#Processo",
+    titleLine1: "TUTORIAIS",
+    titleLine2: "– PASSO A PASSO",
+    desc: "Aprendizados aplicáveis para construir, testar e melhorar seu processo.",
+    img: coverTutoriais,
+    ctaText: "Explorar",
+    ctaUrl: "/explore?type=tutorial",
+  },
+  {
+    tag: "#Aprendizado",
+    titleLine1: "AULAS",
+    titleLine2: "– DESENVOLVIMENTO",
+    desc: "Conteúdos para aprofundar repertório e desenvolver autonomia criativa.",
+    img: coverAulas,
+    ctaText: "Explorar",
+    ctaUrl: "/explore?type=lesson",
+  },
+  {
+    tag: "#Visão",
+    titleLine1: "GUIAS",
+    titleLine2: "– PERSPECTIVA",
+    desc: "Leituras profundas para enxergar melhor marcas, imagem e criação.",
+    img: coverGuias,
+    ctaText: "Explorar",
+    ctaUrl: "/explore?type=guide",
+  },
+  {
+    tag: "#Editorial",
+    titleLine1: "ARTIGOS",
+    titleLine2: "– REFLEXÕES",
+    desc: "Ideias e experiências para pensar o trabalho criativo no presente.",
+    img: coverArtigos,
+    ctaText: "Explorar",
+    ctaUrl: "/explore?type=article",
+  },
 ];
 
 const Index = () => {
@@ -26,16 +131,21 @@ const Index = () => {
   const [trending, setTrending] = useState<PostCardData[]>([]);
 
   useEffect(() => {
+    let active = true;
     (async () => {
-      const { data: f } = await supabase.from("posts")
+      const { supabase } = await import("@/integrations/supabase/client");
+      if (!active) return;
+      const [{ data: f }, { data: t }] = await Promise.all([supabase.from("posts")
         .select("id,slug,title,excerpt,cover_image_url,type,category,tags,is_premium,views,likes_count")
-        .eq("status", "published").eq("is_featured", true).limit(5);
-      const { data: t } = await supabase.from("posts")
+        .eq("status", "published").eq("is_featured", true).limit(5),
+      supabase.from("posts")
         .select("id,slug,title,excerpt,cover_image_url,type,category,tags,is_premium,views,likes_count")
-        .eq("status", "published").order("views", { ascending: false }).limit(6);
+        .eq("status", "published").order("views", { ascending: false }).limit(6)]);
+      if (!active) return;
       setFeatured((f ?? []) as PostCardData[]);
       setTrending((t ?? []) as PostCardData[]);
-    })();
+    })().catch((error) => console.error("Home articles could not load", error));
+    return () => { active = false; };
   }, []);
 
   return (
@@ -62,61 +172,31 @@ const Index = () => {
 
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <video
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_155101_f2540600-6fe9-433e-8e48-b3f4b72f0727.mp4"
-          poster={heroImg}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
-        />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
         <div className="container-editorial relative py-24 md:py-36 max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs uppercase tracking-[0.22em] text-muted-foreground animate-in-up">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs uppercase tracking-[0.22em] text-muted-foreground">
             <Sparkles className="h-3.5 w-3.5 text-primary" /> Marca · Imagem · Criação
           </div>
-          <h1 className="mt-6 font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98] animate-in-up" style={{ animationDelay: "0.1s" }}>
+          <h1 className="mt-6 font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98]">
             Marca, imagem e <span className="text-gradient-gold italic">criação</span> com inteligência.
           </h1>
-          <p className="mt-7 text-lg text-muted-foreground max-w-2xl leading-relaxed animate-in-up" style={{ animationDelay: "0.2s" }}>
+          <p className="mt-7 text-lg text-muted-foreground max-w-2xl leading-relaxed">
             Construímos marcas e produzimos conteúdo, fotografia e audiovisual. Aqui, você conhece nosso trabalho e encontra repertório para pensar e criar com mais critério.
           </p>
-          <div className="mt-10 flex flex-wrap gap-3 animate-in-up" style={{ animationDelay: "0.3s" }}>
+          <div className="mt-10 flex flex-wrap gap-3">
             <Button asChild size="lg" className="bg-gradient-gold text-primary-foreground hover:opacity-90 shadow-glow">
               <Link to="/nosso-estudio">Conhecer a Speculum <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/explore">Ler as matérias</Link>
+              <Link to="/explore">Ver conteúdos</Link>
             </Button>
           </div>
         </div>
       </section>
 
       {/* CATEGORIES */}
-      <section className="container-editorial py-20">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-2">Seções</p>
-            <h2 className="font-display text-3xl md:text-4xl">Conheça o estúdio. Explore o repertório.</h2>
-          </div>
-          <Link to="/explore" className="text-sm text-muted-foreground hover:text-primary hidden md:inline-flex items-center gap-1">
-            Ver tudo <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map((c) => (
-            <Link key={c.type} to={c.type === "studio" ? "/nosso-estudio" : `/explore?type=${c.type}`}
-              className="glass rounded-2xl p-6 group hover:shadow-glow transition-all duration-500 hover:-translate-y-0.5">
-              <div className="h-11 w-11 rounded-xl bg-secondary/60 grid place-items-center group-hover:bg-gradient-gold transition">
-                <c.icon className="h-5 w-5 text-primary group-hover:text-primary-foreground transition" />
-              </div>
-              <h3 className="font-display text-xl mt-4">{c.label}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{c.desc}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <CoverFlowCarousel items={studioAreas} sectionLabel="Serviços" />
+      <CoverFlowCarousel items={editorialAreas} sectionLabel="Conteúdos" autoplayDelay={5000} />
 
       {/* FEATURED */}
       {featured.length > 0 && (

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect, type ComponentType, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -8,18 +8,19 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 import Index from "./pages/Index";
-import Studio from "./pages/Studio";
-import Service from "./pages/Service";
-import Explore from "./pages/Explore";
-import Post from "./pages/Post";
-import Profile from "./pages/Profile";
-import Bookmarks from "./pages/Bookmarks";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Editor from "./pages/Editor";
-import MediaLibrary from "./pages/MediaLibrary";
-import Users from "./pages/Users";
-import NotFound from "./pages/NotFound";
+const Studio = lazy(() => import("./pages/Studio"));
+const Service = lazy(() => import("./pages/Service"));
+const Explore = lazy(() => import("./pages/Explore"));
+const Post = lazy(() => import("./pages/Post"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Bookmarks = lazy(() => import("./pages/Bookmarks"));
+const Login = lazy(() => import("./pages/Login"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Editor = lazy(() => import("./pages/Editor"));
+const MediaLibrary = lazy(() => import("./pages/MediaLibrary"));
+const Users = lazy(() => import("./pages/Users"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Links = lazy(() => import("./pages/Links"));
 
 const queryClient = new QueryClient();
 
@@ -31,18 +32,20 @@ const ScrollToTop = () => {
   return null;
 };
 
-const App = () => (
+const App = ({ Router = BrowserRouter }: { Router?: ComponentType<{ children?: ReactNode }> }) => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <Router>
         <ScrollToTop />
         <AuthProvider>
+          <Suspense fallback={<div className="min-h-screen bg-background" aria-busy="true" />}>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/nosso-estudio" element={<Studio />} />
+            <Route path="/links" element={<Links />} />
             <Route path="/servicos/:slug" element={<Service />} />
             <Route path="/post/:slug" element={<Post />} />
             <Route path="/profile/:id" element={<Profile />} />
@@ -55,8 +58,9 @@ const App = () => (
             <Route path="/users" element={<ProtectedRoute requireAdmin><Users /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </Suspense>
         </AuthProvider>
-      </BrowserRouter>
+      </Router>
     </TooltipProvider>
   </QueryClientProvider>
 );

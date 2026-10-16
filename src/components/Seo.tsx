@@ -8,10 +8,13 @@ interface SeoProps {
   path: string;
   type?: "website" | "article";
   image?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  noIndex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-export const Seo = ({ title, description, path, type = "website", image, jsonLd }: SeoProps) => {
+export const Seo = ({ title, description, path, type = "website", image, publishedTime, modifiedTime, noIndex = false, jsonLd }: SeoProps) => {
   const ldArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   const canonicalUrl = new URL(path, SITE_URL).toString();
   const imageUrl = image ? new URL(image, SITE_URL).toString() : undefined;
@@ -19,7 +22,7 @@ export const Seo = ({ title, description, path, type = "website", image, jsonLd 
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+      <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
       <link rel="canonical" href={canonicalUrl} />
       <meta property="og:site_name" content="Speculum Studio" />
       <meta property="og:locale" content="pt_BR" />
@@ -27,6 +30,8 @@ export const Seo = ({ title, description, path, type = "website", image, jsonLd 
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:type" content={type} />
+      {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+      {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
       {imageUrl && <meta property="og:image" content={imageUrl} />}
       {imageUrl && <meta name="twitter:image" content={imageUrl} />}
       <meta name="twitter:card" content="summary_large_image" />

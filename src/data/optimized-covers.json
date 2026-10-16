@@ -1,0 +1,102 @@
+{
+  "retrato-profissional-para-marca-pessoal": {
+    "source": "https://speculumstudio.com/covers/article-retratos.webp",
+    "small": "/covers/optimized/retrato-profissional-para-marca-pessoal-480.webp",
+    "large": "/covers/optimized/retrato-profissional-para-marca-pessoal-960.webp"
+  },
+  "o-que-faz-uma-produtora-audiovisual-para-marcas": {
+    "source": "https://speculumstudio.com/covers/article-audiovisual.webp",
+    "small": "/covers/optimized/o-que-faz-uma-produtora-audiovisual-para-marcas-480.webp",
+    "large": "/covers/optimized/o-que-faz-uma-produtora-audiovisual-para-marcas-960.webp"
+  },
+  "como-funciona-construcao-de-marca": {
+    "source": "https://speculumstudio.com/covers/article-brand.webp",
+    "small": "/covers/optimized/como-funciona-construcao-de-marca-480.webp",
+    "large": "/covers/optimized/como-funciona-construcao-de-marca-960.webp"
+  },
+  "como-tirar-cara-de-ia-de-uma-arte": {
+    "source": "/covers/capa_redesign_ia_vertical.jpg",
+    "small": "/covers/optimized/como-tirar-cara-de-ia-de-uma-arte-480.webp",
+    "large": "/covers/optimized/como-tirar-cara-de-ia-de-uma-arte-960.webp"
+  },
+  "pack-fotorrealismo-midjourney-v6": {
+    "source": "/covers/retrato_dourada.png",
+    "small": "/covers/optimized/pack-fotorrealismo-midjourney-v6-480.webp",
+    "large": "/covers/optimized/pack-fotorrealismo-midjourney-v6-960.webp"
+  },
+  "antigravity": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/cover_antigravity_editorial.png",
+    "small": "/covers/optimized/antigravity-480.webp",
+    "large": "/covers/optimized/antigravity-960.webp"
+  },
+  "close-up": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/closeup_cover_premium_1781129991794.png",
+    "small": "/covers/optimized/close-up-480.webp",
+    "large": "/covers/optimized/close-up-960.webp"
+  },
+  "macro-close-up": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/7be580c4-380a-419a-b0f4-c56ab9625774.png",
+    "small": "/covers/optimized/macro-close-up-480.webp",
+    "large": "/covers/optimized/macro-close-up-960.webp"
+  },
+  "high-quality": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/hq_cover_1780480868405.png",
+    "small": "/covers/optimized/high-quality-480.webp",
+    "large": "/covers/optimized/high-quality-960.webp"
+  },
+  "contemporary-fine-art": {
+    "source": "https://speculum-studio.vercel.app/covers/cover_fineart.png",
+    "small": "/covers/optimized/contemporary-fine-art-480.webp",
+    "large": "/covers/optimized/contemporary-fine-art-960.webp"
+  },
+  "fragrance-advertising": {
+    "source": "https://speculum-studio.vercel.app/covers/cover_fragrance.png",
+    "small": "/covers/optimized/fragrance-advertising-480.webp",
+    "large": "/covers/optimized/fragrance-advertising-960.webp"
+  },
+  "seedance2-0": {
+    "source": "https://speculum-studio.vercel.app/covers/cover_seedance.png",
+    "small": "/covers/optimized/seedance2-0-480.webp",
+    "large": "/covers/optimized/seedance2-0-960.webp"
+  },
+  "hyperrealistic-editorial-photograph": {
+    "source": "https://speculum-studio.vercel.app/covers/cover_hyperrealistic.png",
+    "small": "/covers/optimized/hyperrealistic-editorial-photograph-480.webp",
+    "large": "/covers/optimized/hyperrealistic-editorial-photograph-960.webp"
+  },
+  "carrossel-claude": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/cover_carrossel_claude_editorial.png",
+    "small": "/covers/optimized/carrossel-claude-480.webp",
+    "large": "/covers/optimized/carrossel-claude-960.webp"
+  },
+  "ltx2-3": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/cover_ltx_editorial.png",
+    "small": "/covers/optimized/ltx2-3-480.webp",
+    "large": "/covers/optimized/ltx2-3-960.webp"
+  },
+  "filter": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/filter_cover_1780479358022.png",
+    "small": "/covers/optimized/filter-480.webp",
+    "large": "/covers/optimized/filter-960.webp"
+  },
+  "fine-art": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/fine_art_speculum_1780451258.png",
+    "small": "/covers/optimized/fine-art-480.webp",
+    "large": "/covers/optimized/fine-art-960.webp"
+  },
+  "tutorial-realismo-v1": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/cinematic_portrait_v1_1780455235.png",
+    "small": "/covers/optimized/tutorial-realismo-v1-480.webp",
+    "large": "/covers/optimized/tutorial-realismo-v1-960.webp"
+  },
+  "manifesto-speculum-studio": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/speculum_manifesto_1780454554.png",
+    "small": "/covers/optimized/manifesto-speculum-studio-480.webp",
+    "large": "/covers/optimized/manifesto-speculum-studio-960.webp"
+  },
+  "memoria-infinita-claude-obsidian": {
+    "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/claude_obsidian_thumb_1779841354.png",
+    "small": "/covers/optimized/memoria-infinita-claude-obsidian-480.webp",
+    "large": "/covers/optimized/memoria-infinita-claude-obsidian-960.webp"
+  }
+}

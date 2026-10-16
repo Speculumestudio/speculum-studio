@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/logo-speculum.png";
+import logo from "@/assets/logo-speculum.webp";
 
 export const Logo = ({ size = 36, withWordmark = true, className = "" }: { size?: number; withWordmark?: boolean; className?: string }) => (
   <Link to="/" className={`flex items-center gap-3 group ${className}`}>

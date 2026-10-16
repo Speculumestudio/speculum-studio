@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import type { Session, User } from "@supabase/supabase-js";
 
 type Role = "user" | "contributor" | "admin";
 
@@ -23,30 +22,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (s?.user) {
-        setTimeout(() => fetchRoles(s.user.id), 0);
-      } else {
-        setRoles([]);
-      }
+    let active = true;
+    let unsubscribe: (() => void) | undefined;
+    import("@/integrations/supabase/client").then(({ supabase }) => {
+      if (!active) return;
+      const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+        if (!active) return;
+        setSession(s);
+        setUser(s?.user ?? null);
+        if (s?.user) {
+          setTimeout(() => { if (active) void fetchRoles(s.user.id); }, 0);
+        } else {
+          setRoles([]);
+        }
+      });
+      unsubscribe = () => sub.subscription.unsubscribe();
+      return supabase.auth.getSession().then(({ data }) => {
+        if (!active) return;
+        setSession(data.session);
+        setUser(data.session?.user ?? null);
+        if (data.session?.user) void fetchRoles(data.session.user.id);
+        setLoading(false);
+      });
+    }).catch((error) => {
+      console.error("Authentication could not initialize", error);
+      if (active) setLoading(false);
     });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      if (data.session?.user) fetchRoles(data.session.user.id);
-      setLoading(false);
-    });
-    return () => sub.subscription.unsubscribe();
+    return () => { active = false; unsubscribe?.(); };
   }, []);
 
   const fetchRoles = async (uid: string) => {
+    const { supabase } = await import("@/integrations/supabase/client");
     const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);
     setRoles((data ?? []).map((r) => r.role as Role));
   };
 
-  const signOut = async () => { await supabase.auth.signOut(); };
+  const signOut = async () => {
+    const { supabase } = await import("@/integrations/supabase/client");
+    await supabase.auth.signOut();
+  };
 
   return (
     <Ctx.Provider value={{

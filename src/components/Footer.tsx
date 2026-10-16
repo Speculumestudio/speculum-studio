@@ -16,7 +16,7 @@ export const Footer = () => (
       <div>
         <h4 className="font-display text-sm mb-3">Descobrir</h4>
         <ul className="space-y-2 text-sm text-muted-foreground">
-          <li><Link to="/explore" className="hover:text-primary">Todas as matérias</Link></li>
+          <li><Link to="/explore" className="hover:text-primary">Todos os conteúdos</Link></li>
           <li><Link to="/explore?type=prompt" className="hover:text-primary">Prompts</Link></li>
           <li><Link to="/explore?type=tutorial" className="hover:text-primary">Tutoriais</Link></li>
           <li><Link to="/explore?type=tool" className="hover:text-primary">Ferramentas</Link></li>
@@ -26,7 +26,7 @@ export const Footer = () => (
       <div>
         <h4 className="font-display text-sm mb-3">Estúdio</h4>
         <ul className="space-y-2 text-sm text-muted-foreground">
-          <li><Link to="/nosso-estudio" className="hover:text-primary">Nosso Estúdio</Link></li>
+          <li><Link to="/nosso-estudio" className="hover:text-primary">Estúdio</Link></li>
           <li><Link to="/servicos/construcao-de-marca" className="hover:text-primary">Construção de marca</Link></li>
           <li><Link to="/servicos/producao-audiovisual" className="hover:text-primary">Produção audiovisual</Link></li>
           <li><Link to="/servicos/retratos-profissionais" className="hover:text-primary">Retratos profissionais</Link></li>

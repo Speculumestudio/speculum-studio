@@ -15,8 +15,8 @@ export const Navbar = () => {
 
   const links = [
     { to: "/", label: "Início" },
-    { to: "/explore", label: "Matérias" },
-    { to: "/nosso-estudio", label: "Nosso Estúdio" },
+    { to: "/explore", label: "Conteúdos" },
+    { to: "/nosso-estudio", label: "Estúdio" },
   ];
 
   return (
