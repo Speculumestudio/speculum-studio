@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export interface CarouselItem {
   tag?: string;
@@ -34,6 +35,7 @@ export function CoverFlowCarousel({
   autoplayDelay = 4200,
   className = "",
 }: CoverFlowCarouselProps) {
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const touchStartX = useRef(0);
@@ -90,9 +92,15 @@ export function CoverFlowCarousel({
             return (
               <article
                 key={`${item.titleLine1}-${index}`}
-                onClick={() => { if (!isCenter) setCurrentIndex(index); }}
+                onClick={() => {
+                  if (!isCenter) {
+                    setCurrentIndex(index);
+                  } else if (item.ctaUrl) {
+                    navigate(item.ctaUrl);
+                  }
+                }}
                 className="absolute h-[390px] w-[255px] overflow-hidden rounded-2xl border border-white/10 bg-[#171311] shadow-2xl transition-all duration-700 ease-out sm:h-[500px] sm:w-[330px]"
-                style={{ ...position, cursor: isCenter ? "default" : "pointer" }}
+                style={{ ...position, cursor: "pointer" }}
               >
                 <img src={item.img} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/95" />
