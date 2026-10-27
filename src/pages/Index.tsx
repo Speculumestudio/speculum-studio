@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Seo } from "@/components/Seo";
 import { PostCard, PostCardData } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import coverBrand from "@/assets/covers/optimized/cover-brand.webp";
 import coverAudiovisual from "@/assets/covers/optimized/cover-audiovisual.webp";
 import coverRetratos from "@/assets/covers/optimized/cover-retratos.webp";
@@ -175,10 +175,7 @@ const Index = () => {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
         <div className="container-editorial relative py-24 md:py-36 max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs uppercase tracking-[0.22em] text-muted-foreground">
-            <Sparkles className="h-3.5 w-3.5 text-primary" /> Marca · Imagem · Criação
-          </div>
-          <h1 className="mt-6 font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98]">
+          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98]">
             Marca, imagem e <span className="text-gradient-gold italic">criação</span> com inteligência.
           </h1>
           <p className="mt-7 text-lg text-muted-foreground max-w-2xl leading-relaxed">
