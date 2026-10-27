@@ -29,6 +29,24 @@ const portraitTestimonials = [
   },
 ];
 
+const serviceImages: Record<string, string> = {
+  "construcao-de-marca": "/covers/real/servico-construcao-marca-vertical.webp",
+  "producao-audiovisual": "/covers/real/servico-audiovisual-set-vertical.webp",
+  "retratos-profissionais": "/covers/real/servico-retratos-felipe-vertical.webp",
+  "conteudo-e-presenca-digital": "/covers/real/servico-conteudo-gravacao-vertical.webp",
+  "fotografia-comercial": "/covers/real/servico-fotografia-comercial-vertical.webp",
+  "mentorias-e-consultorias": "/covers/real/servico-mentoria-chamada-vertical.webp",
+};
+
+const serviceTags: Record<string, string> = {
+  "construcao-de-marca": "Estratégia",
+  "producao-audiovisual": "Cinema",
+  "retratos-profissionais": "Identidade",
+  "conteudo-e-presenca-digital": "Editorial",
+  "fotografia-comercial": "Gastronomia",
+  "mentorias-e-consultorias": "Direção",
+};
+
 export default function Studio() {
   return (
     <MotionConfig reducedMotion="user">
@@ -67,15 +85,73 @@ export default function Studio() {
             <p className="text-xs uppercase tracking-[0.2em] text-primary mb-4">O que fazemos</p>
             <h2 className="font-display text-4xl md:text-5xl mb-6">O trabalho que sua marca precisa agora.</h2>
             <p className="text-muted-foreground max-w-2xl mb-10">Podemos começar por um desafio específico ou conectar as diferentes frentes da sua comunicação. A primeira conversa ajuda a definir o escopo.</p>
-            <div className="grid md:grid-cols-2 gap-5">{services.map((service, index) => (
-              <motion.article id={service.slug} key={service.slug} className="glass rounded-2xl p-7 md:p-9 scroll-mt-24" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.4 }}>
-                <p className="text-xs tracking-widest text-primary mb-5">0{index + 1}</p>
-                <h3 className="font-display text-3xl">{service.shortName}</h3>
-                <p className="mt-4 leading-relaxed">{service.description}</p>
-                <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{service.lead}</p>
-                <Link to={`/servicos/${service.slug}`} className="inline-flex items-center gap-2 mt-6 text-sm text-primary hover:underline">Entender este trabalho <ArrowRight className="h-4 w-4" /></Link>
-              </motion.article>
-            ))}</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {services.map((service, index) => {
+                const imageSrc = serviceImages[service.slug] || "/covers/real/servico-construcao-marca-vertical.webp";
+                const tag = serviceTags[service.slug] || service.eyebrow.split("/")[0].trim();
+                return (
+                  <motion.div
+                    id={service.slug}
+                    key={service.slug}
+                    className="scroll-mt-24"
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.1 }}
+                    transition={{ duration: 0.45 }}
+                  >
+                    <Link
+                      to={`/servicos/${service.slug}`}
+                      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#161311] shadow-2xl transition-all duration-500 ease-out hover:-translate-y-2 hover:border-[#c5a880]/70 hover:bg-[#1c1815] hover:shadow-[0_24px_55px_rgba(197,168,128,0.2)] cursor-pointer"
+                    >
+                      {/* Imagem Vertical 4:5 */}
+                      <div className="relative aspect-[4/5] w-full overflow-hidden bg-black/60">
+                        <img
+                          src={imageSrc}
+                          alt={service.shortName}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-106"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#161311] via-black/15 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-50" />
+                        <span className="absolute top-4 left-4 rounded-full border border-white/20 bg-black/75 backdrop-blur-md px-3 py-1 font-mono text-xs font-bold text-[#c5a880] shadow-sm">
+                          0{index + 1}
+                        </span>
+                        <span className="absolute top-4 right-4 rounded-full border border-white/15 bg-black/70 backdrop-blur-md px-3 py-1 text-[11px] font-semibold tracking-wider text-[#c5a880] uppercase shadow-sm">
+                          {tag}
+                        </span>
+                      </div>
+
+                      {/* Conteúdo do Card */}
+                      <div className="flex flex-1 flex-col justify-between p-6 sm:p-7">
+                        <div>
+                          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#c5a880]">
+                            {service.eyebrow}
+                          </p>
+                          <h3 className="mt-1 font-display text-2xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-[#e4cfb3]">
+                            {service.shortName}
+                          </h3>
+                          <div className="my-3 h-0.5 w-8 rounded bg-[#c5a880]/50 transition-all duration-300 group-hover:w-14 group-hover:bg-[#c5a880]" />
+                          <p className="text-sm leading-relaxed text-zinc-300 transition-colors group-hover:text-zinc-100">
+                            {service.description}
+                          </p>
+                          <p className="mt-3 text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                            {service.lead}
+                          </p>
+                        </div>
+
+                        {/* Rodapé Mahara Clicável */}
+                        <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-xs font-bold uppercase tracking-[0.16em] text-[#c5a880] transition-colors group-hover:text-white">
+                          <span>Entender este trabalho</span>
+                          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#c5a880]/40 bg-[#c5a880]/10 text-sm text-[#c5a880] transition-all duration-300 group-hover:border-[#c5a880] group-hover:bg-[#c5a880] group-hover:text-[#110d0c] group-hover:translate-x-1">
+                            <ArrowRight className="h-4 w-4" />
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
           </section>
 
           <section id="portfolio-retratos" className="container-editorial py-16 md:py-24 border-t border-border scroll-mt-24">
