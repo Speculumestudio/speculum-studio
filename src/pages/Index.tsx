@@ -23,7 +23,7 @@ import { ServicesSection } from "@/components/ServicesSection";
 
 const studioAreas = [
   {
-    tag: "#Estratégia",
+    tag: "Estratégia",
     titleLine1: "CONSTRUÇÃO DE MARCAS",
     titleLine2: "– POSICIONAMENTO",
     desc: "Clareza estratégica para transformar identidade, percepção e comunicação em direção de marca.",
@@ -32,7 +32,7 @@ const studioAreas = [
     ctaUrl: "/servicos/construcao-de-marca",
   },
   {
-    tag: "#Cinema",
+    tag: "Cinema",
     titleLine1: "PRODUÇÃO AUDIOVISUAL",
     titleLine2: "– IMAGEM EM MOVIMENTO",
     desc: "Filmes, vídeos e narrativas visuais para apresentar ideias com clareza e intenção.",
@@ -41,7 +41,7 @@ const studioAreas = [
     ctaUrl: "/servicos/producao-audiovisual",
   },
   {
-    tag: "#Identidade",
+    tag: "Identidade",
     titleLine1: "RETRATOS",
     titleLine2: "– DEPOIMENTOS",
     desc: "Retratos dirigidos para aproximar imagem, personalidade e posicionamento profissional.",
@@ -50,7 +50,7 @@ const studioAreas = [
     ctaUrl: "/servicos/retratos-profissionais",
   },
   {
-    tag: "#Editorial",
+    tag: "Editorial",
     titleLine1: "CONTEÚDO E COMUNICAÇÃO",
     titleLine2: "– REPERTÓRIO VIVO",
     desc: "Conteúdo com consistência editorial para fazer sua marca ser encontrada e lembrada.",
@@ -62,7 +62,7 @@ const studioAreas = [
 
 const editorialAreas = [
   {
-    tag: "#Institucional",
+    tag: "Institucional",
     titleLine1: "NOSSO ESTÚDIO",
     titleLine2: "– A SPECULUM",
     desc: "Conheça a visão, os serviços e o modo de criar da Speculum Studio.",
@@ -71,7 +71,7 @@ const editorialAreas = [
     ctaUrl: "/nosso-estudio",
   },
   {
-    tag: "#Prática",
+    tag: "Prática",
     titleLine1: "PROMPTS",
     titleLine2: "– TESTADOS",
     desc: "Prompts refinados para transformar intenção em resultado visual.",
@@ -80,7 +80,7 @@ const editorialAreas = [
     ctaUrl: "/explore?type=prompt",
   },
   {
-    tag: "#Curadoria",
+    tag: "Curadoria",
     titleLine1: "FERRAMENTAS",
     titleLine2: "– ESCOLHAS",
     desc: "Softwares e recursos de IA selecionados para criar com mais critério.",
@@ -89,7 +89,7 @@ const editorialAreas = [
     ctaUrl: "/explore?type=tool",
   },
   {
-    tag: "#Processo",
+    tag: "Processo",
     titleLine1: "TUTORIAIS",
     titleLine2: "– PASSO A PASSO",
     desc: "Aprendizados aplicáveis para construir, testar e melhorar seu processo.",
@@ -98,7 +98,7 @@ const editorialAreas = [
     ctaUrl: "/explore?type=tutorial",
   },
   {
-    tag: "#Aprendizado",
+    tag: "Aprendizado",
     titleLine1: "AULAS",
     titleLine2: "– DESENVOLVIMENTO",
     desc: "Conteúdos para aprofundar repertório e desenvolver autonomia criativa.",
@@ -107,7 +107,7 @@ const editorialAreas = [
     ctaUrl: "/explore?type=lesson",
   },
   {
-    tag: "#Visão",
+    tag: "Visão",
     titleLine1: "GUIAS",
     titleLine2: "– PERSPECTIVA",
     desc: "Leituras profundas para enxergar melhor marcas, imagem e criação.",
@@ -116,7 +116,7 @@ const editorialAreas = [
     ctaUrl: "/explore?type=guide",
   },
   {
-    tag: "#Editorial",
+    tag: "Editorial",
     titleLine1: "ARTIGOS",
     titleLine2: "– REFLEXÕES",
     desc: "Ideias e experiências para pensar o trabalho criativo no presente.",
