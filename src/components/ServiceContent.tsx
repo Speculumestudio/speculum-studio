@@ -106,7 +106,7 @@ export function ServiceContent({ service }: { service: ServiceDefinition }) {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.75, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="relative w-full max-w-[320px] sm:max-w-[340px] aspect-[9/16] rounded-2xl overflow-hidden border border-border/80 shadow-2xl bg-card">
+                <div className="relative w-full max-w-[320px] sm:max-w-[340px] aspect-[9/16] rounded-2xl overflow-hidden border border-primary/20 shadow-2xl bg-card/50 backdrop-blur-sm group">
                   <video
                     ref={videoRef}
                     src="/media/producao-audiovisual-reel.mp4"
@@ -118,18 +118,21 @@ export function ServiceContent({ service }: { service: ServiceDefinition }) {
                     preload="metadata"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md border border-border/60 text-[10px] uppercase tracking-wider text-muted-foreground">
-                    Reel / Speculum
+                  <div className="absolute top-3.5 left-3.5 z-10 flex items-center gap-2 rounded-full border border-white/15 bg-black/60 px-3 py-1.5 text-[10.5px] font-semibold tracking-[0.18em] uppercase text-zinc-300 backdrop-blur-md shadow-xl">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#c5a880] shadow-[0_0_8px_rgba(197,168,128,0.9)]" />
+                    <span>Reel</span>
+                    <span className="text-[#c5a880]/50">•</span>
+                    <span className="text-[#c5a880]">Speculum</span>
                   </div>
                   <button
                     type="button"
                     onClick={toggleAudio}
-                    className="absolute bottom-4 right-4 z-10 flex items-center justify-center h-10 w-10 rounded-full bg-background/80 backdrop-blur-md border border-border/60 text-foreground hover:bg-background transition shadow-lg"
+                    className="absolute bottom-3.5 right-3.5 z-10 flex items-center justify-center h-9 w-9 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-zinc-300 hover:border-[#c5a880]/60 hover:text-[#c5a880] transition shadow-xl"
                     aria-label={isMuted ? "Ativar som do vídeo" : "Desativar som do vídeo"}
                   >
                     {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                   </button>
-                  <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-foreground/10" />
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-white/10" />
                 </div>
               </motion.div>
             </div>

@@ -113,12 +113,11 @@ export default function Studio() {
                     <source src="/media/hero-showreel-vertical.mp4" type="video/mp4" />
                   </video>
                   <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-white/10" />
-                  <div className="absolute bottom-3 left-3 right-3 px-3 py-1.5 rounded-lg bg-background/80 backdrop-blur-md border border-border/50 text-[11px] text-muted-foreground flex items-center justify-between pointer-events-none">
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Nosso Estúdio
-                    </span>
-                    <span className="text-primary/80 font-mono text-[10px]">Bastidores</span>
+                  <div className="absolute top-3.5 left-3.5 z-10 flex items-center gap-2 rounded-full border border-white/15 bg-black/60 px-3 py-1.5 text-[10.5px] font-semibold tracking-[0.18em] uppercase text-zinc-300 backdrop-blur-md shadow-xl">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#c5a880] shadow-[0_0_8px_rgba(197,168,128,0.9)]" />
+                    <span>Bastidores</span>
+                    <span className="text-[#c5a880]/50">•</span>
+                    <span className="text-[#c5a880]">Estúdio</span>
                   </div>
                 </div>
               </motion.div>
