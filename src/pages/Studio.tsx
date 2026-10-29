@@ -70,15 +70,59 @@ export default function Studio() {
         <Navbar />
         <main>
           <section className="container-editorial pt-16 pb-16 md:pt-24 md:pb-24">
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <p className="text-xs uppercase tracking-[0.2em] text-primary mb-6">Nosso Estúdio / Speculum Studio</p>
-              <h1 className="font-display text-5xl md:text-7xl max-w-4xl leading-[1.02]">Clareza para sua marca.<br /><span className="text-primary">Direção para o que ela comunica.</span></h1>
-              <p className="mt-7 text-lg text-muted-foreground max-w-2xl leading-relaxed">Construção de marca, conteúdo, retratos e produção audiovisual para profissionais e empresas que querem comunicar o valor do seu trabalho.</p>
-              <div className="flex flex-wrap gap-4 mt-9">
-                <Button asChild size="lg"><a href="#contato">Conversar sobre um projeto <ArrowUpRight className="ml-2 h-4 w-4" /></a></Button>
-                <Button asChild size="lg" variant="outline"><a href="#servicos">Conhecer os serviços</a></Button>
-              </div>
-            </motion.div>
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+              <motion.div
+                className="lg:col-span-7"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <p className="text-xs uppercase tracking-[0.2em] text-primary mb-6">Nosso Estúdio / Speculum Studio</p>
+                <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl leading-[1.02] tracking-tight">
+                  Clareza para sua marca.<br />
+                  <span className="text-primary">Direção para o que ela comunica.</span>
+                </h1>
+                <p className="mt-7 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
+                  Construção de marca, conteúdo, retratos e produção audiovisual para profissionais e empresas que querem comunicar o valor do seu trabalho.
+                </p>
+                <div className="flex flex-wrap gap-4 mt-9">
+                  <Button asChild size="lg">
+                    <a href="#contato">Conversar sobre um projeto <ArrowUpRight className="ml-2 h-4 w-4" /></a>
+                  </Button>
+                  <Button asChild size="lg" variant="outline">
+                    <a href="#servicos">Conhecer os serviços</a>
+                  </Button>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="lg:col-span-5 flex justify-center lg:justify-end"
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.15 }}
+              >
+                <div className="relative w-full max-w-[280px] sm:max-w-[320px] aspect-[9/16] rounded-2xl overflow-hidden border border-primary/20 shadow-2xl bg-card/50 backdrop-blur-sm group">
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    poster="/media/hero-showreel-vertical.webp"
+                    className="w-full h-full object-cover"
+                  >
+                    <source src="/media/hero-showreel-vertical.mp4" type="video/mp4" />
+                  </video>
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-white/10" />
+                  <div className="absolute bottom-3 left-3 right-3 px-3 py-1.5 rounded-lg bg-background/80 backdrop-blur-md border border-border/50 text-[11px] text-muted-foreground flex items-center justify-between pointer-events-none">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Nosso Estúdio
+                    </span>
+                    <span className="text-primary/80 font-mono text-[10px]">Bastidores</span>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </section>
 
           <section id="servicos" className="container-editorial py-14 border-t border-border scroll-mt-24">

@@ -47,7 +47,7 @@
   </url>
   <url>
     <loc>https://speculumstudio.com/post/retrato-profissional-para-marca-pessoal</loc>
-    <lastmod>2026-09-10T03:04:17.944781+00:00</lastmod>
+    <lastmod>2026-10-26T14:37:49.319146+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -142,12 +142,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://speculumstudio.com/post/fine-art</loc>
-    <lastmod>2026-06-04T20:21:39.664996+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://speculumstudio.com/post/tutorial-realismo-v1</loc>
     <lastmod>2026-06-04T20:16:46.615348+00:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -156,6 +150,12 @@
   <url>
     <loc>https://speculumstudio.com/post/manifesto-speculum-studio</loc>
     <lastmod>2026-09-10T02:00:05.832586+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://speculumstudio.com/post/fine-art</loc>
+    <lastmod>2026-06-04T20:21:39.664996+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

@@ -174,14 +174,14 @@ const Index = () => {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
-        <div className="container-editorial relative py-24 md:py-36 max-w-4xl">
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98]">
+        <div className="container-editorial relative py-20 md:py-32 max-w-4xl text-center">
+          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98] mx-auto">
             Marca, imagem e <span className="text-gradient-gold italic inline-block pr-[0.14em]">criação</span><br />com inteligência.
           </h1>
-          <p className="mt-7 text-lg text-muted-foreground max-w-2xl leading-relaxed">
+          <p className="mt-7 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Construímos marcas e produzimos conteúdo, fotografia e audiovisual. Aqui, você conhece nosso trabalho e encontra repertório para pensar e criar com mais critério.
           </p>
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" className="bg-gradient-gold text-primary-foreground hover:opacity-90 shadow-glow">
               <Link to="/nosso-estudio">Conhecer a Speculum <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
@@ -231,7 +231,7 @@ const Index = () => {
         <div className="glass rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-aurora opacity-10" />
           <div className="relative">
-            <h2 className="font-display text-4xl md:text-5xl max-w-2xl mx-auto leading-tight">
+            <h2 className="font-display text-3xl sm:text-4xl xl:text-5xl max-w-5xl mx-auto leading-tight">
               Faça parte de um estúdio de <span className="text-gradient-gold italic">mentes curiosas</span>.
             </h2>
             <p className="mt-5 text-muted-foreground max-w-xl mx-auto">
