@@ -136,6 +136,42 @@ export function ServiceContent({ service }: { service: ServiceDefinition }) {
                 </div>
               </motion.div>
             </div>
+          ) : service.slug === "retratos-profissionais" ? (
+            <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-14 items-center mt-12">
+              <motion.div variants={heroContainerVariants} initial="hidden" animate="visible">
+                <motion.p variants={riseVariants} className="text-xs uppercase tracking-[0.2em] text-primary mb-5">{service.eyebrow}</motion.p>
+                <motion.h1 variants={riseVariants} className="font-display text-5xl md:text-7xl leading-[1.02]">{service.title}</motion.h1>
+                <motion.p variants={riseVariants} className="mt-7 text-lg md:text-xl text-muted-foreground leading-relaxed">{service.lead}</motion.p>
+                {service.location && <motion.p variants={riseVariants} className="mt-5 text-sm text-muted-foreground max-w-2xl leading-relaxed">{service.location}</motion.p>}
+                <motion.div variants={riseVariants} className="mt-9">
+                  <Button asChild size="lg">
+                    <a href="https://wa.me/5513996158177" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("generate_lead", { contact_method: "whatsapp", cta_location: `${service.slug}_hero` })}>Conversar sobre este projeto <ArrowUpRight className="ml-2 h-4 w-4" /></a>
+                  </Button>
+                </motion.div>
+              </motion.div>
+
+              <motion.div
+                className="flex justify-center lg:justify-end"
+                initial={{ opacity: 0, scale: 0.96, y: 24 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.75, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="relative w-full max-w-[320px] sm:max-w-[340px] aspect-[9/16] rounded-2xl overflow-hidden border border-primary/20 shadow-2xl bg-card/50 backdrop-blur-sm group">
+                  <img
+                    src="/media/retrato-raphael-martini.webp"
+                    alt="Retrato profissional de Raphael Martini por Speculum Studio"
+                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.02]"
+                  />
+                  <div className="absolute top-3.5 left-3.5 z-10 flex items-center gap-2 rounded-full border border-white/15 bg-black/60 px-3 py-1.5 text-[10.5px] font-semibold tracking-[0.18em] uppercase text-zinc-300 backdrop-blur-md shadow-xl">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#c5a880] shadow-[0_0_8px_rgba(197,168,128,0.9)]" />
+                    <span>Retrato</span>
+                    <span className="text-[#c5a880]/50">•</span>
+                    <span className="text-[#c5a880]">Raphael Martini</span>
+                  </div>
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-white/10" />
+                </div>
+              </motion.div>
+            </div>
           ) : (
             <motion.div variants={heroContainerVariants} initial="hidden" animate="visible" className="mt-12">
               <motion.p variants={riseVariants} className="text-xs uppercase tracking-[0.2em] text-primary mb-5">{service.eyebrow}</motion.p>
