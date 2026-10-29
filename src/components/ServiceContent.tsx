@@ -118,7 +118,7 @@ export function ServiceContent({ service }: { service: ServiceDefinition }) {
                     preload="metadata"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md border border-border/60 text-[10px] uppercase tracking-wider text-muted-foreground select-none">
+                  <div className="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md border border-border/60 text-[10px] uppercase tracking-wider text-muted-foreground">
                     Reel / Speculum
                   </div>
                   <button

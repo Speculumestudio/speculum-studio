@@ -178,7 +178,7 @@ const Index = () => {
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98] mx-auto">
             Marca, imagem e <span className="text-gradient-gold italic inline-block pr-[0.14em]">criação</span><br />com inteligência.
           </h1>
-          <p className="mt-7 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-7 text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Construímos marcas e produzimos conteúdo, fotografia e audiovisual. Aqui, você conhece nosso trabalho e encontra repertório para pensar e criar com mais critério.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">

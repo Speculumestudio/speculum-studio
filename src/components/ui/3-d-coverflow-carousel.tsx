@@ -63,7 +63,7 @@ export function CoverFlowCarousel({
 
   return (
     <section
-      className={`relative w-full overflow-hidden bg-[#0c0a09] py-20 text-white select-none ${className}`}
+      className={`relative w-full overflow-hidden bg-[#0c0a09] py-20 text-white ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={(event) => { touchStartX.current = event.touches[0].clientX; }}

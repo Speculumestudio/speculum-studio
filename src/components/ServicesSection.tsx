@@ -29,7 +29,7 @@ export function ServicesSection({
   if (!items.length) return null;
 
   return (
-    <section className={`relative w-full overflow-hidden bg-[#0c0a09] py-20 text-white select-none ${className}`}>
+    <section className={`relative w-full overflow-hidden bg-[#0c0a09] py-20 text-white ${className}`}>
       {/* Background glow ambient */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-[#c5a880]/5 rounded-full blur-[140px]" />
