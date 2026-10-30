@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, type ComponentType, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +10,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 const Studio = lazy(() => import("./pages/Studio"));
 const Service = lazy(() => import("./pages/Service"));
+const PortfolioAudiovisual = lazy(() => import("./pages/PortfolioAudiovisual"));
 const Explore = lazy(() => import("./pages/Explore"));
 const Post = lazy(() => import("./pages/Post"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -47,6 +48,9 @@ const App = ({ Router = BrowserRouter }: { Router?: ComponentType<{ children?: R
             <Route path="/nosso-estudio" element={<Studio />} />
             <Route path="/links" element={<Links />} />
             <Route path="/servicos/:slug" element={<Service />} />
+            <Route path="/portfolio/audiovisual" element={<PortfolioAudiovisual />} />
+            <Route path="/portfolio/producao-audiovisual" element={<Navigate to="/portfolio/audiovisual" replace />} />
+            <Route path="/portfolio" element={<Navigate to="/portfolio/audiovisual" replace />} />
             <Route path="/post/:slug" element={<Post />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/login" element={<Login />} />

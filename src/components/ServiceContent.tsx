@@ -93,9 +93,12 @@ export function ServiceContent({ service }: { service: ServiceDefinition }) {
                 <motion.h1 variants={riseVariants} className="font-display text-5xl md:text-7xl leading-[1.02]">{service.title}</motion.h1>
                 <motion.p variants={riseVariants} className="mt-7 text-lg md:text-xl text-muted-foreground leading-relaxed">{service.lead}</motion.p>
                 {service.location && <motion.p variants={riseVariants} className="mt-5 text-sm text-muted-foreground max-w-2xl leading-relaxed">{service.location}</motion.p>}
-                <motion.div variants={riseVariants} className="mt-9">
+                <motion.div variants={riseVariants} className="mt-9 flex flex-wrap gap-3">
                   <Button asChild size="lg">
                     <a href="https://wa.me/5513996158177" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("generate_lead", { contact_method: "whatsapp", cta_location: `${service.slug}_hero` })}>Conversar sobre este projeto <ArrowUpRight className="ml-2 h-4 w-4" /></a>
+                  </Button>
+                  <Button asChild variant="outline" size="lg">
+                    <Link to="/portfolio/audiovisual">Ver portfólio</Link>
                   </Button>
                 </motion.div>
               </motion.div>

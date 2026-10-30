@@ -17,6 +17,7 @@ const staticEntries: SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/nosso-estudio", changefreq: "monthly", priority: "0.9" },
   { path: "/explore", changefreq: "daily", priority: "0.9" },
+  { path: "/portfolio/audiovisual", changefreq: "monthly", priority: "0.8" },
   ...services.map((service): SitemapEntry => ({ path: `/servicos/${service.slug}`, changefreq: "monthly", priority: "0.8" })),
 ];
 

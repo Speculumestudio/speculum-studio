@@ -29,6 +29,7 @@ export const Footer = () => (
           <li><Link to="/nosso-estudio" className="hover:text-primary">Estúdio</Link></li>
           <li><Link to="/servicos/construcao-de-marca" className="hover:text-primary">Construção de marca</Link></li>
           <li><Link to="/servicos/producao-audiovisual" className="hover:text-primary">Produção audiovisual</Link></li>
+          <li><Link to="/portfolio/audiovisual" className="hover:text-primary">Portfólio audiovisual</Link></li>
           <li><Link to="/servicos/retratos-profissionais" className="hover:text-primary">Retratos profissionais</Link></li>
           <li><a href="https://speculum-atelie.vercel.app" className="hover:text-primary" target="_blank" rel="noopener noreferrer">Acessar o Ateliê</a></li>
         </ul>

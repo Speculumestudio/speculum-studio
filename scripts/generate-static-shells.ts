@@ -40,6 +40,11 @@ const staticPages: StaticPage[] = [
     title: "Matérias sobre marca, imagem, criação e IA | Speculum Studio",
     description: "Artigos, guias, processos e materiais sobre marca, imagem, criação e uso consciente de inteligência artificial.",
   },
+  {
+    path: "/portfolio/audiovisual",
+    title: "Portfólio Audiovisual | Vídeos Institucionais e Comerciais | Speculum Studio",
+    description: "Conheça nosso portfólio audiovisual: vídeos institucionais, reels cinematográficos, depoimentos e captação de produtos em Santos e região.",
+  },
   ...services.map((service): StaticPage => ({
     path: `/servicos/${service.slug}`,
     title: service.seoTitle,
