@@ -155,8 +155,8 @@ export default function PortfolioAudiovisual() {
         </section>
 
         {/* STACKING CARDS SECTION */}
-        <section className="container-editorial py-16 md:py-24 relative">
-          <div className="space-y-16 md:space-y-24">
+        <section className="container-editorial py-12 md:py-20 relative">
+          <div className="space-y-12 md:space-y-20">
             {featuredProjects.map((project, index) => {
               const isPlaying = playingId === project.id;
               const isMuted = mutedStates[project.id] ?? true;
@@ -164,45 +164,57 @@ export default function PortfolioAudiovisual() {
               return (
                 <div
                   key={project.id}
-                  className="sticky top-20 md:top-24 transition-all duration-300"
+                  className="relative md:sticky md:top-20 transition-all duration-300"
                   style={{
                     zIndex: 10 + index,
-                    paddingTop: `${index * 12}px`,
+                    paddingTop: `${index * 8}px`,
                   }}
                 >
-                  <article className="glass rounded-3xl p-6 sm:p-10 md:p-12 border border-border/80 shadow-[0_-20px_50px_rgba(0,0,0,0.85)] bg-card/95 backdrop-blur-xl relative overflow-hidden group">
+                  <article className="glass rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 border border-border/80 shadow-[0_-15px_40px_rgba(0,0,0,0.85)] bg-card/95 backdrop-blur-xl relative overflow-hidden group max-w-5xl mx-auto">
                     {/* Background subtle radial glow */}
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
                     {/* TOP META & NUMBER */}
-                    <div className="flex items-center justify-between border-b border-border/50 pb-5 mb-6 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(197,168,128,0.8)]" />
+                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 border-b border-border/40 pb-2.5 sm:pb-3 mb-3 text-[11px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(197,168,128,0.8)]" />
                         <span className="text-primary font-semibold">{project.categoryLabel}</span>
-                        <span className="text-border">•</span>
-                        <span>{project.client}</span>
+                        <span className="text-border hidden sm:inline">•</span>
+                        <span className="hidden sm:inline">{project.client}</span>
                       </div>
-                      <span className="font-mono text-sm text-primary font-bold">
+                      <span className="font-mono text-xs sm:text-sm text-primary font-bold">
                         0{index + 1} / 0{featuredProjects.length}
                       </span>
                     </div>
 
                     {/* 1. TÍTULO EM CIMA */}
                     <div>
-                      <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">
+                      <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight">
                         {project.title}
                       </h2>
 
                       {/* 2. BREVE EXPLICAÇÃO EM BAIXO */}
-                      <p className="mt-4 text-base sm:text-lg text-zinc-300 leading-relaxed max-w-4xl">
+                      <p className="mt-2 text-xs sm:text-sm md:text-base text-zinc-300 leading-relaxed max-w-3xl line-clamp-2 sm:line-clamp-3">
                         {project.explanation}
                       </p>
                     </div>
 
                     {/* 3. VÍDEO GRANDE EM BAIXO DISSO */}
-                    <div className="mt-8 relative w-full aspect-[16/9] md:aspect-[16/9] lg:aspect-[21/10] rounded-2xl overflow-hidden border border-white/15 bg-black shadow-2xl group/player">
+                    <div className="mt-4 sm:mt-5 relative w-full aspect-video md:aspect-[21/10] max-h-[44vh] sm:max-h-[48vh] md:max-h-[50vh] rounded-xl sm:rounded-2xl overflow-hidden border border-white/15 bg-black shadow-2xl group/player flex items-center justify-center">
                       {project.videoSrc ? (
                         <>
+                          {/* Ambient glow for vertical videos */}
+                          {project.format === "vertical" && (
+                            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                              <img
+                                src={project.poster || project.thumbnail}
+                                alt=""
+                                aria-hidden="true"
+                                className="w-full h-full object-cover blur-2xl opacity-35 scale-125"
+                              />
+                            </div>
+                          )}
+
                           <video
                             ref={(el) => {
                               videoRefs.current[project.id] = el;
@@ -213,7 +225,11 @@ export default function PortfolioAudiovisual() {
                             playsInline
                             muted={isMuted}
                             preload="metadata"
-                            className="w-full h-full object-cover cursor-pointer"
+                            className={
+                              project.format === "vertical"
+                                ? "relative z-10 h-full max-h-[44vh] sm:max-h-[48vh] md:max-h-[50vh] aspect-[9/16] object-contain cursor-pointer rounded-lg shadow-2xl"
+                                : "w-full h-full object-cover cursor-pointer"
+                            }
                             onClick={() => togglePlay(project.id)}
                           />
 
@@ -221,35 +237,35 @@ export default function PortfolioAudiovisual() {
                           <button
                             type="button"
                             onClick={() => togglePlay(project.id)}
-                            className={`absolute inset-0 m-auto h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-black/60 border border-primary/50 text-primary backdrop-blur-md shadow-2xl flex items-center justify-center transition-all duration-300 group-hover/player:scale-110 ${
+                            className={`absolute inset-0 m-auto h-14 w-14 sm:h-18 sm:w-18 rounded-full bg-black/60 border border-primary/50 text-primary backdrop-blur-md shadow-2xl flex items-center justify-center transition-all duration-300 group-hover/player:scale-110 z-20 ${
                               isPlaying ? "opacity-0 hover:opacity-100" : "opacity-90"
                             }`}
                             aria-label={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
                           >
                             {isPlaying ? (
-                              <Pause className="h-7 w-7 sm:h-8 sm:w-8" />
+                              <Pause className="h-6 w-6 sm:h-7 sm:w-7" />
                             ) : (
-                              <Play className="h-7 w-7 sm:h-8 sm:w-8 ml-1" />
+                              <Play className="h-6 w-6 sm:h-7 sm:w-7 ml-0.5" />
                             )}
                           </button>
 
                           {/* Bottom Control Bar */}
-                          <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+                          <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-20 flex items-center justify-between pointer-events-none">
                             <div className="flex items-center gap-2 pointer-events-auto">
                               <button
                                 type="button"
                                 onClick={(e) => toggleMute(project.id, e)}
-                                className="h-10 w-10 rounded-full bg-black/70 border border-white/20 text-zinc-200 hover:text-primary hover:border-primary backdrop-blur-md flex items-center justify-center transition shadow-lg"
+                                className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-black/70 border border-white/20 text-zinc-200 hover:text-primary hover:border-primary backdrop-blur-md flex items-center justify-center transition shadow-lg"
                                 aria-label={isMuted ? "Ativar som" : "Desativar som"}
                               >
                                 {isMuted ? (
-                                  <VolumeX className="h-4 w-4" />
+                                  <VolumeX className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 ) : (
-                                  <Volume2 className="h-4 w-4" />
+                                  <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 )}
                               </button>
                               {project.duration && (
-                                <span className="text-xs font-mono font-medium px-3 py-2 rounded-full bg-black/70 border border-white/15 text-zinc-300 backdrop-blur-md">
+                                <span className="text-[11px] sm:text-xs font-mono font-medium px-2.5 py-1.5 rounded-full bg-black/70 border border-white/15 text-zinc-300 backdrop-blur-md">
                                   {project.duration}
                                 </span>
                               )}
@@ -259,10 +275,10 @@ export default function PortfolioAudiovisual() {
                               <button
                                 type="button"
                                 onClick={(e) => toggleFullscreen(project.id, e)}
-                                className="h-10 w-10 rounded-full bg-black/70 border border-white/20 text-zinc-200 hover:text-primary hover:border-primary backdrop-blur-md flex items-center justify-center transition shadow-lg"
+                                className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-black/70 border border-white/20 text-zinc-200 hover:text-primary hover:border-primary backdrop-blur-md flex items-center justify-center transition shadow-lg"
                                 aria-label="Tela cheia"
                               >
-                                <Maximize2 className="h-4 w-4" />
+                                <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                               </button>
                             </div>
                           </div>
@@ -276,24 +292,7 @@ export default function PortfolioAudiovisual() {
                       )}
 
                       {/* Frame border highlight */}
-                      <div className="absolute inset-0 pointer-events-none ring-1 ring-inset ring-white/10 rounded-2xl" />
-                    </div>
-
-                    {/* Card Footer CTA */}
-                    <div className="mt-8 pt-6 border-t border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <p className="text-xs text-muted-foreground uppercase tracking-wider">
-                        Roteiro, Direção & Pós-produção · Speculum Studio
-                      </p>
-                      <Button asChild variant="outline" size="sm" className="w-fit">
-                        <a
-                          href={`https://wa.me/5513996158177?text=Ol%C3%A1!%20Vi%20o%20trabalho%20"${encodeURIComponent(project.title)}"%20no%20portf%C3%B3lio%20da%20Speculum%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto%20similar.`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => trackEvent("generate_lead", { contact_method: "whatsapp", cta_location: `card_${project.id}` })}
-                        >
-                          Conversar sobre este projeto <ArrowUpRight className="ml-2 h-3.5 w-3.5" />
-                        </a>
-                      </Button>
+                      <div className="absolute inset-0 pointer-events-none ring-1 ring-inset ring-white/10 rounded-xl sm:rounded-2xl z-20" />
                     </div>
                   </article>
                 </div>
