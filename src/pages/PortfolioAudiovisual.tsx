@@ -9,7 +9,6 @@ import {
   Volume2,
   VolumeX,
   Clapperboard,
-  Sparkles,
   Maximize2,
 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
@@ -137,20 +136,6 @@ export default function PortfolioAudiovisual() {
               Filmes dirigidos para marcas e projetos que valorizam contexto, presença e ritmo.
               Cada trabalho abaixo foi estruturado com intenção narrativa, captação cinematográfica e rigor estético.
             </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-8 flex flex-wrap items-center gap-4 text-xs tracking-wider uppercase text-muted-foreground"
-            >
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card/60 backdrop-blur-sm">
-                <Sparkles className="h-3.5 w-3.5 text-primary" /> Santos · São Paulo · Brasil
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card/60 backdrop-blur-sm">
-                <span>{featuredProjects.length} Produções em destaque</span>
-              </span>
-            </motion.div>
           </div>
         </section>
 
