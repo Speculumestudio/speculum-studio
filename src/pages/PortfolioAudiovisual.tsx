@@ -124,7 +124,7 @@ export default function PortfolioAudiovisual() {
               className="font-display text-4xl sm:text-6xl md:text-7xl leading-[1.05]"
             >
               Imagens em movimento com uma{" "}
-              <span className="text-gradient-gold italic">razão para existir</span>.
+              <span className="text-gradient-gold italic">razão para existir.</span>
             </motion.h1>
 
             <motion.p
