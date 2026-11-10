@@ -175,8 +175,8 @@ const Index = () => {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
         <div className="container-editorial relative py-20 md:py-32 max-w-4xl text-center">
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98] mx-auto">
-            Marca, imagem e <span className="text-gradient-gold italic inline-block pr-[0.14em]">criação</span><br />com inteligência.
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.08] mx-auto">
+            Marca, imagem e <span className="text-gradient-gold italic inline-block pr-[0.14em] pb-[0.22em] -mb-[0.22em]">criação</span><br />com inteligência.
           </h1>
           <p className="mt-7 text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Construímos marcas e produzimos conteúdo, fotografia e audiovisual. Aqui, você conhece nosso trabalho e encontra repertório para pensar e criar com mais critério.
