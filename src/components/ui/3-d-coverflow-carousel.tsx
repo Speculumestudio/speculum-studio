@@ -99,7 +99,7 @@ export function CoverFlowCarousel({
                     navigate(item.ctaUrl);
                   }
                 }}
-                className="absolute h-[390px] w-[255px] overflow-hidden rounded-2xl border border-white/10 bg-[#171311] shadow-2xl transition-all duration-700 ease-out sm:h-[500px] sm:w-[330px]"
+                className="absolute h-[420px] w-[270px] overflow-hidden rounded-2xl border border-white/10 bg-[#171311] shadow-2xl transition-all duration-700 ease-out sm:h-[500px] sm:w-[330px]"
                 style={{ ...position, cursor: "pointer" }}
               >
                 <img src={item.img} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
@@ -107,10 +107,10 @@ export function CoverFlowCarousel({
                 <div className={`relative z-10 flex h-full flex-col justify-between p-5 text-center transition-opacity duration-500 sm:p-6 ${isCenter ? "opacity-100" : "opacity-0"}`}>
                   <span className="self-end text-xs font-semibold tracking-wider text-white/80">{item.tag}</span>
                   <div className="mt-auto">
-                    <h3 className="font-display text-2xl font-black uppercase leading-tight tracking-wide sm:text-[1.65rem]">{item.titleLine1}</h3>
-                    {item.titleLine2 && <p className="mt-1 text-sm font-bold uppercase tracking-widest text-white/80">{item.titleLine2}</p>}
+                    <h3 className="font-display text-xl sm:text-2xl font-black uppercase leading-tight tracking-wide">{item.titleLine1}</h3>
+                    {item.titleLine2 && <p className="mt-1 text-xs sm:text-sm font-bold uppercase tracking-widest text-white/80">{item.titleLine2}</p>}
                     <div className="mx-auto my-3 h-0.5 w-9 rounded bg-[#c5a880]" />
-                    <p className="mx-auto mb-4 max-w-[270px] text-sm italic leading-relaxed text-white/80">{item.desc}</p>
+                    <p className="mx-auto mb-4 max-w-full text-xs sm:text-sm italic leading-relaxed text-white/80">{item.desc}</p>
                     <a href={item.ctaUrl || "#"} className="inline-flex rounded-full bg-gradient-to-br from-[#c5a880] to-[#a48256] px-5 py-2 text-xs font-extrabold uppercase tracking-[.14em] text-[#110d0c]">{item.ctaText || "Conhecer"} <span className="ml-2">→</span></a>
                   </div>
                 </div>

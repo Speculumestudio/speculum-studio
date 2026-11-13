@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador Mobile | Speculum Studio</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 50% 20%, #1c1815 0%, #0a0807 100%);
+      color: #e4cfb3;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* iPhone Frame Styling */
+    .phone-chassis {
+      position: relative;
+      background: #1e1e24;
+      border-radius: 54px;
+      padding: 12px;
+      box-shadow: 
+        0 0 0 2px #443c35,
+        0 0 0 6px #12100e,
+        0 25px 60px -15px rgba(0, 0, 0, 0.9),
+        0 0 50px rgba(197, 168, 128, 0.15);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .phone-screen-container {
+      position: relative;
+      background: #0c0a09;
+      border-radius: 42px;
+      overflow: hidden;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Status Bar Realista do iPhone */
+    .phone-status-bar {
+      height: 46px;
+      background: #0c0a09;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 26px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      position: relative;
+      z-index: 40;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 9px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #000;
+      border-radius: 18px;
+      z-index: 50;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.12);
+    }
+    
+    .camera-lens {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #0d1224;
+      border: 1px solid #1c233d;
+    }
+
+    .sensor {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #0a0e18;
+    }
+
+    /* Custom Scrollbar for phone iframe */
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #0c0a09;
+      display: block;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-start p-4 sm:p-6 lg:p-8">
+
+  <!-- HEADER DE CONTROLE -->
+  <header class="w-full max-w-4xl mb-6 flex flex-wrap items-center justify-between gap-4 bg-[#161311]/80 backdrop-blur-md border border-[#c5a880]/20 rounded-2xl p-4 shadow-xl">
+    <div class="flex items-center gap-3">
+      <div class="h-3 w-3 rounded-full bg-[#c5a880] animate-pulse"></div>
+      <h1 class="text-sm sm:text-base font-bold uppercase tracking-wider text-white">Simulador Mobile</h1>
+      <span class="text-xs bg-[#c5a880]/15 text-[#c5a880] px-2.5 py-0.5 rounded-full font-mono border border-[#c5a880]/30">Vite Live: :4173</span>
+    </div>
+
+    <!-- Controles Rápidos -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Seletor de Modelo -->
+      <select id="deviceSelect" class="bg-black/60 border border-white/20 text-xs text-white rounded-lg px-3 py-1.5 focus:border-[#c5a880] outline-none">
+        <option value="iphone15" selected>iPhone 15 Pro (393 × 852)</option>
+        <option value="iphonese">iPhone SE (375 × 667)</option>
+        <option value="s24">Galaxy S24 (360 × 780)</option>
+        <option value="pixel8">Pixel 8 (412 × 915)</option>
+        <option value="ipadmini">iPad Mini (768 × 1024)</option>
+      </select>
+
+      <!-- Rotação -->
+      <button id="rotateBtn" class="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg border border-white/15 transition-all" title="Girar Orientação">
+        <span>🔄</span> <span id="orientationLabel">Retrato</span>
+      </button>
+
+      <!-- Recarregar -->
+      <button id="reloadBtn" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg border border-white/15 transition-all" title="Recarregar">
+        ↻
+      </button>
+
+      <!-- Abrir em Nova Janela -->
+      <a href="/" target="_blank" rel="noopener noreferrer" class="bg-[#c5a880] hover:bg-[#d8be99] text-[#110d0c] font-bold text-xs px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-md">
+        <span>↗</span> Janela Direta
+      </a>
+    </div>
+  </header>
+
+  <!-- ATALHOS DE PÁGINAS -->
+  <nav class="flex flex-wrap items-center justify-center gap-2 mb-6 text-xs">
+    <span class="text-zinc-500 font-semibold mr-1">Ir direto para:</span>
+    <button onclick="navigateIframe('/')" class="bg-black/40 hover:bg-[#c5a880]/20 hover:text-[#c5a880] border border-white/10 text-zinc-300 px-3 py-1 rounded-full transition-all">🏠 Início</button>
+    <button onclick="navigateIframe('/nosso-estudio')" class="bg-black/40 hover:bg-[#c5a880]/20 hover:text-[#c5a880] border border-white/10 text-zinc-300 px-3 py-1 rounded-full transition-all">🏛️ Nosso Estúdio</button>
+    <button onclick="navigateIframe('/servicos/construcao-de-marca')" class="bg-black/40 hover:bg-[#c5a880]/20 hover:text-[#c5a880] border border-white/10 text-zinc-300 px-3 py-1 rounded-full transition-all">✨ Marcas</button>
+    <button onclick="navigateIframe('/servicos/producao-audiovisual')" class="bg-black/40 hover:bg-[#c5a880]/20 hover:text-[#c5a880] border border-white/10 text-zinc-300 px-3 py-1 rounded-full transition-all">🎬 Audiovisual</button>
+    <button onclick="navigateIframe('/servicos/retratos-profissionais')" class="bg-black/40 hover:bg-[#c5a880]/20 hover:text-[#c5a880] border border-white/10 text-zinc-300 px-3 py-1 rounded-full transition-all">👤 Retratos</button>
+    <button onclick="navigateIframe('/servicos/conteudo-e-presenca-digital')" class="bg-black/40 hover:bg-[#c5a880]/20 hover:text-[#c5a880] border border-white/10 text-zinc-300 px-3 py-1 rounded-full transition-all">📱 Conteúdo</button>
+    <button onclick="navigateIframe('/explore')" class="bg-black/40 hover:bg-[#c5a880]/20 hover:text-[#c5a880] border border-white/10 text-zinc-300 px-3 py-1 rounded-full transition-all">📚 Conteúdos</button>
+  </nav>
+
+  <!-- ÁREA DO SMARTPHONE -->
+  <main class="flex items-center justify-center w-full my-auto pb-12">
+    <div id="phoneChassis" class="phone-chassis">
+      
+      <!-- Tela Interna -->
+      <div id="phoneScreen" class="phone-screen-container" style="width: 393px; height: 852px;">
+        
+        <!-- Status Bar Nativa (O site fica 100% abaixo dela, sem sobreposição) -->
+        <div id="phoneStatusBar" class="phone-status-bar">
+          <span class="tracking-tight text-xs font-semibold">9:41</span>
+          
+          <div id="dynamicIsland" class="dynamic-island">
+            <div class="sensor"></div>
+            <div class="camera-lens"></div>
+          </div>
+
+          <div class="flex items-center gap-1.5 text-[11px] text-zinc-300 font-mono">
+            <span>5G</span>
+            <span>📶</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <!-- Container do Iframe (100% livre) -->
+        <div class="flex-1 w-full overflow-hidden relative">
+          <iframe id="siteFrame" src="/" title="Site Speculum Studio Mobile"></iframe>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="text-center text-xs text-zinc-500 pb-6">
+    Use o scroll ou o mouse para navegar, tocar em botões e abrir menus exatamente como no smartphone.
+  </footer>
+
+  <script>
+    const devices = {
+      iphone15: { width: 393, height: 852, island: true, radius: '54px', screenRadius: '42px', barHeight: '46px' },
+      iphonese: { width: 375, height: 667, island: false, radius: '40px', screenRadius: '28px', barHeight: '28px' },
+      s24: { width: 360, height: 780, island: false, radius: '46px', screenRadius: '34px', barHeight: '32px' },
+      pixel8: { width: 412, height: 915, island: false, radius: '50px', screenRadius: '38px', barHeight: '36px' },
+      ipadmini: { width: 768, height: 1024, island: false, radius: '36px', screenRadius: '24px', barHeight: '28px' }
+    };
+
+    let currentDevice = 'iphone15';
+    let isLandscape = false;
+
+    const chassis = document.getElementById('phoneChassis');
+    const screen = document.getElementById('phoneScreen');
+    const statusBar = document.getElementById('phoneStatusBar');
+    const island = document.getElementById('dynamicIsland');
+    const frame = document.getElementById('siteFrame');
+    const deviceSelect = document.getElementById('deviceSelect');
+    const rotateBtn = document.getElementById('rotateBtn');
+    const orientationLabel = document.getElementById('orientationLabel');
+    const reloadBtn = document.getElementById('reloadBtn');
+
+    function updateDevice() {
+      const dev = devices[currentDevice];
+      let w = isLandscape ? dev.height : dev.width;
+      let h = isLandscape ? dev.width : dev.height;
+
+      screen.style.width = w + 'px';
+      screen.style.height = h + 'px';
+      screen.style.borderRadius = dev.screenRadius;
+      chassis.style.borderRadius = dev.radius;
+
+      if (!isLandscape) {
+        statusBar.style.display = 'flex';
+        statusBar.style.height = dev.barHeight;
+        island.style.display = dev.island ? 'flex' : 'none';
+      } else {
+        statusBar.style.display = 'none';
+      }
+
+      orientationLabel.textContent = isLandscape ? 'Paisagem' : 'Retrato';
+    }
+
+    deviceSelect.addEventListener('change', (e) => {
+      currentDevice = e.target.value;
+      updateDevice();
+    });
+
+    rotateBtn.addEventListener('click', () => {
+      isLandscape = !isLandscape;
+      updateDevice();
+    });
+
+    reloadBtn.addEventListener('click', () => {
+      frame.contentWindow.location.reload();
+    });
+
+    function navigateIframe(path) {
+      frame.src = path;
+    }
+
+    updateDevice();
+  </script>
+</body>
+</html>

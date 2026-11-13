@@ -15,14 +15,15 @@ export const Navbar = () => {
 
   const links = [
     { to: "/", label: "Início" },
+    { to: "/portfolio", label: "Portfólio" },
     { to: "/explore", label: "Conteúdos" },
     { to: "/nosso-estudio", label: "Estúdio" },
   ];
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/60">
-      <div className="container-editorial flex h-16 items-center justify-between gap-6">
-        <Logo size={34} />
+      <div className="container-editorial flex h-16 items-center justify-between gap-2 sm:gap-6">
+        <Logo size={32} />
 
         <nav aria-label="Principal" className="hidden md:flex items-center gap-6 text-sm">
           {links.map((l) => (
@@ -34,7 +35,7 @@ export const Navbar = () => {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir navegação"><Menu className="h-5 w-5" /></Button>
@@ -77,7 +78,7 @@ export const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button variant="outline" size="sm" onClick={() => nav("/login")}>Entrar</Button>
+            <Button variant="outline" size="sm" onClick={() => nav("/login")} className="px-2.5 sm:px-3 text-xs sm:text-sm">Entrar</Button>
           )}
         </div>
       </div>

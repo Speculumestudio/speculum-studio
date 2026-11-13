@@ -25,34 +25,34 @@ const typeLabel: Record<string, string> = {
 export const PostCard = ({ post, featured = false }: { post: PostCardData; featured?: boolean }) => (
   <Link to={`/post/${post.slug}`}
     className={`group glass rounded-2xl overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-1 hover:shadow-glow ${featured ? "md:col-span-2 md:row-span-2" : ""}`}>
-    <div className={`relative overflow-hidden ${featured ? "aspect-[16/10]" : "aspect-[4/5]"}`}>
+    <div className={`relative overflow-hidden ${featured ? "aspect-[4/5] sm:aspect-[4/5] md:aspect-[16/10]" : "aspect-[4/5]"} bg-[#141210]`}>
       {post.cover_image_url ? (
         <img {...getCoverImage(post.slug, post.cover_image_url, featured)} alt={post.title} loading="lazy" decoding="async"
           sizes={featured ? "(min-width: 768px) 66vw, 100vw" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
       ) : (
         <div className="w-full h-full bg-gradient-aurora animate-shimmer" />
       )}
-      <div className="absolute top-3 left-3 flex gap-2">
-        <Badge variant="secondary" className="backdrop-blur bg-background/60 border border-border/60 text-foreground">
+      <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10 pointer-events-none">
+        <Badge variant="secondary" className="backdrop-blur-md bg-black/75 border border-white/20 text-white shadow-sm text-[11px] font-semibold">
           {typeLabel[post.type] ?? post.type}
         </Badge>
         {post.is_premium && (
-          <Badge className="bg-gradient-gold text-primary-foreground border-0">
+          <Badge className="bg-gradient-gold text-primary-foreground border-0 text-[11px] font-semibold shadow-sm">
             <Lock className="h-3 w-3 mr-1" /> Membros
           </Badge>
         )}
       </div>
     </div>
-    <div className="p-5 flex flex-col flex-1">
+    <div className="p-4 sm:p-5 flex flex-col flex-1">
       {post.category && (
-        <span className="text-[11px] uppercase tracking-[0.18em] text-primary/80 mb-2">{post.category}</span>
+        <span className="text-[11px] uppercase tracking-[0.18em] text-primary/80 mb-2 font-semibold">{post.category}</span>
       )}
-      <h3 className={`font-display leading-tight ${featured ? "text-2xl md:text-3xl" : "text-lg"} group-hover:text-gradient-gold transition`}>
+      <h3 className={`font-display leading-snug ${featured ? "text-xl sm:text-2xl md:text-3xl" : "text-base sm:text-lg"} group-hover:text-gradient-gold transition break-words`}>
         {post.title}
       </h3>
       {post.excerpt && (
-        <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{post.excerpt}</p>
+        <p className="mt-2 text-xs sm:text-sm text-muted-foreground line-clamp-3 leading-relaxed">{post.excerpt}</p>
       )}
       <div className="mt-auto pt-4 flex items-center gap-4 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1"><Eye className="h-3.5 w-3.5" />{post.views}</span>

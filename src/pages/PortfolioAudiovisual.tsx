@@ -209,7 +209,7 @@ export default function PortfolioAudiovisual() {
                             loop
                             playsInline
                             muted={isMuted}
-                            preload="metadata"
+                            preload="none"
                             className={
                               project.format === "vertical"
                                 ? "relative z-10 h-full max-h-[44vh] sm:max-h-[48vh] md:max-h-[50vh] aspect-[9/16] object-contain cursor-pointer rounded-lg shadow-2xl"

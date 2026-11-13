@@ -6,10 +6,6 @@ import { Seo } from "@/components/Seo";
 import { PostCard, PostCardData } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import coverBrand from "@/assets/covers/optimized/cover-brand.webp";
-import coverAudiovisual from "@/assets/covers/optimized/cover-audiovisual.webp";
-import coverRetratos from "@/assets/covers/optimized/cover-retratos.webp";
-import coverConteudo from "@/assets/covers/optimized/cover-conteudo.webp";
 import coverEstudio from "@/assets/covers/optimized/cover-estudio.webp";
 import coverPrompts from "@/assets/covers/optimized/cover-prompts.webp";
 import coverFerramentas from "@/assets/covers/optimized/cover-ferramentas.webp";
@@ -27,7 +23,7 @@ const studioAreas = [
     titleLine1: "CONSTRUÇÃO DE MARCAS",
     titleLine2: "– POSICIONAMENTO",
     desc: "Clareza estratégica para transformar identidade, percepção e comunicação em direção de marca.",
-    img: coverBrand,
+    img: "/covers/real/servico-construcao-marca-vertical.webp",
     ctaText: "Ver serviço",
     ctaUrl: "/servicos/construcao-de-marca",
   },
@@ -36,7 +32,7 @@ const studioAreas = [
     titleLine1: "PRODUÇÃO AUDIOVISUAL",
     titleLine2: "– IMAGEM EM MOVIMENTO",
     desc: "Filmes, vídeos e narrativas visuais para apresentar ideias com clareza e intenção.",
-    img: coverAudiovisual,
+    img: "/covers/real/servico-audiovisual-set-vertical.webp",
     ctaText: "Ver serviço",
     ctaUrl: "/servicos/producao-audiovisual",
   },
@@ -45,7 +41,7 @@ const studioAreas = [
     titleLine1: "RETRATOS",
     titleLine2: "– DEPOIMENTOS",
     desc: "Retratos dirigidos para aproximar imagem, personalidade e posicionamento profissional.",
-    img: coverRetratos,
+    img: "/covers/real/servico-retratos-felipe-vertical.webp",
     ctaText: "Ver serviço",
     ctaUrl: "/servicos/retratos-profissionais",
   },
@@ -54,7 +50,7 @@ const studioAreas = [
     titleLine1: "CONTEÚDO E COMUNICAÇÃO",
     titleLine2: "– REPERTÓRIO VIVO",
     desc: "Conteúdo com consistência editorial para fazer sua marca ser encontrada e lembrada.",
-    img: coverConteudo,
+    img: "/covers/real/servico-conteudo-gravacao-vertical.webp",
     ctaText: "Ver serviço",
     ctaUrl: "/servicos/conteudo-e-presenca-digital",
   },

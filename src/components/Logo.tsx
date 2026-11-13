@@ -12,7 +12,7 @@ export const Logo = ({ size = 36, withWordmark = true, className = "" }: { size?
       style={{ height: size, width: size }}
     />
     {withWordmark && (
-      <span className="font-display text-xl tracking-tight leading-none">
+      <span className="font-display text-lg sm:text-xl tracking-tight leading-none whitespace-nowrap">
         Speculum<span className="text-gradient-gold"> Studio</span>
       </span>
     )}

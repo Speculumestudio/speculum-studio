@@ -10,6 +10,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 const Studio = lazy(() => import("./pages/Studio"));
 const Service = lazy(() => import("./pages/Service"));
+const Portfolio = lazy(() => import("./pages/Portfolio"));
 const PortfolioAudiovisual = lazy(() => import("./pages/PortfolioAudiovisual"));
 const Explore = lazy(() => import("./pages/Explore"));
 const Post = lazy(() => import("./pages/Post"));
@@ -48,9 +49,9 @@ const App = ({ Router = BrowserRouter }: { Router?: ComponentType<{ children?: R
             <Route path="/nosso-estudio" element={<Studio />} />
             <Route path="/links" element={<Links />} />
             <Route path="/servicos/:slug" element={<Service />} />
+            <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/portfolio/audiovisual" element={<PortfolioAudiovisual />} />
             <Route path="/portfolio/producao-audiovisual" element={<Navigate to="/portfolio/audiovisual" replace />} />
-            <Route path="/portfolio" element={<Navigate to="/portfolio/audiovisual" replace />} />
             <Route path="/post/:slug" element={<Post />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/login" element={<Login />} />

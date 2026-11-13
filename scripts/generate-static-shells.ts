@@ -36,6 +36,11 @@ const staticPages: StaticPage[] = [
     description: "Conheça a Speculum Studio: construção de marca, conteúdo, retratos, produção audiovisual e orientação estratégica com Fabiano Pereira.",
   },
   {
+    path: "/portfolio",
+    title: "Portfólio · Trabalhos Selecionados | Speculum Studio",
+    description: "Conheça nossos trabalhos em construção de marca, produção audiovisual, retratos de autoridade e conteúdo estratégico.",
+  },
+  {
     path: "/explore",
     title: "Matérias sobre marca, imagem, criação e IA | Speculum Studio",
     description: "Artigos, guias, processos e materiais sobre marca, imagem, criação e uso consciente de inteligência artificial.",

@@ -68,7 +68,7 @@ export function ServicesSection({
                 className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#161311]/90 backdrop-blur-md shadow-2xl transition-all duration-500 ease-out hover:-translate-y-2 hover:border-[#c5a880]/60 hover:bg-[#1a1614] hover:shadow-[0_20px_45px_rgba(197,168,128,0.16)]"
               >
                 {/* Visual Image Header */}
-                <div className="relative aspect-[16/11] w-full overflow-hidden bg-black/50">
+                <div className="relative aspect-[4/5] w-full overflow-hidden bg-black/50">
                   <img
                     src={item.img}
                     alt={item.titleLine1}

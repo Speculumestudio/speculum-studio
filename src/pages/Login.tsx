@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { trackEvent } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
 import { z } from "zod";
-import logo from "@/assets/logo-speculum.png";
+import logo from "@/assets/logo-speculum.webp";
 
 const schema = z.object({
   email: z.string().trim().email("E-mail inválido").max(255),

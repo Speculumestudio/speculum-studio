@@ -27,6 +27,7 @@ export const Footer = () => (
         <h4 className="font-display text-sm mb-3">Estúdio</h4>
         <ul className="space-y-2 text-sm text-muted-foreground">
           <li><Link to="/nosso-estudio" className="hover:text-primary">Estúdio</Link></li>
+          <li><Link to="/portfolio" className="hover:text-primary font-medium text-primary/90">Portfólio de trabalhos</Link></li>
           <li><Link to="/servicos/construcao-de-marca" className="hover:text-primary">Construção de marca</Link></li>
           <li><Link to="/servicos/producao-audiovisual" className="hover:text-primary">Produção audiovisual</Link></li>
           <li><Link to="/portfolio/audiovisual" className="hover:text-primary">Portfólio audiovisual</Link></li>
