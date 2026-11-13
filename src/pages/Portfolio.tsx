@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -26,10 +26,37 @@ import { PortfolioLogos } from "@/components/portfolio/PortfolioLogos";
 import { PortfolioTestimonials } from "@/components/portfolio/PortfolioTestimonials";
 
 export default function Portfolio() {
-  const [selectedCategory, setSelectedCategory] = useState<PortfolioCategory>("todos");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const validCategories: PortfolioCategory[] = ["todos", "branding", "audiovisual", "retratos", "conteudo"];
+  const paramCategory = searchParams.get("categoria") as PortfolioCategory | null;
+  const initialCategory = paramCategory && validCategories.includes(paramCategory) ? paramCategory : "todos";
+
+  const [selectedCategory, setSelectedCategory] = useState<PortfolioCategory>(initialCategory);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [mutedStates, setMutedStates] = useState<Record<string, boolean>>({});
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+
+  useEffect(() => {
+    const cat = searchParams.get("categoria") as PortfolioCategory | null;
+    if (cat && validCategories.includes(cat)) {
+      setSelectedCategory(cat);
+    } else if (!cat) {
+      setSelectedCategory("todos");
+    }
+  }, [searchParams]);
+
+  const handleSelectCategory = (catId: PortfolioCategory) => {
+    setSelectedCategory(catId);
+    if (catId === "todos") {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete("categoria");
+      setSearchParams(nextParams, { replace: true });
+    } else {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.set("categoria", catId);
+      setSearchParams(nextParams, { replace: true });
+    }
+  };
 
   const filteredProjects = selectedCategory === "todos"
     ? allPortfolioProjects
@@ -152,7 +179,7 @@ export default function Portfolio() {
               return (
                 <button
                   key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => handleSelectCategory(cat.id)}
                   className={`px-4 py-2 sm:px-5 sm:py-2 rounded-full text-xs sm:text-sm font-medium tracking-wide transition-all duration-300 cursor-pointer ${
                     active
                       ? "bg-secondary text-primary border border-primary/50 shadow-sm"
