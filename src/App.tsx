@@ -23,6 +23,7 @@ const MediaLibrary = lazy(() => import("./pages/MediaLibrary"));
 const Users = lazy(() => import("./pages/Users"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Links = lazy(() => import("./pages/Links"));
+const AccessCapture = lazy(() => import("./pages/AccessCapture"));
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = ({ Router = BrowserRouter }: { Router?: ComponentType<{ children?: R
             <Route path="/explore" element={<Explore />} />
             <Route path="/nosso-estudio" element={<Studio />} />
             <Route path="/links" element={<Links />} />
+            <Route path="/acesso/:slug" element={<AccessCapture />} />
             <Route path="/servicos/:slug" element={<Service />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/portfolio/audiovisual" element={<PortfolioAudiovisual />} />

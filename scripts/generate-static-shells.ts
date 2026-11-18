@@ -5,6 +5,7 @@ import { ServiceContent } from "../src/components/ServiceContent";
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, resolve } from "path";
 import { services } from "../src/data/services";
+import { leadMagnets } from "../src/data/leadMagnets";
 import { fetchPublishedPostsSeo } from "./post-seo-data";
 import { prerenderHome } from "./prerender-home";
 
@@ -50,6 +51,13 @@ const staticPages: StaticPage[] = [
     title: "Portfólio Audiovisual | Vídeos Institucionais e Comerciais | Speculum Studio",
     description: "Conheça nosso portfólio audiovisual: vídeos institucionais, reels cinematográficos, depoimentos e captação de produtos em Santos e região.",
   },
+  ...leadMagnets.map((magnet): StaticPage => ({
+    path: `/acesso/${magnet.slug}`,
+    title: magnet.seoTitle,
+    description: magnet.seoDescription,
+    image: magnet.ogImage,
+    noIndex: true,
+  })),
   ...services.map((service): StaticPage => ({
     path: `/servicos/${service.slug}`,
     title: service.seoTitle,

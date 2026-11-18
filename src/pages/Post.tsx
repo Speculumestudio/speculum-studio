@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -7,7 +7,7 @@ import { Seo } from "@/components/Seo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bookmark, Eye, Heart, Lock, MessageCircle, Send } from "lucide-react";
+import { Bookmark, CheckCircle2, Eye, Heart, Lock, MessageCircle, Send } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,7 +35,9 @@ const ytId = (url: string|null) => {
 
 const Post = () => {
   const { slug } = useParams();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const accessGranted = searchParams.get("acesso") === "liberado";
   const [post, setPost] = useState<PostFull | null>(null);
   const [author, setAuthor] = useState<any>(null);
   const [liked, setLiked] = useState(false);
@@ -51,7 +53,9 @@ const Post = () => {
       const { data: p } = await supabase.from("posts").select("*").eq("slug", slug).maybeSingle();
       if (!p) return;
       setPost(p as any);
-      await supabase.from("posts").update({ views: (p as any).views + 1 }).eq("id", (p as any).id);
+      if (user && (p as any).author_id === user.id) {
+        await supabase.from("posts").update({ views: (p as any).views + 1 }).eq("id", (p as any).id);
+      }
       const { data: a } = await supabase.from("profiles").select("id,full_name,avatar_url,bio").eq("id", (p as any).author_id ?? "").maybeSingle();
       setAuthor(a);
       loadComments((p as any).id);
@@ -68,10 +72,37 @@ const Post = () => {
   }, [slug, user?.id]);
 
   const loadComments = async (postId: string) => {
-    const { data } = await supabase.from("comments")
-      .select("id,user_id,parent_id,content,is_answer,created_at, profiles:user_id(full_name,avatar_url)")
-      .eq("post_id", postId).eq("is_hidden", false).order("created_at", { ascending: true });
-    setComments((data ?? []) as any);
+    const { data, error } = await supabase
+      .from("comments")
+      .select("id,user_id,parent_id,content,is_answer,created_at")
+      .eq("post_id", postId)
+      .eq("is_hidden", false)
+      .order("created_at", { ascending: true });
+
+    if (error || !data) {
+      setComments([]);
+      return;
+    }
+
+    const userIds = Array.from(new Set(data.map((row) => row.user_id).filter(Boolean)));
+    const profileMap = new Map<string, { full_name: string | null; avatar_url: string | null }>();
+
+    if (userIds.length > 0) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id,full_name,avatar_url")
+        .in("id", userIds);
+      for (const prof of profs ?? []) {
+        profileMap.set(prof.id, { full_name: prof.full_name, avatar_url: prof.avatar_url });
+      }
+    }
+
+    setComments(
+      data.map((row) => ({
+        ...row,
+        profiles: profileMap.get(row.user_id),
+      }))
+    );
   };
 
   const toggleLike = async () => {
@@ -151,6 +182,17 @@ const Post = () => {
       />
       <Navbar />
       <article className="container-editorial pt-12 pb-20 max-w-4xl">
+        {accessGranted && (
+          <div className="mb-8 flex items-start gap-3 rounded-2xl border border-primary/35 bg-primary/[0.08] px-5 py-4 text-sm text-foreground">
+            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+            <div>
+              <div className="font-medium text-foreground">Acesso liberado ao material completo.</div>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Salve este endereço para consultar quando precisar e use a seção de comentários no final para tirar dúvidas ou pedir os próximos tutoriais.
+              </p>
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-2 mb-5">
           <Badge variant="secondary" className="capitalize">{post.type}</Badge>
           {post.category && <span className="text-xs uppercase tracking-[0.22em] text-primary/80">{post.category}</span>}
@@ -160,10 +202,10 @@ const Post = () => {
         {post.excerpt && <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{post.excerpt}</p>}
 
         <div className="mt-8 flex items-center justify-between flex-wrap gap-4">
-          <Link to={`/profile/${post.author_id}`} className="flex items-center gap-3 group">
-            <Avatar className="h-10 w-10"><AvatarImage src={author?.avatar_url}/><AvatarFallback>{(author?.full_name ?? "?").slice(0,2)}</AvatarFallback></Avatar>
+          <Link to={post.author_id ? `/profile/${post.author_id}` : "/nosso-estudio"} className="flex items-center gap-3 group">
+            <Avatar className="h-10 w-10"><AvatarImage src={author?.avatar_url}/><AvatarFallback>{(author?.full_name ?? "SP").slice(0,2).toUpperCase()}</AvatarFallback></Avatar>
             <div>
-              <div className="text-sm group-hover:text-primary transition">{author?.full_name ?? "Anônimo"}</div>
+              <div className="text-sm group-hover:text-primary transition">{author?.full_name ?? "Speculum Studio"}</div>
               <div className="text-xs text-muted-foreground">{post.published_at ? new Date(post.published_at).toLocaleDateString("pt-BR") : "Rascunho"}</div>
             </div>
           </Link>
