@@ -104,29 +104,74 @@ const AccessCapture = () => {
       const utmCampaign = searchParams.get("utm_campaign");
       const utmContent = searchParams.get("utm_content");
 
-      const supabaseRpc = supabase as unknown as {
-        rpc: (
-          fn: string,
-          args: Record<string, unknown>
-        ) => Promise<{ data: unknown; error: { message?: string } | null }>;
+      const payload = {
+        slug: magnet.slug,
+        nome: parsed.data.nome,
+        email: parsed.data.email,
+        whatsapp: parsed.data.whatsapp,
+        consentLgpd: true,
+        utmSource,
+        utmMedium,
+        utmCampaign,
+        utmContent,
+        referrer: typeof document !== "undefined" ? document.referrer || null : null,
+        pagePath: location.pathname,
       };
 
-      const { error } = await supabaseRpc.rpc("capture_studio_lead", {
-        p_isca_slug: magnet.slug,
-        p_nome: parsed.data.nome,
-        p_email: parsed.data.email,
-        p_whatsapp: parsed.data.whatsapp,
-        p_consent_lgpd: true,
-        p_utm_source: utmSource,
-        p_utm_medium: utmMedium,
-        p_utm_campaign: utmCampaign,
-        p_utm_content: utmContent,
-        p_referrer: typeof document !== "undefined" ? document.referrer || null : null,
-        p_page_path: location.pathname,
-      });
+      let handledByApi = false;
+      if (typeof fetch === "function") {
+        try {
+          const apiResponse = await fetch("/api/capture-lead", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const contentType = apiResponse.headers.get("content-type") || "";
 
-      if (error) {
-        throw new Error(error.message || "Não foi possível registrar o seu acesso agora.");
+          if (contentType.includes("application/json")) {
+            handledByApi = true;
+            const apiBody = (await apiResponse.json().catch(() => null)) as {
+              ok?: boolean;
+              error?: string;
+            } | null;
+            if (!apiResponse.ok || !apiBody?.ok) {
+              throw new Error(
+                apiBody?.error || "Não foi possível registrar o seu acesso agora."
+              );
+            }
+          }
+        } catch (apiError: unknown) {
+          if (handledByApi) {
+            throw apiError;
+          }
+        }
+      }
+
+      if (!handledByApi) {
+        const supabaseRpc = supabase as unknown as {
+          rpc: (
+            fn: string,
+            args: Record<string, unknown>
+          ) => Promise<{ data: unknown; error: { message?: string } | null }>;
+        };
+
+        const { error } = await supabaseRpc.rpc("capture_studio_lead", {
+          p_isca_slug: payload.slug,
+          p_nome: payload.nome,
+          p_email: payload.email,
+          p_whatsapp: payload.whatsapp,
+          p_consent_lgpd: true,
+          p_utm_source: payload.utmSource,
+          p_utm_medium: payload.utmMedium,
+          p_utm_campaign: payload.utmCampaign,
+          p_utm_content: payload.utmContent,
+          p_referrer: payload.referrer,
+          p_page_path: payload.pagePath,
+        });
+
+        if (error) {
+          throw new Error(error.message || "Não foi possível registrar o seu acesso agora.");
+        }
       }
 
       try {
