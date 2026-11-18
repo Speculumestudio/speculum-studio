@@ -41,7 +41,7 @@ describe("POST /api/capture-lead", () => {
   it("persiste no Supabase, sincroniza Audience e envia e-mail de boas-vindas no Resend", async () => {
     const fetchMock = vi.fn().mockImplementation(async (url: string) => {
       if (url.includes("/rest/v1/rpc/capture_studio_lead")) {
-        return new Response(JSON.stringify({ id: "lead-uuid-1", ok: true }), {
+        return new Response(JSON.stringify({ lead_id: "lead-uuid-1", ok: true }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         });

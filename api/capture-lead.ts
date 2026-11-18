@@ -1,11 +1,6 @@
-const SUPABASE_URL =
-  process.env.SUPABASE_URL ||
-  process.env.VITE_SUPABASE_URL ||
-  "https://mhxwcdxepodoxnofoiya.supabase.co";
-
+// Alinhado com src/integrations/supabase/client.ts (evita herdar VITE_SUPABASE_URL legado da Lovable)
+const SUPABASE_URL = "https://mhxwcdxepodoxnofoiya.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY =
-  process.env.SUPABASE_PUBLISHABLE_KEY ||
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   "sb_publishable_mCNED27_mo9TNmiRI025Mw_8PAI65K8";
 
 const DEFAULT_FROM =
@@ -325,7 +320,9 @@ export async function POST(request: Request): Promise<Response> {
     }
 
     const sbData = await sbResponse.json().catch(() => null);
-    if (sbData && typeof sbData.id === "string") {
+    if (sbData && typeof sbData.lead_id === "string") {
+      leadId = sbData.lead_id;
+    } else if (sbData && typeof sbData.id === "string") {
       leadId = sbData.id;
     }
   } catch {
