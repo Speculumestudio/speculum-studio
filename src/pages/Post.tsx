@@ -13,6 +13,7 @@ import {
   Check,
   CheckCircle2,
   Clock,
+  Copy,
   Eye,
   Heart,
   Lock,
@@ -26,6 +27,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
+import { CaptureBrainVisual } from "@/components/CaptureBrainVisual";
 import logo from "@/assets/logo-speculum.png";
 
 interface PostFull {
@@ -403,11 +405,32 @@ const Post = () => {
                     </pre>
                   </div>
                 )}
-                {post.content && (
-                  <div
-                    className="prose prose-invert max-w-none font-sans text-[15px] sm:text-base leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                  />
+                {post.slug === "setup-segundo-cerebro-ia" ? (
+                  <>
+                    <div className="my-6">
+                      <div className="text-[11px] uppercase tracking-[0.2em] text-primary font-semibold mb-3 flex items-center gap-1.5">
+                        <Sparkles className="h-3.5 w-3.5" />
+                        Simulador de Arquitetura · 6 Pastas e Motores em Tempo Real
+                      </div>
+                      <CaptureBrainVisual />
+                    </div>
+
+                    {post.content && (
+                      <div
+                        className="prose prose-invert max-w-none font-sans text-[15px] sm:text-base leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: post.content }}
+                      />
+                    )}
+
+                    <InteractivePromptBox />
+                  </>
+                ) : (
+                  post.content && (
+                    <div
+                      className="prose prose-invert max-w-none font-sans text-[15px] sm:text-base leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
+                  )
                 )}
               </>
             )}
@@ -724,6 +747,126 @@ function CommunitySidebar({ author, onGoogleLogin, user }: CommunitySidebarProps
           Ver todas as matérias
           <ArrowRight className="h-3.5 w-3.5" />
         </Link>
+      </div>
+    </div>
+  );
+}
+
+const TERMINAL_MASTER_PROMPT = `Atue como o arquiteto de sistemas e memória do meu Segundo Cérebro local.
+
+Execute este plano passo a passo, conferindo cada etapa e pedindo minha confirmação antes de criar arquivos:
+
+ETAPA 1 · CRIAÇÃO DA ESTRUTURA DE PASTAS:
+Crie dentro do diretório atual as 5 pastas operacionais fundamentais:
+- 01-clientes/ (uma subpasta por cliente com briefing, restrições e tom de voz)
+- 02-ofertas/ (descrição detalhada dos meus serviços, entregáveis e preços)
+- 03-referencias/ (banco de referências aprovadas de roteiros, layouts e carrosseis)
+- 04-projetos/ (produção ativa separada por data e tema)
+- 05-ferramentas/ (scripts, automações, skills e modelos reutilizáveis)
+
+ETAPA 2 · ARQUIVO MESTRE DE MEMÓRIA (CLAUDE.md):
+Crie na raiz da pasta o arquivo CLAUDE.md com as seguintes diretrizes inegociáveis:
+# Segundo Cérebro · Diretrizes Operacionais
+1. Leitura Prévia Obrigatória: Antes de redigir qualquer texto, roteiro ou código, consulte o arquivo do cliente em 01-clientes/ e a oferta correspondente em 02-ofertas/.
+2. Tom Autêntico e Humano: Proibido usar jargões clichês de IA (como "no mundo acelerado de hoje", "revolucionário", "mergulhe", "orquestração"). Nunca use travessões em lugar de vírgulas ou pontos.
+3. Segurança e Aprovação: Apresente um resumo curto do que pretende fazer e peça minha aprovação antes de criar arquivos grandes ou rodar scripts.
+4. Fechamento de Sessão: Ao final de cada trabalho, grave um resumo do que foi entregue e a próxima pendência no arquivo de memória dentro de 04-projetos/.
+
+ETAPA 3 · DIAGNÓSTICO DO AMBIENTE LOCAL:
+Verifique se Python 3 e Node.js estão instalados no meu sistema operacional. Se faltar algo, apenas me informe como instalar manualmente no meu sistema (Windows ou macOS) sem quebrar nada.
+
+Apresente um resumo do plano na tela e aguarde meu OK para criar a estrutura.`;
+
+const BROWSER_PROJECTS_PROMPT = `Você é o assistente oficial do meu Segundo Cérebro. Toda vez que iniciarmos uma conversa neste Projeto, siga rigorosamente estas regras:
+1. Consulte sempre as notas do cliente e das minhas ofertas anexadas a este Projeto antes de sugerir ou redigir qualquer material.
+2. Escreva sempre com linguagem direta, autêntica e sem clichês de inteligência artificial. Nunca use travessões soltos no meio do texto.
+3. Seja cirúrgico: entregue a resposta ou o rascunho completo na primeira mensagem, sem introduções genéricas.
+4. Ao final de cada sessão, me pergunte se desejo registrar o aprendizado do dia na nota do projeto.`;
+
+function InteractivePromptBox() {
+  const [tab, setTab] = useState<"terminal" | "browser">("terminal");
+  const [copied, setCopied] = useState(false);
+
+  const activePrompt = tab === "terminal" ? TERMINAL_MASTER_PROMPT : BROWSER_PROJECTS_PROMPT;
+
+  const handleCopy = async () => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(activePrompt);
+        setCopied(true);
+        toast.success("Prompt copiado com sucesso!");
+        window.setTimeout(() => setCopied(false), 2400);
+      }
+    } catch {
+      toast.error("Não foi possível copiar automaticamente.");
+    }
+  };
+
+  return (
+    <div className="rounded-3xl border border-primary/35 bg-[#0A0D0A]/95 p-5 sm:p-7 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.9),0_0_40px_-20px_rgba(201,168,76,0.25)] my-10">
+      {/* Barra superior de controle */}
+      <div className="flex items-center justify-between flex-wrap gap-3 pb-4 border-b border-white/[0.08]">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-black/60 border border-white/10">
+          <button
+            type="button"
+            onClick={() => setTab("terminal")}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              tab === "terminal"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Terminal (Claude Code ou Codex)
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("browser")}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              tab === "browser"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Navegador (Claude / ChatGPT Projects)
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleCopy}
+          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-150 cursor-pointer ${
+            copied
+              ? "bg-emerald-500 text-white shadow-[0_0_18px_rgba(16,185,129,0.5)] scale-[1.02]"
+              : "bg-gradient-gold text-primary-foreground shadow-[0_4px_16px_rgba(201,168,76,0.4)] hover:scale-[1.02] active:scale-[0.98]"
+          }`}
+        >
+          {copied ? (
+            <>
+              <Check className="h-4 w-4" />
+              <span>Prompt Copiado!</span>
+            </>
+          ) : (
+            <>
+              <Copy className="h-4 w-4" />
+              <span>Copiar Prompt Mestre</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Area de codigo */}
+      <div className="pt-4">
+        <div className="flex items-center justify-between text-[11.5px] text-muted-foreground mb-2.5">
+          <span className="font-medium text-foreground/80">
+            {tab === "terminal"
+              ? "Prompt Mestre Unificado · Copie e cole na janela do Claude Code ou Codex"
+              : "Prompt de Regras · Copie e cole nas instruções do seu Projeto no navegador"}
+          </span>
+          <span className="font-mono text-primary/90 hidden sm:inline">1 clique para copiar</span>
+        </div>
+        <pre className="rounded-2xl border border-white/[0.08] bg-black/70 p-4 sm:p-5 font-mono text-xs text-foreground/95 overflow-x-auto whitespace-pre-wrap leading-relaxed select-all">
+          {activePrompt}
+        </pre>
       </div>
     </div>
   );
