@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ArrowRight,
   Bookmark,
+  Check,
   CheckCircle2,
   Clock,
   Eye,
