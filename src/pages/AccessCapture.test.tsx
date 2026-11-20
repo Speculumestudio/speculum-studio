@@ -14,7 +14,7 @@ beforeAll(() => {
   }
 });
 
-const rpcMock = vi.fn().mockResolvedValue({ data: { ok: true }, error: null });
+const rpcMock = vi.fn().mockResolvedValue({ data: { ok: true, lead_id: "lead-123" }, error: null });
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
@@ -40,7 +40,7 @@ describe("AccessCapture", () => {
     expect(screen.getAllByLabelText(/WhatsApp com DDD/i)[0]).toBeRequired();
   });
 
-  it("formata o WhatsApp e envia o lead via capture_studio_lead", async () => {
+  it("formata o WhatsApp, salva o lead e avança para a Etapa 2 de personalizacao", async () => {
     rpcMock.mockClear();
     render(
       <HelmetProvider>
@@ -78,6 +78,15 @@ describe("AccessCapture", () => {
           p_utm_campaign: "funil_cerebro",
         })
       );
+    });
+
+    // Confirma que a Etapa 2 com as 3 perguntas de qualificacao aparece na tela
+    await vi.waitFor(() => {
+      expect(screen.getAllByText(/Etapa 2 de 2/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/1\. O que você faz hoje\?/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/2\. Como é seu nível com IA\?/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/3\. Por que você quer este material\?/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByRole("button", { name: /Concluir e abrir tutorial/i })[0]).toBeInTheDocument();
     });
   });
 });

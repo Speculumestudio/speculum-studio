@@ -49,6 +49,17 @@ export interface CaptureLeadPayload {
   utmContent?: string | null;
   referrer?: string | null;
   pagePath?: string | null;
+  perfilAtuacao?: string | null;
+  nivelIa?: string | null;
+  objetivoPrincipal?: string | null;
+}
+
+export interface UpdateSurveyPayload {
+  action: "update_survey";
+  leadId: string;
+  perfilAtuacao?: string | null;
+  nivelIa?: string | null;
+  objetivoPrincipal?: string | null;
 }
 
 function timeoutSignal(ms: number): AbortSignal | undefined {
@@ -262,6 +273,36 @@ function validatePayload(raw: unknown): {
       utmContent: optStr(input.utmContent),
       referrer: optStr(input.referrer),
       pagePath: optStr(input.pagePath),
+      perfilAtuacao: optStr(input.perfilAtuacao, 100),
+      nivelIa: optStr(input.nivelIa, 100),
+      objetivoPrincipal: optStr(input.objetivoPrincipal, 120),
+    },
+  };
+}
+
+function validateSurveyPayload(raw: unknown): {
+  valid: true;
+  data: UpdateSurveyPayload;
+} | { valid: false; message: string } {
+  if (!raw || typeof raw !== "object") {
+    return { valid: false, message: "Requisição inválida." };
+  }
+  const input = raw as Record<string, unknown>;
+  const leadId = typeof input.leadId === "string" ? input.leadId.trim() : "";
+  if (!leadId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(leadId)) {
+    return { valid: false, message: "Identificador do lead inválido." };
+  }
+  const optStr = (v: unknown, maxLen = 120) =>
+    typeof v === "string" && v.trim().length > 0 ? v.trim().slice(0, maxLen) : null;
+
+  return {
+    valid: true,
+    data: {
+      action: "update_survey",
+      leadId,
+      perfilAtuacao: optStr(input.perfilAtuacao, 100),
+      nivelIa: optStr(input.nivelIa, 100),
+      objetivoPrincipal: optStr(input.objetivoPrincipal, 120),
     },
   };
 }
@@ -272,6 +313,42 @@ export async function POST(request: Request): Promise<Response> {
     rawBody = await request.json();
   } catch {
     return jsonResponse({ ok: false, error: "JSON inválido." }, 400);
+  }
+
+  // Se for atualizacao da pesquisa de qualificacao (Passo 2)
+  if (rawBody && typeof rawBody === "object" && (rawBody as Record<string, unknown>).action === "update_survey") {
+    const surveyCheck = validateSurveyPayload(rawBody);
+    if (!surveyCheck.valid) {
+      return jsonResponse({ ok: false, error: surveyCheck.message }, 400);
+    }
+    const { leadId, perfilAtuacao, nivelIa, objetivoPrincipal } = surveyCheck.data;
+
+    try {
+      const rpcRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/rpc/update_studio_lead_survey`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_PUBLISHABLE_KEY,
+            Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({
+            p_lead_id: leadId,
+            p_perfil_atuacao: perfilAtuacao ?? null,
+            p_nivel_ia: nivelIa ?? null,
+            p_objetivo_principal: objetivoPrincipal ?? null,
+          }),
+          signal: timeoutSignal(6000),
+        }
+      );
+      if (rpcRes.ok) {
+        return jsonResponse({ ok: true, updated: true });
+      }
+    } catch {
+      // Falha silenciosa para nao interromper o fluxo do usuario
+    }
+    return jsonResponse({ ok: true, updated: false });
   }
 
   const validated = validatePayload(rawBody);

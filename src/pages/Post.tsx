@@ -7,27 +7,57 @@ import { Seo } from "@/components/Seo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bookmark, CheckCircle2, Eye, Heart, Lock, MessageCircle, Send } from "lucide-react";
+import {
+  ArrowRight,
+  Bookmark,
+  CheckCircle2,
+  Clock,
+  Eye,
+  Heart,
+  Lock,
+  MessageCircle,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
+import logo from "@/assets/logo-speculum.png";
 
 interface PostFull {
-  id: string; slug: string; title: string; excerpt: string|null;
-  cover_image_url: string|null; content: string|null; prompt_text: string|null;
-  youtube_url: string|null; type: string; category: string|null; tags: string[]|null;
-  is_premium: boolean; views: number; likes_count: number; author_id: string|null;
-  published_at: string|null;
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  cover_image_url: string | null;
+  content: string | null;
+  prompt_text: string | null;
+  youtube_url: string | null;
+  type: string;
+  category: string | null;
+  tags: string[] | null;
+  is_premium: boolean;
+  views: number;
+  likes_count: number;
+  author_id: string | null;
+  published_at: string | null;
   updated_at: string;
 }
+
 interface CommentRow {
-  id: string; user_id: string; parent_id: string|null; content: string;
-  is_answer: boolean; created_at: string;
-  profiles?: { full_name: string|null; avatar_url: string|null };
+  id: string;
+  user_id: string;
+  parent_id: string | null;
+  content: string;
+  is_answer: boolean;
+  created_at: string;
+  profiles?: { full_name: string | null; avatar_url: string | null };
 }
 
-const ytId = (url: string|null) => {
+const ytId = (url: string | null) => {
   if (!url) return null;
   const m = url.match(/(?:youtu\.be\/|v=)([\w-]{11})/);
   return m?.[1] ?? null;
@@ -46,6 +76,7 @@ const Post = () => {
   const [newComment, setNewComment] = useState("");
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [progress, setProgress] = useState<number>(0);
+  const [submittingComment, setSubmittingComment] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -56,7 +87,11 @@ const Post = () => {
       if (user && (p as any).author_id === user.id) {
         await supabase.from("posts").update({ views: (p as any).views + 1 }).eq("id", (p as any).id);
       }
-      const { data: a } = await supabase.from("profiles").select("id,full_name,avatar_url,bio").eq("id", (p as any).author_id ?? "").maybeSingle();
+      const { data: a } = await supabase
+        .from("profiles")
+        .select("id,full_name,avatar_url,bio")
+        .eq("id", (p as any).author_id ?? "")
+        .maybeSingle();
       setAuthor(a);
       loadComments((p as any).id);
       if (user) {
@@ -65,10 +100,12 @@ const Post = () => {
           supabase.from("bookmarks").select("post_id").eq("post_id", (p as any).id).eq("user_id", user.id).maybeSingle(),
           supabase.from("progress").select("progress_percent").eq("post_id", (p as any).id).eq("user_id", user.id).maybeSingle(),
         ]);
-        setLiked(!!l); setBookmarked(!!b); setProgress(pr?.progress_percent ?? 0);
+        setLiked(!!l);
+        setBookmarked(!!b);
+        setProgress(pr?.progress_percent ?? 0);
       }
     })();
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [slug, user?.id]);
 
   const loadComments = async (postId: string) => {
@@ -106,7 +143,10 @@ const Post = () => {
   };
 
   const toggleLike = async () => {
-    if (!user || !post) { toast.error("Entre para curtir"); return; }
+    if (!user || !post) {
+      toast.error("Entre para curtir");
+      return;
+    }
     if (liked) {
       await supabase.from("likes").delete().eq("user_id", user.id).eq("post_id", post.id);
       setLiked(false);
@@ -117,7 +157,10 @@ const Post = () => {
   };
 
   const toggleBookmark = async () => {
-    if (!user || !post) { toast.error("Entre para salvar"); return; }
+    if (!user || !post) {
+      toast.error("Entre para salvar");
+      return;
+    }
     if (bookmarked) {
       await supabase.from("bookmarks").delete().eq("user_id", user.id).eq("post_id", post.id);
       setBookmarked(false);
@@ -129,34 +172,72 @@ const Post = () => {
   };
 
   const submitComment = async () => {
-    if (!user || !post) { toast.error("Entre para comentar"); return; }
-    const parsed = z.string().trim().min(1).max(2000).safeParse(newComment);
-    if (!parsed.success) { toast.error("Comentário inválido"); return; }
-    const { error } = await supabase.from("comments").insert({
-      post_id: post.id, user_id: user.id, content: parsed.data, parent_id: replyTo,
-    });
-    if (error) { toast.error(error.message); return; }
-    setNewComment(""); setReplyTo(null);
-    loadComments(post.id);
+    if (!user || !post) {
+      toast.error("Entre para comentar");
+      return;
+    }
+    const parsed = z.string().trim().min(1, "Escreva algo antes de publicar.").max(2000).safeParse(newComment);
+    if (!parsed.success) {
+      toast.error(parsed.error.errors[0].message);
+      return;
+    }
+    setSubmittingComment(true);
+    try {
+      const { error } = await supabase.from("comments").insert({
+        post_id: post.id,
+        user_id: user.id,
+        content: parsed.data,
+        parent_id: replyTo,
+      });
+      if (error) throw error;
+      setNewComment("");
+      setReplyTo(null);
+      toast.success("Comentário publicado no fórum!");
+      loadComments(post.id);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha ao publicar comentário.");
+    } finally {
+      setSubmittingComment(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.href,
+        },
+      });
+      if (error) throw error;
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha no login com Google");
+    }
   };
 
   const markComplete = async () => {
     if (!user || !post) return;
     await supabase.from("progress").upsert({
-      user_id: user.id, post_id: post.id, progress_percent: 100, completed_at: new Date().toISOString(),
+      user_id: user.id,
+      post_id: post.id,
+      progress_percent: 100,
+      completed_at: new Date().toISOString(),
     });
-    setProgress(100); toast.success("Marcado como concluído");
+    setProgress(100);
+    toast.success("Marcado como concluído");
   };
 
-  if (!post) return <div className="min-h-screen grid place-items-center text-muted-foreground">Carregando…</div>;
+  if (!post) {
+    return <div className="min-h-screen grid place-items-center text-muted-foreground">Carregando…</div>;
+  }
 
   const locked = post.is_premium && !user;
   const ytid = ytId(post.youtube_url);
-  const roots = comments.filter(c => !c.parent_id);
-  const repliesOf = (id: string) => comments.filter(c => c.parent_id === id);
+  const roots = comments.filter((c) => !c.parent_id);
+  const repliesOf = (id: string) => comments.filter((c) => c.parent_id === id);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Seo
         title={`${post.title} — Speculum Studio`}
         description={post.excerpt ?? `${post.title} no Speculum Studio.`}
@@ -181,140 +262,470 @@ const Post = () => {
         }}
       />
       <Navbar />
-      <article className="container-editorial pt-12 pb-20 max-w-4xl">
+
+      <main className="container-editorial pt-10 pb-20 max-w-6xl">
+        {/* Banner de Acesso Liberado para quem veio da captura */}
         {accessGranted && (
-          <div className="mb-8 flex items-start gap-3 rounded-2xl border border-primary/35 bg-primary/[0.08] px-5 py-4 text-sm text-foreground">
+          <div className="mb-8 flex items-start gap-3 rounded-2xl border border-primary/40 bg-primary/[0.08] p-4 sm:p-5 text-sm text-foreground shadow-[0_4px_24px_-4px_rgba(201,168,76,0.18)]">
             <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-            <div>
-              <div className="font-medium text-foreground">Acesso liberado ao material completo.</div>
+            <div className="leading-relaxed">
+              <div className="font-semibold text-foreground">Acesso liberado ao material completo.</div>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                Salve este endereço para consultar quando precisar e use a seção de comentários no final para tirar dúvidas ou pedir os próximos tutoriais.
+                Salve este endereço nos seus favoritos. Você já pode ler o tutorial, copiar os comandos e participar das discussões no fórum da comunidade abaixo.
               </p>
             </div>
           </div>
         )}
-        <div className="flex items-center gap-2 mb-5">
-          <Badge variant="secondary" className="capitalize">{post.type}</Badge>
-          {post.category && <span className="text-xs uppercase tracking-[0.22em] text-primary/80">{post.category}</span>}
-          {post.is_premium && <Badge className="bg-gradient-gold text-primary-foreground border-0"><Lock className="h-3 w-3 mr-1" />Membros</Badge>}
-        </div>
-        <h1 className="font-display text-4xl md:text-6xl leading-[1.05]">{post.title}</h1>
-        {post.excerpt && <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{post.excerpt}</p>}
 
-        <div className="mt-8 flex items-center justify-between flex-wrap gap-4">
-          <Link to={post.author_id ? `/profile/${post.author_id}` : "/nosso-estudio"} className="flex items-center gap-3 group">
-            <Avatar className="h-10 w-10"><AvatarImage src={author?.avatar_url}/><AvatarFallback>{(author?.full_name ?? "SP").slice(0,2).toUpperCase()}</AvatarFallback></Avatar>
+        {/* Grid de 2 colunas: Conteúdo Principal (8 cols) + Lateral de Comunidade (4 cols) */}
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start lg:gap-12">
+          {/* Coluna Principal: Artigo + Fórum */}
+          <article className="lg:col-span-8 space-y-8">
             <div>
-              <div className="text-sm group-hover:text-primary transition">{author?.full_name ?? "Speculum Studio"}</div>
-              <div className="text-xs text-muted-foreground">{post.published_at ? new Date(post.published_at).toLocaleDateString("pt-BR") : "Rascunho"}</div>
-            </div>
-          </Link>
-          <div className="flex items-center gap-2">
-            <Button variant={liked ? "default" : "outline"} size="sm" onClick={toggleLike} className={liked ? "bg-gradient-gold text-primary-foreground" : ""}>
-              <Heart className={`h-4 w-4 mr-1.5 ${liked ? "fill-current" : ""}`} /> {post.likes_count + (liked ? 1 : 0)}
-            </Button>
-            <Button variant={bookmarked ? "default" : "outline"} size="sm" onClick={toggleBookmark} className={bookmarked ? "bg-gradient-gold text-primary-foreground" : ""} aria-label="Salvar">
-              <Bookmark className={`h-4 w-4 ${bookmarked ? "fill-current" : ""}`} />
-            </Button>
-            <span className="text-xs text-muted-foreground inline-flex items-center gap-1 ml-2"><Eye className="h-3.5 w-3.5"/>{post.views}</span>
-          </div>
-        </div>
-
-        {post.cover_image_url && (
-          <div className="mt-10 flex justify-center">
-            <img src={post.cover_image_url} alt={post.title} className="w-full max-w-[600px] h-auto object-contain rounded-2xl shadow-glow" loading="lazy" />
-          </div>
-        )}
-
-        {locked ? (
-          <div className="mt-12 glass rounded-2xl p-10 text-center">
-            <Lock className="h-8 w-8 mx-auto text-primary" />
-            <h3 className="font-display text-2xl mt-4">Conteúdo para membros</h3>
-            <p className="text-muted-foreground mt-2">Crie uma conta gratuita para acessar este material e salvar conteúdos para consultar depois.</p>
-            <Button className="mt-5 bg-gradient-gold text-primary-foreground" asChild><Link to={`/login?next=${encodeURIComponent(`/post/${post.slug}`)}`}>Criar conta gratuita</Link></Button>
-          </div>
-        ) : (
-          <>
-            {ytid && (
-              <div className="mt-10 rounded-2xl overflow-hidden glass aspect-video">
-                <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${ytid}`} title="Vídeo" allowFullScreen />
+              <div className="flex items-center gap-2 mb-4 flex-wrap">
+                <Badge variant="secondary" className="capitalize text-xs">
+                  {post.type}
+                </Badge>
+                {post.category && (
+                  <span className="text-[11px] uppercase tracking-[0.22em] text-primary/80 font-medium">
+                    {post.category}
+                  </span>
+                )}
+                {post.is_premium && (
+                  <Badge className="bg-gradient-gold text-primary-foreground border-0 text-xs">
+                    <Lock className="h-3 w-3 mr-1" />
+                    Membros
+                  </Badge>
+                )}
               </div>
-            )}
-            {post.prompt_text && (
-              <div className="mt-10 glass rounded-2xl p-6">
-                <div className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3">O prompt</div>
-                <pre className="whitespace-pre-wrap text-sm font-mono text-foreground/90">{post.prompt_text}</pre>
-              </div>
-            )}
-            {post.content && (
-              <div className="prose prose-invert mt-10 max-w-none font-sans" dangerouslySetInnerHTML={{ __html: post.content }} />
-            )}
-          </>
-        )}
 
-        {post.tags && post.tags.length > 0 && (
-          <div className="mt-10 flex flex-wrap gap-2">
-            {post.tags.map(t => <Badge key={t} variant="outline">#{t}</Badge>)}
-          </div>
-        )}
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl leading-[1.08] text-foreground">
+                {post.title}
+              </h1>
 
-        {post.type === "lesson" && user && (
-          <div className="mt-10 glass rounded-2xl p-5 flex items-center justify-between">
-            <div>
-              <div className="text-sm">Seu progresso</div>
-              <div className="h-2 w-48 rounded bg-muted mt-2 overflow-hidden">
-                <div className="h-full bg-gradient-gold" style={{ width: `${progress}%` }} />
-              </div>
-            </div>
-            <Button onClick={markComplete} className="bg-gradient-gold text-primary-foreground">Marcar como concluído</Button>
-          </div>
-        )}
+              {post.excerpt && (
+                <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
+                  {post.excerpt}
+                </p>
+              )}
 
-        <section className="mt-16">
-          <h2 className="font-display text-2xl flex items-center gap-2"><MessageCircle className="h-5 w-5"/> {comments.length} comentários</h2>
-          {user ? (
-            <div className="mt-5 glass rounded-2xl p-4">
-              {replyTo && <div className="text-xs text-muted-foreground mb-2">Respondendo… <button className="underline" onClick={()=>setReplyTo(null)}>cancelar</button></div>}
-              <Textarea aria-label="Escrever comentário" value={newComment} onChange={(e)=>setNewComment(e.target.value)} placeholder="Compartilhe sua perspectiva…" maxLength={2000} className="bg-background/40" />
-              <div className="flex justify-end mt-3">
-                <Button onClick={submitComment} className="bg-gradient-gold text-primary-foreground"><Send className="h-4 w-4 mr-2"/>Publicar</Button>
-              </div>
-            </div>
-          ) : (
-            <p className="mt-4 text-sm text-muted-foreground"><Link to="/login" className="text-primary">Entre</Link> para participar da conversa.</p>
-          )}
-
-          <div className="mt-8 space-y-6">
-            {roots.map(c => (
-              <div key={c.id} className="glass rounded-2xl p-5">
-                <div className="flex items-start gap-3">
-                  <Avatar className="h-9 w-9"><AvatarImage src={c.profiles?.avatar_url ?? undefined}/><AvatarFallback>{(c.profiles?.full_name ?? "U").slice(0,2)}</AvatarFallback></Avatar>
-                  <div className="flex-1">
-                    <div className="text-sm">{c.profiles?.full_name ?? "Usuário"} {c.is_answer && <Badge className="ml-2 bg-gradient-gold text-primary-foreground">Útil</Badge>}</div>
-                    <div className="text-xs text-muted-foreground">{new Date(c.created_at).toLocaleString("pt-BR")}</div>
-                    <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap">{c.content}</p>
-                    <button className="text-xs text-primary mt-2" onClick={()=>setReplyTo(c.id)}>Responder</button>
-                  </div>
-                </div>
-                {repliesOf(c.id).map(r => (
-                  <div key={r.id} className="mt-4 ml-12 pl-4 border-l border-border/60">
-                    <div className="flex items-start gap-3">
-                      <Avatar className="h-8 w-8"><AvatarImage src={r.profiles?.avatar_url ?? undefined}/><AvatarFallback>{(r.profiles?.full_name ?? "U").slice(0,2)}</AvatarFallback></Avatar>
-                      <div>
-                        <div className="text-sm">{r.profiles?.full_name ?? "Usuário"}</div>
-                        <p className="mt-1 text-sm whitespace-pre-wrap">{r.content}</p>
-                      </div>
+              <div className="mt-6 flex items-center justify-between flex-wrap gap-4 pt-2 border-t border-white/[0.06]">
+                <Link
+                  to={post.author_id ? `/profile/${post.author_id}` : "/nosso-estudio"}
+                  className="flex items-center gap-3 group"
+                >
+                  <Avatar className="h-10 w-10 ring-1 ring-primary/30">
+                    <AvatarImage src={author?.avatar_url} />
+                    <AvatarFallback>{(author?.full_name ?? "SP").slice(0, 2).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="text-sm font-medium group-hover:text-primary transition-colors text-foreground">
+                      {author?.full_name ?? "Speculum Studio"}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {post.published_at ? new Date(post.published_at).toLocaleDateString("pt-BR") : "Rascunho"}
                     </div>
                   </div>
+                </Link>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={liked ? "default" : "outline"}
+                    size="sm"
+                    onClick={toggleLike}
+                    className={`h-9 px-3 ${liked ? "bg-gradient-gold text-primary-foreground" : "border-white/10"}`}
+                  >
+                    <Heart className={`h-4 w-4 mr-1.5 ${liked ? "fill-current" : ""}`} />
+                    {post.likes_count + (liked ? 1 : 0)}
+                  </Button>
+                  <Button
+                    variant={bookmarked ? "default" : "outline"}
+                    size="sm"
+                    onClick={toggleBookmark}
+                    className={`h-9 px-3 ${bookmarked ? "bg-gradient-gold text-primary-foreground" : "border-white/10"}`}
+                    aria-label="Salvar"
+                  >
+                    <Bookmark className={`h-4 w-4 ${bookmarked ? "fill-current" : ""}`} />
+                  </Button>
+                  <span className="text-xs text-muted-foreground inline-flex items-center gap-1 ml-1">
+                    <Eye className="h-3.5 w-3.5" />
+                    {post.views}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {post.cover_image_url && (
+              <div className="flex justify-center rounded-2xl overflow-hidden border border-white/[0.08] bg-black/40">
+                <img
+                  src={post.cover_image_url}
+                  alt={post.title}
+                  className="w-full max-w-[640px] h-auto object-contain"
+                  loading="lazy"
+                />
+              </div>
+            )}
+
+            {locked ? (
+              <div className="glass rounded-3xl p-8 sm:p-10 text-center border border-primary/30">
+                <Lock className="h-9 w-9 mx-auto text-primary" />
+                <h3 className="font-display text-2xl mt-4 text-foreground">Conteúdo exclusivo para membros</h3>
+                <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
+                  Entre na sua conta ou crie seu acesso gratuito em 1 clique para liberar este material e salvar na sua biblioteca.
+                </p>
+                <Button
+                  onClick={handleGoogleLogin}
+                  className="mt-6 bg-gradient-gold text-primary-foreground font-semibold px-6 py-2.5"
+                >
+                  Continuar com Google
+                </Button>
+              </div>
+            ) : (
+              <>
+                {ytid && (
+                  <div className="rounded-2xl overflow-hidden glass aspect-video border border-white/[0.08]">
+                    <iframe
+                      className="w-full h-full"
+                      src={`https://www.youtube.com/embed/${ytid}`}
+                      title="Vídeo"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
+                {post.prompt_text && (
+                  <div className="glass rounded-2xl p-6 border border-primary/20 bg-black/40">
+                    <div className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3 font-semibold">
+                      Comando de Inicialização
+                    </div>
+                    <pre className="whitespace-pre-wrap text-sm font-mono text-foreground/90 overflow-x-auto">
+                      {post.prompt_text}
+                    </pre>
+                  </div>
+                )}
+                {post.content && (
+                  <div
+                    className="prose prose-invert max-w-none font-sans text-[15px] sm:text-base leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                  />
+                )}
+              </>
+            )}
+
+            {post.tags && post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-4">
+                {post.tags.map((t) => (
+                  <Badge key={t} variant="outline" className="text-xs border-white/10 text-muted-foreground">
+                    #{t}
+                  </Badge>
                 ))}
               </div>
-            ))}
-          </div>
-        </section>
-      </article>
+            )}
+
+            {post.type === "lesson" && user && (
+              <div className="glass rounded-2xl p-5 flex items-center justify-between border border-primary/20">
+                <div>
+                  <div className="text-sm font-medium text-foreground">Seu progresso no módulo</div>
+                  <div className="h-2 w-48 rounded bg-muted mt-2 overflow-hidden">
+                    <div className="h-full bg-gradient-gold" style={{ width: `${progress}%` }} />
+                  </div>
+                </div>
+                <Button onClick={markComplete} className="bg-gradient-gold text-primary-foreground text-xs font-semibold">
+                  Marcar como concluído
+                </Button>
+              </div>
+            )}
+
+            {/* Card de Comunidade no Mobile (aparece antes do fórum) */}
+            <div className="lg:hidden">
+              <CommunitySidebar author={author} onGoogleLogin={handleGoogleLogin} user={user} />
+            </div>
+
+            {/* Fórum da Comunidade / Seção de Discussão */}
+            <section className="pt-10 border-t border-white/[0.08] space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary">
+                    <MessageCircle className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <h2 className="font-display text-2xl text-foreground">Fórum da Comunidade</h2>
+                    <p className="text-xs text-muted-foreground">
+                      Tire dúvidas sobre o setup, compartilhe seus resultados e peça as próximas skills.
+                    </p>
+                  </div>
+                </div>
+                <Badge variant="outline" className="border-primary/30 text-primary text-xs">
+                  {comments.length} {comments.length === 1 ? "discussão" : "discussões"}
+                </Badge>
+              </div>
+
+              {/* Caixa de Entrada de Comentário */}
+              {user ? (
+                <div className="glass rounded-2xl p-5 border border-primary/25 bg-[#0F120F]/90 shadow-glow">
+                  {replyTo && (
+                    <div className="text-xs text-primary/80 mb-2 flex items-center justify-between">
+                      <span>Respondendo a um membro da comunidade…</span>
+                      <button
+                        className="underline text-muted-foreground hover:text-foreground"
+                        onClick={() => setReplyTo(null)}
+                      >
+                        cancelar
+                      </button>
+                    </div>
+                  )}
+                  <Textarea
+                    aria-label="Escrever comentário"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Compartilhe sua dúvida, sugestão ou resultado do seu Segundo Cérebro..."
+                    maxLength={2000}
+                    className="min-h-[96px] bg-black/40 border-white/10 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-primary/60 focus-visible:ring-primary/20"
+                  />
+                  <div className="flex items-center justify-between mt-3 flex-wrap gap-2">
+                    <span className="text-[11px] text-muted-foreground">
+                      Comentando como <strong className="text-foreground">{user.email}</strong>
+                    </span>
+                    <Button
+                      onClick={submitComment}
+                      disabled={submittingComment || !newComment.trim()}
+                      className="bg-gradient-gold text-primary-foreground font-semibold px-5 h-9"
+                    >
+                      <Send className="h-3.5 w-3.5 mr-1.5" />
+                      {submittingComment ? "Enviando..." : "Publicar no fórum"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                /* Card de Convite para a Comunidade (semelhante ao Skool) */
+                <div className="rounded-2xl border border-primary/30 bg-gradient-to-b from-primary/[0.08] to-black/40 p-6 sm:p-8 text-center shadow-[0_20px_50px_-20px_rgba(0,0,0,0.8),0_0_40px_-20px_rgba(201,168,76,0.2)]">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-primary/15 text-primary mb-3">
+                    <Users className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-display text-2xl text-foreground">
+                    Faça parte do Ateliê de IA
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+                    Entre com o Google em 1 clique para tirar dúvidas direto com o Fabiano, compartilhar prints do seu Segundo Cérebro e pedir as próximas skills abertas.
+                  </p>
+                  <Button
+                    onClick={handleGoogleLogin}
+                    className="mt-6 bg-gradient-gold text-primary-foreground font-semibold px-6 py-3 h-11 text-sm shadow-[0_8px_24px_-6px_rgba(201,168,76,0.5)]"
+                  >
+                    <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
+                      <path
+                        fill="currentColor"
+                        d="M21.35 11.1h-9.17v2.94h5.28c-.23 1.4-1.66 4.1-5.28 4.1-3.18 0-5.78-2.63-5.78-5.88s2.6-5.88 5.78-5.88c1.81 0 3.02.77 3.71 1.43l2.53-2.44C16.83 3.91 14.84 3 12.18 3 6.97 3 2.78 7.19 2.78 12.4s4.19 9.4 9.4 9.4c5.43 0 9.03-3.81 9.03-9.18 0-.62-.07-1.09-.16-1.52z"
+                      />
+                    </svg>
+                    Entrar com o Google em 1 clique
+                  </Button>
+                  <p className="mt-3 text-[11px] text-muted-foreground/75 flex items-center justify-center gap-1.5">
+                    <ShieldCheck className="h-3.5 w-3.5 text-primary/80" />
+                    Leva menos de 3 segundos e salva suas matérias na sua conta.
+                  </p>
+                </div>
+              )}
+
+              {/* Lista de Discussões / Tópicos */}
+              <div className="space-y-4 pt-2">
+                {roots.length === 0 ? (
+                  <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-8 text-center text-sm text-muted-foreground">
+                    Seja a primeira pessoa a deixar uma dúvida ou resultado sobre este material.
+                  </div>
+                ) : (
+                  roots.map((c) => (
+                    <div key={c.id} className="glass rounded-2xl p-5 border border-white/[0.06] bg-black/30">
+                      <div className="flex items-start gap-3">
+                        <Avatar className="h-9 w-9 ring-1 ring-white/10">
+                          <AvatarImage src={c.profiles?.avatar_url ?? undefined} />
+                          <AvatarFallback className="text-xs">
+                            {(c.profiles?.full_name ?? "U").slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-medium text-foreground">
+                              {c.profiles?.full_name ?? "Membro da Comunidade"}
+                            </span>
+                            {c.is_answer && (
+                              <Badge className="bg-gradient-gold text-primary-foreground text-[10px] py-0 px-2">
+                                Resposta Oficial
+                              </Badge>
+                            )}
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(c.created_at).toLocaleDateString("pt-BR")}
+                            </span>
+                          </div>
+                          <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">
+                            {c.content}
+                          </p>
+                          {user && (
+                            <button
+                              className="text-xs text-primary mt-2 font-medium hover:underline"
+                              onClick={() => setReplyTo(c.id)}
+                            >
+                              Responder
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Respostas Aninhadas */}
+                      {repliesOf(c.id).map((r) => (
+                        <div key={r.id} className="mt-4 ml-6 sm:ml-10 pl-4 border-l border-primary/30">
+                          <div className="flex items-start gap-3">
+                            <Avatar className="h-8 w-8 ring-1 ring-white/10">
+                              <AvatarImage src={r.profiles?.avatar_url ?? undefined} />
+                              <AvatarFallback className="text-xs">
+                                {(r.profiles?.full_name ?? "U").slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="text-sm font-medium text-foreground">
+                                {r.profiles?.full_name ?? "Membro"}
+                              </div>
+                              <p className="mt-1 text-sm whitespace-pre-wrap text-foreground/90">{r.content}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
+          </article>
+
+          {/* Coluna Direita (Desktop): Barra Lateral de Comunidade estilo Skool */}
+          <aside className="hidden lg:block lg:col-span-4 sticky top-24 space-y-6">
+            <CommunitySidebar author={author} onGoogleLogin={handleGoogleLogin} user={user} />
+          </aside>
+        </div>
+      </main>
+
       <Footer />
     </div>
   );
 };
+
+interface CommunitySidebarProps {
+  author: any;
+  onGoogleLogin: () => void;
+  user: any;
+}
+
+function CommunitySidebar({ author, onGoogleLogin, user }: CommunitySidebarProps) {
+  return (
+    <div className="space-y-5">
+      {/* Card Principal da Comunidade */}
+      <div className="rounded-3xl border border-primary/25 bg-[#0F120F]/90 p-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8),0_0_35px_-20px_rgba(201,168,76,0.22)] backdrop-blur-xl">
+        <div className="flex items-center gap-2">
+          <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-primary">
+            Comunidade Ativa
+          </span>
+        </div>
+
+        <h3 className="mt-2.5 font-display text-2xl text-foreground">Ateliê de IA</h3>
+        <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+          Espaço da Speculum Studio para criadores, agências, designers e desenvolvedores trocarem códigos e fluxos práticos de IA.
+        </p>
+
+        {/* Metricas da Comunidade */}
+        <div className="mt-5 grid grid-cols-2 gap-3 border-y border-white/[0.08] py-4">
+          <div className="rounded-xl bg-black/40 border border-white/[0.06] p-3 text-center">
+            <div className="font-display text-2xl text-foreground">160+</div>
+            <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground mt-0.5">
+              Membros
+            </div>
+          </div>
+          <div className="rounded-xl bg-black/40 border border-white/[0.06] p-3 text-center">
+            <div className="font-display text-2xl text-primary">24h</div>
+            <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground mt-0.5">
+              Resposta Média
+            </div>
+          </div>
+        </div>
+
+        {/* Card do Instrutor */}
+        <div className="mt-5 rounded-2xl border border-white/[0.06] bg-black/40 p-4">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-11 w-11 ring-1 ring-primary/40">
+              <AvatarImage src={author?.avatar_url || logo} />
+              <AvatarFallback>FP</AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-semibold text-foreground">
+                  {author?.full_name ?? "Fabiano Pereira"}
+                </span>
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+              </div>
+              <div className="text-[11px] text-primary/80 uppercase tracking-wider font-medium">
+                Diretor Criativo
+              </div>
+            </div>
+          </div>
+          <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+            Compartilho os códigos, motores de vídeo e fluxos de IA que usamos na agência todos os dias para produzir sem depender de templates genéricos.
+          </p>
+        </div>
+
+        {/* Regras de Troca no Fórum */}
+        <div className="mt-5 space-y-2.5">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-foreground/80">
+            O que você encontra aqui:
+          </div>
+          <ul className="space-y-2 text-xs text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+              <span>Dúvidas de instalação de terminais, Claude Code e Codex</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+              <span>Roteiros, comandos e códigos prontos para download</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+              <span>Votação das próximas matérias e skills abertas</span>
+            </li>
+          </ul>
+        </div>
+
+        {!user && (
+          <div className="mt-6 pt-5 border-t border-white/[0.08]">
+            <Button
+              onClick={onGoogleLogin}
+              className="w-full bg-gradient-gold text-primary-foreground font-semibold h-11 text-xs"
+            >
+              <Users className="h-4 w-4 mr-2" />
+              Entrar na Comunidade com Google
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Card de Proximo Degrau / Explorar */}
+      <div className="rounded-2xl border border-white/[0.08] bg-black/30 p-5">
+        <div className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+          Série IA na Prática
+        </div>
+        <div className="mt-1 font-display text-lg text-foreground">
+          Explore outros tutoriais do estúdio
+        </div>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Direção de arte com IA, motores de carrossel em código e workflows avançados.
+        </p>
+        <Link
+          to="/explore"
+          className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+        >
+          Ver todas as matérias
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 export default Post;

@@ -91,6 +91,36 @@ describe("POST /api/capture-lead", () => {
     expect(emailPayload.html).not.toContain("<Pereira>");
   });
 
+  it("atualiza respostas de qualificacao via action update_survey", async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (url.includes("/rest/v1/rpc/update_studio_lead_survey")) {
+        return new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      throw new Error(`Unexpected fetch URL: ${url}`);
+    });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    const req = new Request("https://speculumstudio.com/api/capture-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "update_survey",
+        leadId: "b1ccb00f-3159-45a9-b1c0-a85597981440",
+        perfilAtuacao: "Agência ou Estúdio",
+        nivelIa: "Uso todo dia",
+        objetivoPrincipal: "Ganhar tempo na produção",
+      }),
+    });
+
+    const res = await POST(req);
+    const body = await res.json();
+    expect(res.status).toBe(200);
+    expect(body).toEqual({ ok: true, updated: true });
+  });
+
   it("bloqueia chamadas ao Resend quando o Supabase rejeita o lead", async () => {
     const fetchMock = vi.fn().mockResolvedValue(
       new Response(JSON.stringify({ message: "Muitas tentativas." }), {

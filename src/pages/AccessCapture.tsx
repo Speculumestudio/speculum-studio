@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Check, CheckCircle2, LockOpen, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, LockOpen, ShieldCheck, Sparkles } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,6 +39,25 @@ function formatWhatsapp(raw: string): string {
   return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
 }
 
+export const PERFIL_OPTIONS = [
+  "Agência ou Estúdio",
+  "Profissional Autônomo",
+  "Empresário",
+  "CLT ou Transição",
+] as const;
+
+export const NIVEL_IA_OPTIONS = [
+  "Uso muito pouco",
+  "Uso todo dia",
+  "Sou expert / Código",
+] as const;
+
+export const OBJETIVO_OPTIONS = [
+  "Ganhar tempo na produção",
+  "Melhorar a qualidade visual",
+  "Aprender e vender serviços",
+] as const;
+
 const AccessCapture = () => {
   const { slug } = useParams();
   const [searchParams] = useSearchParams();
@@ -48,12 +67,19 @@ const AccessCapture = () => {
 
   const magnet = getLeadMagnetBySlug(slug);
 
+  const [step, setStep] = useState<"contact" | "survey">("contact");
+  const [capturedLeadId, setCapturedLeadId] = useState<string | null>(null);
+
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [consent, setConsent] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
+
+  const [perfilAtuacao, setPerfilAtuacao] = useState("");
+  const [nivelIa, setNivelIa] = useState("");
+  const [objetivoPrincipal, setObjetivoPrincipal] = useState("");
 
   if (!magnet) {
     return (
@@ -81,7 +107,7 @@ const AccessCapture = () => {
     );
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitContact = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (submitting || unlocked) return;
 
@@ -118,7 +144,9 @@ const AccessCapture = () => {
         pagePath: location.pathname,
       };
 
+      let leadIdFromResponse: string | null = null;
       let handledByApi = false;
+
       if (typeof fetch === "function") {
         try {
           const apiResponse = await fetch("/api/capture-lead", {
@@ -132,12 +160,16 @@ const AccessCapture = () => {
             handledByApi = true;
             const apiBody = (await apiResponse.json().catch(() => null)) as {
               ok?: boolean;
+              leadId?: string;
               error?: string;
             } | null;
             if (!apiResponse.ok || !apiBody?.ok) {
               throw new Error(
                 apiBody?.error || "Não foi possível registrar o seu acesso agora."
               );
+            }
+            if (apiBody.leadId) {
+              leadIdFromResponse = apiBody.leadId;
             }
           }
         } catch (apiError: unknown) {
@@ -155,7 +187,7 @@ const AccessCapture = () => {
           ) => Promise<{ data: unknown; error: { message?: string } | null }>;
         };
 
-        const { error } = await supabaseRpc.rpc("capture_studio_lead", {
+        const { data: rpcData, error } = await supabaseRpc.rpc("capture_studio_lead", {
           p_isca_slug: payload.slug,
           p_nome: payload.nome,
           p_email: payload.email,
@@ -172,6 +204,12 @@ const AccessCapture = () => {
         if (error) {
           throw new Error(error.message || "Não foi possível registrar o seu acesso agora.");
         }
+        const record = rpcData as { lead_id?: string; id?: string } | null;
+        if (record?.lead_id) {
+          leadIdFromResponse = record.lead_id;
+        } else if (record?.id) {
+          leadIdFromResponse = record.id;
+        }
       }
 
       try {
@@ -186,17 +224,13 @@ const AccessCapture = () => {
         utm_campaign: utmCampaign ?? magnet.slug,
       });
 
-      setUnlocked(true);
-      toast.success("Acesso liberado. Abrindo o material agora.");
+      if (leadIdFromResponse) {
+        setCapturedLeadId(leadIdFromResponse);
+      }
 
-      const nextParams = new URLSearchParams();
-      nextParams.set("acesso", "liberado");
-      if (utmSource) nextParams.set("utm_source", utmSource);
-      if (utmCampaign) nextParams.set("utm_campaign", utmCampaign);
-
-      window.setTimeout(() => {
-        navigate(`${magnet.destinationPath}?${nextParams.toString()}`);
-      }, prefersReduced ? 150 : 650);
+      // Transicao suave para a etapa 2 (personalizacao em 3 cliques rapidos)
+      setStep("survey");
+      toast.success("Acesso liberado! Só mais 3 cliques para personalizar.");
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Falha ao liberar o material. Tente novamente.";
@@ -205,6 +239,40 @@ const AccessCapture = () => {
       setSubmitting(false);
     }
   };
+
+  const handleFinishSurvey = (skip = false) => {
+    if (unlocked) return;
+    setUnlocked(true);
+
+    if (!skip && capturedLeadId && (perfilAtuacao || nivelIa || objetivoPrincipal)) {
+      if (typeof fetch === "function") {
+        fetch("/api/capture-lead", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "update_survey",
+            leadId: capturedLeadId,
+            perfilAtuacao: perfilAtuacao || null,
+            nivelIa: nivelIa || null,
+            objetivoPrincipal: objetivoPrincipal || null,
+          }),
+        }).catch(() => {});
+      }
+    }
+
+    const utmSource = searchParams.get("utm_source");
+    const utmCampaign = searchParams.get("utm_campaign");
+    const nextParams = new URLSearchParams();
+    nextParams.set("acesso", "liberado");
+    if (utmSource) nextParams.set("utm_source", utmSource);
+    if (utmCampaign) nextParams.set("utm_campaign", utmCampaign);
+
+    window.setTimeout(() => {
+      navigate(`${magnet.destinationPath}?${nextParams.toString()}`);
+    }, prefersReduced ? 100 : 350);
+  };
+
+  const firstName = nome.trim().split(/\s+/)[0] || "";
 
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col">
@@ -279,6 +347,8 @@ const AccessCapture = () => {
             <div className="lg:hidden">
               <CaptureFormCard
                 idPrefix="mobile"
+                step={step}
+                firstName={firstName}
                 magnet={magnet}
                 nome={nome}
                 email={email}
@@ -286,12 +356,19 @@ const AccessCapture = () => {
                 consent={consent}
                 submitting={submitting}
                 unlocked={unlocked}
+                perfilAtuacao={perfilAtuacao}
+                nivelIa={nivelIa}
+                objetivoPrincipal={objetivoPrincipal}
                 prefersReduced={!!prefersReduced}
                 onNomeChange={setNome}
                 onEmailChange={setEmail}
                 onWhatsappChange={(val) => setWhatsapp(formatWhatsapp(val))}
                 onConsentChange={setConsent}
-                onSubmit={handleSubmit}
+                onPerfilChange={setPerfilAtuacao}
+                onNivelChange={setNivelIa}
+                onObjetivoChange={setObjetivoPrincipal}
+                onSubmitContact={handleSubmitContact}
+                onFinishSurvey={handleFinishSurvey}
               />
             </div>
 
@@ -328,6 +405,8 @@ const AccessCapture = () => {
           <div className="hidden lg:block lg:col-span-6">
             <CaptureFormCard
               idPrefix="desktop"
+              step={step}
+              firstName={firstName}
               magnet={magnet}
               nome={nome}
               email={email}
@@ -335,12 +414,19 @@ const AccessCapture = () => {
               consent={consent}
               submitting={submitting}
               unlocked={unlocked}
+              perfilAtuacao={perfilAtuacao}
+              nivelIa={nivelIa}
+              objetivoPrincipal={objetivoPrincipal}
               prefersReduced={!!prefersReduced}
               onNomeChange={setNome}
               onEmailChange={setEmail}
               onWhatsappChange={(val) => setWhatsapp(formatWhatsapp(val))}
               onConsentChange={setConsent}
-              onSubmit={handleSubmit}
+              onPerfilChange={setPerfilAtuacao}
+              onNivelChange={setNivelIa}
+              onObjetivoChange={setObjetivoPrincipal}
+              onSubmitContact={handleSubmitContact}
+              onFinishSurvey={handleFinishSurvey}
             />
           </div>
         </div>
@@ -355,6 +441,8 @@ const AccessCapture = () => {
 
 interface CaptureFormCardProps {
   idPrefix: string;
+  step: "contact" | "survey";
+  firstName: string;
   magnet: NonNullable<ReturnType<typeof getLeadMagnetBySlug>>;
   nome: string;
   email: string;
@@ -362,16 +450,25 @@ interface CaptureFormCardProps {
   consent: boolean;
   submitting: boolean;
   unlocked: boolean;
+  perfilAtuacao: string;
+  nivelIa: string;
+  objetivoPrincipal: string;
   prefersReduced: boolean;
   onNomeChange: (value: string) => void;
   onEmailChange: (value: string) => void;
   onWhatsappChange: (value: string) => void;
   onConsentChange: (value: boolean) => void;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  onPerfilChange: (value: string) => void;
+  onNivelChange: (value: string) => void;
+  onObjetivoChange: (value: string) => void;
+  onSubmitContact: (event: React.FormEvent<HTMLFormElement>) => void;
+  onFinishSurvey: (skip?: boolean) => void;
 }
 
 function CaptureFormCard({
   idPrefix,
+  step,
+  firstName,
   magnet,
   nome,
   email,
@@ -379,17 +476,25 @@ function CaptureFormCard({
   consent,
   submitting,
   unlocked,
+  perfilAtuacao,
+  nivelIa,
+  objetivoPrincipal,
   prefersReduced,
   onNomeChange,
   onEmailChange,
   onWhatsappChange,
   onConsentChange,
-  onSubmit,
+  onPerfilChange,
+  onNivelChange,
+  onObjetivoChange,
+  onSubmitContact,
+  onFinishSurvey,
 }: CaptureFormCardProps) {
   const nomeId = `${idPrefix}-capture-nome`;
   const emailId = `${idPrefix}-capture-email`;
   const whatsId = `${idPrefix}-capture-whatsapp`;
   const consentId = `${idPrefix}-capture-consent`;
+
   return (
     <motion.div
       initial={prefersReduced ? false : { opacity: 0, y: 16, scale: 0.98 }}
@@ -401,18 +506,6 @@ function CaptureFormCard({
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent"
       />
-
-      <div className="mb-6">
-        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-primary">
-          Desbloqueio imediato
-        </p>
-        <h2 className="mt-1.5 font-display text-3xl leading-tight text-foreground">
-          Para onde enviamos o seu acesso?
-        </h2>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          Preencha os 3 campos abaixo para abrir o tutorial completo com o mapa e os comandos prontos.
-        </p>
-      </div>
 
       {unlocked ? (
         <motion.div
@@ -427,100 +520,237 @@ function CaptureFormCard({
             Abrindo o material completo agora...
           </p>
         </motion.div>
-      ) : (
-        <form onSubmit={onSubmit} className="space-y-4" noValidate>
-          <div className="space-y-1.5">
-            <Label htmlFor={nomeId} className="text-xs uppercase tracking-[0.14em] text-foreground/85">
-              Nome completo *
-            </Label>
-            <Input
-              id={nomeId}
-              name="nome"
-              type="text"
-              autoComplete="name"
-              required
-              placeholder="Como podemos te chamar?"
-              value={nome}
-              onChange={(e) => onNomeChange(e.target.value)}
-              className="h-12 rounded-xl border-white/10 bg-black/40 text-foreground placeholder:text-muted-foreground/60 transition-colors duration-150 focus-visible:border-primary/70 focus-visible:ring-primary/30"
-            />
+      ) : step === "contact" ? (
+        <>
+          <div className="mb-6">
+            <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-primary">
+              Desbloqueio imediato
+            </p>
+            <h2 className="mt-1.5 font-display text-3xl leading-tight text-foreground">
+              Para onde enviamos o seu acesso?
+            </h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Preencha os 3 campos abaixo para abrir o tutorial completo com o mapa e os comandos prontos.
+            </p>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor={emailId} className="text-xs uppercase tracking-[0.14em] text-foreground/85">
-              Seu melhor e-mail *
-            </Label>
-            <Input
-              id={emailId}
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              placeholder="voce@seudominio.com"
-              value={email}
-              onChange={(e) => onEmailChange(e.target.value)}
-              className="h-12 rounded-xl border-white/10 bg-black/40 text-foreground placeholder:text-muted-foreground/60 transition-colors duration-150 focus-visible:border-primary/70 focus-visible:ring-primary/30"
-            />
-          </div>
+          <form onSubmit={onSubmitContact} className="space-y-4" noValidate>
+            <div className="space-y-1.5">
+              <Label htmlFor={nomeId} className="text-xs uppercase tracking-[0.14em] text-foreground/85">
+                Nome completo *
+              </Label>
+              <Input
+                id={nomeId}
+                name="nome"
+                type="text"
+                autoComplete="name"
+                required
+                placeholder="Como podemos te chamar?"
+                value={nome}
+                onChange={(e) => onNomeChange(e.target.value)}
+                className="h-12 rounded-xl border-white/10 bg-black/40 text-foreground placeholder:text-muted-foreground/60 transition-colors duration-150 focus-visible:border-primary/70 focus-visible:ring-primary/30"
+              />
+            </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor={whatsId} className="text-xs uppercase tracking-[0.14em] text-foreground/85">
-              WhatsApp com DDD *
-            </Label>
-            <Input
-              id={whatsId}
-              name="whatsapp"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              required
-              placeholder="(13) 99999-9999"
-              value={whatsapp}
-              onChange={(e) => onWhatsappChange(e.target.value)}
-              className="h-12 rounded-xl border-white/10 bg-black/40 text-foreground placeholder:text-muted-foreground/60 transition-colors duration-150 focus-visible:border-primary/70 focus-visible:ring-primary/30"
-            />
-          </div>
+            <div className="space-y-1.5">
+              <Label htmlFor={emailId} className="text-xs uppercase tracking-[0.14em] text-foreground/85">
+                Seu melhor e-mail *
+              </Label>
+              <Input
+                id={emailId}
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                placeholder="voce@seudominio.com"
+                value={email}
+                onChange={(e) => onEmailChange(e.target.value)}
+                className="h-12 rounded-xl border-white/10 bg-black/40 text-foreground placeholder:text-muted-foreground/60 transition-colors duration-150 focus-visible:border-primary/70 focus-visible:ring-primary/30"
+              />
+            </div>
 
-          <div className="flex items-start gap-2.5 pt-1">
-            <Checkbox
-              id={consentId}
-              checked={consent}
-              onCheckedChange={(checked) => onConsentChange(checked === true)}
-              className="mt-0.5 border-primary/50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-            />
-            <label
-              htmlFor={consentId}
-              className="cursor-pointer text-xs leading-relaxed text-muted-foreground"
+            <div className="space-y-1.5">
+              <Label htmlFor={whatsId} className="text-xs uppercase tracking-[0.14em] text-foreground/85">
+                WhatsApp com DDD *
+              </Label>
+              <Input
+                id={whatsId}
+                name="whatsapp"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                required
+                placeholder="(13) 99999-9999"
+                value={whatsapp}
+                onChange={(e) => onWhatsappChange(e.target.value)}
+                className="h-12 rounded-xl border-white/10 bg-black/40 text-foreground placeholder:text-muted-foreground/60 transition-colors duration-150 focus-visible:border-primary/70 focus-visible:ring-primary/30"
+              />
+            </div>
+
+            <div className="flex items-start gap-2.5 pt-1">
+              <Checkbox
+                id={consentId}
+                checked={consent}
+                onCheckedChange={(checked) => onConsentChange(checked === true)}
+                className="mt-0.5 border-primary/50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+              />
+              <label
+                htmlFor={consentId}
+                className="cursor-pointer text-xs leading-relaxed text-muted-foreground"
+              >
+                Concordo em receber o acesso ao material e atualizações práticas da Speculum Studio.
+              </label>
+            </div>
+
+            <motion.button
+              type="submit"
+              disabled={submitting}
+              whileHover={prefersReduced ? undefined : { y: -1 }}
+              whileTap={prefersReduced ? undefined : { scale: 0.97 }}
+              transition={{ duration: 0.15, ease: EASE_OUT }}
+              className="group relative mt-2 flex h-13 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-gold px-6 py-3.5 text-sm font-semibold tracking-wide text-primary-foreground shadow-[0_12px_36px_-10px_rgba(201,168,76,0.55)] transition-opacity duration-150 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Concordo em receber o acesso ao material e atualizações práticas da Speculum Studio.
-            </label>
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
+              />
+              <span className="relative z-10">
+                {submitting ? "Liberando acesso..." : magnet.ctaLabel}
+              </span>
+              {!submitting && (
+                <ArrowRight className="relative z-10 h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+              )}
+            </motion.button>
+
+            <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-[11.5px] text-muted-foreground/85">
+              <ShieldCheck className="h-3.5 w-3.5 text-primary/80" />
+              {magnet.trustNote}
+            </p>
+          </form>
+        </>
+      ) : (
+        /* Etapa 2: 3 perguntas rapidas de qualificacao (chips interativos em 3 cliques) */
+        <motion.div
+          initial={prefersReduced ? false : { opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.35, ease: EASE_OUT }}
+          className="space-y-6"
+        >
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-primary">
+              <Sparkles className="h-3 w-3" />
+              Etapa 2 de 2 · Personalização
+            </span>
+            <h2 className="mt-2.5 font-display text-2xl sm:text-3xl leading-tight text-foreground">
+              {firstName ? `Só 3 cliques, ${firstName}.` : "Só mais 3 cliques rápidos."}
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
+              Ajude a calibrar os próximos tutoriais escolhendo o que mais combina com a sua rotina:
+            </p>
           </div>
 
-          <motion.button
-            type="submit"
-            disabled={submitting}
-            whileHover={prefersReduced ? undefined : { y: -1 }}
-            whileTap={prefersReduced ? undefined : { scale: 0.97 }}
-            transition={{ duration: 0.15, ease: EASE_OUT }}
-            className="group relative mt-2 flex h-13 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-gold px-6 py-3.5 text-sm font-semibold tracking-wide text-primary-foreground shadow-[0_12px_36px_-10px_rgba(201,168,76,0.55)] transition-opacity duration-150 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
-            />
-            <span className="relative z-10">
-              {submitting ? "Liberando acesso..." : magnet.ctaLabel}
-            </span>
-            {!submitting && (
-              <ArrowRight className="relative z-10 h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5" />
-            )}
-          </motion.button>
+          {/* Pergunta 1: Atuacao */}
+          <div className="space-y-2">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/90">
+              1. O que você faz hoje?
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {PERFIL_OPTIONS.map((opt) => {
+                const selected = perfilAtuacao === opt;
+                return (
+                  <button
+                    type="button"
+                    key={opt}
+                    onClick={() => onPerfilChange(selected ? "" : opt)}
+                    className={`rounded-xl border p-2.5 text-left text-xs transition-all duration-150 ${
+                      selected
+                        ? "border-primary bg-primary/20 text-primary font-semibold shadow-[0_0_16px_rgba(201,168,76,0.22)]"
+                        : "border-white/10 bg-black/40 text-muted-foreground hover:border-white/20 hover:text-foreground"
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-          <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-[11.5px] text-muted-foreground/85">
-            <ShieldCheck className="h-3.5 w-3.5 text-primary/80" />
-            {magnet.trustNote}
-          </p>
-        </form>
+          {/* Pergunta 2: Nivel com IA */}
+          <div className="space-y-2">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/90">
+              2. Como é seu nível com IA?
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {NIVEL_IA_OPTIONS.map((opt) => {
+                const selected = nivelIa === opt;
+                return (
+                  <button
+                    type="button"
+                    key={opt}
+                    onClick={() => onNivelChange(selected ? "" : opt)}
+                    className={`rounded-xl border p-2.5 text-center text-xs transition-all duration-150 ${
+                      selected
+                        ? "border-primary bg-primary/20 text-primary font-semibold shadow-[0_0_16px_rgba(201,168,76,0.22)]"
+                        : "border-white/10 bg-black/40 text-muted-foreground hover:border-white/20 hover:text-foreground"
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Pergunta 3: Objetivo Principal */}
+          <div className="space-y-2">
+            <div className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/90">
+              3. Por que você quer este material?
+            </div>
+            <div className="space-y-2">
+              {OBJETIVO_OPTIONS.map((opt) => {
+                const selected = objetivoPrincipal === opt;
+                return (
+                  <button
+                    type="button"
+                    key={opt}
+                    onClick={() => onObjetivoChange(selected ? "" : opt)}
+                    className={`w-full rounded-xl border p-2.5 text-left text-xs transition-all duration-150 ${
+                      selected
+                        ? "border-primary bg-primary/20 text-primary font-semibold shadow-[0_0_16px_rgba(201,168,76,0.22)]"
+                        : "border-white/10 bg-black/40 text-muted-foreground hover:border-white/20 hover:text-foreground"
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Acoes da Etapa 2 */}
+          <div className="pt-2 space-y-2.5">
+            <motion.button
+              type="button"
+              onClick={() => onFinishSurvey(false)}
+              whileHover={prefersReduced ? undefined : { y: -1 }}
+              whileTap={prefersReduced ? undefined : { scale: 0.98 }}
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-gold px-6 text-sm font-semibold text-primary-foreground shadow-[0_12px_36px_-10px_rgba(201,168,76,0.55)] transition-opacity duration-150"
+            >
+              <span>Concluir e abrir tutorial</span>
+              <ArrowRight className="h-4 w-4" />
+            </motion.button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => onFinishSurvey(true)}
+                className="text-xs text-muted-foreground/80 hover:text-foreground underline underline-offset-4 transition-colors"
+              >
+                Pular direto para o tutorial
+              </button>
+            </div>
+          </div>
+        </motion.div>
       )}
     </motion.div>
   );
