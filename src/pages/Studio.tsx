@@ -93,9 +93,6 @@ export default function Studio() {
                   <Button asChild size="lg" variant="outline">
                     <Link to="/portfolio">Ver portfólio</Link>
                   </Button>
-                  <Button asChild size="lg" variant="ghost">
-                    <a href="#servicos">Conhecer os serviços</a>
-                  </Button>
                 </div>
               </motion.div>
 
