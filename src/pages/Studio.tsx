@@ -7,6 +7,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/button";
 import { services } from "@/data/services";
+import { PortfolioTestimonials } from "@/components/portfolio/PortfolioTestimonials";
 
 const portraitTestimonials = [
   {
@@ -90,6 +91,9 @@ export default function Studio() {
                     <a href="#contato">Conversar sobre um projeto <ArrowUpRight className="ml-2 h-4 w-4" /></a>
                   </Button>
                   <Button asChild size="lg" variant="outline">
+                    <Link to="/portfolio">Ver portfólio</Link>
+                  </Button>
+                  <Button asChild size="lg" variant="ghost">
                     <a href="#servicos">Conhecer os serviços</a>
                   </Button>
                 </div>
@@ -218,8 +222,17 @@ export default function Studio() {
                 </figure>
               ))}
             </div>
-            <Link to="/servicos/retratos-profissionais" className="inline-flex items-center gap-2 mt-8 text-sm text-primary hover:underline">Conhecer retratos profissionais <ArrowRight className="h-4 w-4" /></Link>
+            <div className="flex flex-wrap items-center gap-4 mt-8">
+              <Link to="/servicos/retratos-profissionais" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
+                Conhecer retratos profissionais <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link to="/portfolio?categoria=retratos" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+                Ver portfólio de retratos <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </section>
+
+          <PortfolioTestimonials showPortfolioLink />
 
           <section className="container-editorial py-16 md:py-24">
             <p className="text-xs uppercase tracking-[0.2em] text-primary mb-4">Como trabalhamos</p>

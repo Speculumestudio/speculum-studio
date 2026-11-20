@@ -33,6 +33,8 @@ export interface Testimonial {
   avatar: string;
   quote: string;
   service: string;
+  category: "branding" | "audiovisual" | "retratos" | "conteudo";
+  serviceSlugs: string[];
 }
 
 export const portfolioCategories: Array<{ id: PortfolioCategory; label: string }> = [
@@ -213,10 +215,12 @@ export const clientTestimonials: Testimonial[] = [
   {
     id: "liliane",
     name: "Liliane Oliveira",
-    profession: "Especialista em Comunicação & Negócios",
+    profession: "Especialista em Pilates Clássico & Educação",
     avatar: "https://assets.zyrosite.com/m5Kvj54gbpTW2gLw/02112023-img_8328-Awv9DqlVn8HPMjz1.jpg",
     quote: "Melhorei meu posicionamento e aumentei meus seguidores após realizar minhas fotos com a Speculum Studio. Muito além de cliques de fotografia, um parceiro estratégico de verdade.",
-    service: "Retratos de Autoridade",
+    service: "Retratos & Produção Audiovisual",
+    category: "retratos",
+    serviceSlugs: ["retratos-profissionais", "producao-audiovisual", "conteudo-e-presenca-digital"],
   },
   {
     id: "felipe",
@@ -225,6 +229,8 @@ export const clientTestimonials: Testimonial[] = [
     avatar: "https://assets.zyrosite.com/m5Kvj54gbpTW2gLw/16012024-img_9458-AoPe1JZreVUG4la1.jpg",
     quote: "Trabalhar com a Speculum Studio em uma sessão de retratos profissionais superou qualquer expectativa. O cuidado com a direção da luz e a compreensão do meu momento de carreira foram impecáveis.",
     service: "Retratos Profissionais",
+    category: "retratos",
+    serviceSlugs: ["retratos-profissionais", "mentorias-e-consultorias"],
   },
   {
     id: "humberto",
@@ -232,7 +238,39 @@ export const clientTestimonials: Testimonial[] = [
     profession: "Consultor & Empreendedor",
     avatar: "https://assets.zyrosite.com/m5Kvj54gbpTW2gLw/humberto-cordella-9-m2WEaewBJGsKBpGL.jpg",
     quote: "Tive uma experiência transformadora com o estúdio. Desde o início, o Fabiano compreendeu meu arquétipo e traduziu isso em imagens de um impacto surreal para meus clientes.",
-    service: "Construção de Marca",
+    service: "Construção de Marca & Arquétipo",
+    category: "branding",
+    serviceSlugs: ["construcao-de-marca", "retratos-profissionais", "mentorias-e-consultorias"],
+  },
+  {
+    id: "charles",
+    name: "Charles Laveso",
+    profession: "Artista Visual & Professor de Desenho Realista",
+    avatar: "/covers/real/servico-retratos-charles.webp",
+    quote: "Eu buscava fotografias que transmitissem maturidade e liberdade, que não criassem um personagem, mas registrassem um estado verdadeiro de quem eu sou agora, onde a força vem da leveza do momento.",
+    service: "Retratos de Posicionamento",
+    category: "retratos",
+    serviceSlugs: ["retratos-profissionais", "construcao-de-marca"],
+  },
+  {
+    id: "raphael-martini",
+    name: "Raphael Martini",
+    profession: "Artista Tatuador & Educador",
+    avatar: "/media/retrato-raphael-martini.webp",
+    quote: "Como um dos poucos artistas da minha área que pensam estrategicamente em imagem, eu tinha receio de parecer genérico. A direção da Speculum transmitiu exatamente a identidade e a força autoral do meu ofício.",
+    service: "Direção de Imagem & Audiovisual",
+    category: "audiovisual",
+    serviceSlugs: ["producao-audiovisual", "retratos-profissionais", "fotografia-comercial"],
+  },
+  {
+    id: "paulo-bartolo",
+    name: "Sensei Paulo Bartolo",
+    profession: "7º Dan JKA · Fundador da Resistência Karatê",
+    avatar: "/media/portfolio-resistencia-40-anos-poster.webp",
+    quote: "Sabedoria para conhecer a verdade, força para defendê-la e virtude para vivê-la. A construção do brandbook e dos documentários traduziu cinco décadas de tradição marcial em uma comunicação à altura do nosso legado.",
+    service: "Construção de Marca & Documentário",
+    category: "branding",
+    serviceSlugs: ["construcao-de-marca", "producao-audiovisual", "conteudo-e-presenca-digital", "fotografia-comercial"],
   },
 ];
 

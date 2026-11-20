@@ -16,6 +16,8 @@ import coverArtigos from "@/assets/covers/optimized/cover-artigos.webp";
 import { useAuth } from "@/contexts/AuthContext";
 import { CoverFlowCarousel } from "@/components/ui/3-d-coverflow-carousel";
 import { ServicesSection } from "@/components/ServicesSection";
+import { PortfolioTestimonials } from "@/components/portfolio/PortfolioTestimonials";
+import { PortfolioLogos } from "@/components/portfolio/PortfolioLogos";
 
 const studioAreas = [
   {
@@ -190,6 +192,8 @@ const Index = () => {
 
       {/* CATEGORIES */}
       <ServicesSection items={studioAreas} sectionLabel="Serviços" />
+      <PortfolioLogos />
+      <PortfolioTestimonials showPortfolioLink />
       <CoverFlowCarousel items={editorialAreas} sectionLabel="Conteúdos" autoplayDelay={5000} />
 
       {/* FEATURED */}

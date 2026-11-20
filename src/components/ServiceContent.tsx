@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Volume2, VolumeX } from "lu
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
 import { services, type ServiceDefinition } from "@/data/services";
+import { PortfolioTestimonials } from "@/components/portfolio/PortfolioTestimonials";
 
 const portraitPortfolio = [
   {
@@ -296,6 +297,12 @@ export function ServiceContent({ service }: { service: ServiceDefinition }) {
           <div className="grid md:grid-cols-3 gap-8 mt-10">{service.steps.map((step, index) => <article key={step.title} className="border-t border-border pt-5"><p className="text-xs tracking-widest text-primary">0{index + 1}</p><h3 className="font-display text-3xl mt-4">{step.title}</h3><p className="mt-3 text-muted-foreground leading-relaxed">{step.description}</p></article>)}</div>
         </motion.section>
 
+        {/* DEPOIMENTOS FILTRADOS PELO SERVIÇO (Posicionamento Estratégico entre Processo e FAQ) */}
+        <PortfolioTestimonials
+          serviceSlug={service.slug}
+          showPortfolioLink
+        />
+
         <motion.section
           initial="hidden"
           whileInView="visible"
@@ -318,7 +325,16 @@ export function ServiceContent({ service }: { service: ServiceDefinition }) {
           <p className="text-xs uppercase tracking-[0.2em] text-primary mb-5">Próximo passo</p>
           <h2 className="font-display text-4xl md:text-6xl">Vamos entender o que seu projeto pede.</h2>
           <p className="mt-5 text-muted-foreground max-w-xl mx-auto">Conte o momento da sua marca e o resultado que precisa construir. A primeira conversa serve para organizar o desafio e definir o melhor caminho.</p>
-          <Button asChild size="lg" className="mt-8"><a href="https://wa.me/5513996158177" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("generate_lead", { contact_method: "whatsapp", cta_location: `${service.slug}_final_cta` })}>Conversar pelo WhatsApp <ArrowUpRight className="ml-2 h-4 w-4" /></a></Button>
+          <div className="mt-8 flex flex-wrap justify-center gap-3.5">
+            <Button asChild size="lg">
+              <a href="https://wa.me/5513996158177" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("generate_lead", { contact_method: "whatsapp", cta_location: `${service.slug}_final_cta` })}>
+                Conversar pelo WhatsApp <ArrowUpRight className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link to={portfolioLink}>Ver portfólio</Link>
+            </Button>
+          </div>
         </motion.section>
 
         <motion.section

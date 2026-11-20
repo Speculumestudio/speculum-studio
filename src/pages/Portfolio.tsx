@@ -6,6 +6,8 @@ import {
   ArrowUpRight,
   Play,
   Pause,
+  RotateCcw,
+  RotateCw,
   Volume2,
   VolumeX,
   Maximize2,
@@ -34,7 +36,57 @@ export default function Portfolio() {
   const [selectedCategory, setSelectedCategory] = useState<PortfolioCategory>(initialCategory);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [mutedStates, setMutedStates] = useState<Record<string, boolean>>({});
+  const [progressStates, setProgressStates] = useState<Record<string, { current: number; duration: number }>>({});
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+
+  const formatTime = (seconds: number) => {
+    if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const skipVideo = (id: string, deltaSeconds: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const video = videoRefs.current[id];
+    if (!video) return;
+    const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : Infinity;
+    const nextTime = Math.min(Math.max(0, video.currentTime + deltaSeconds), duration);
+    video.currentTime = nextTime;
+    setProgressStates((prev) => ({
+      ...prev,
+      [id]: {
+        current: nextTime,
+        duration: Number.isFinite(video.duration) ? video.duration : prev[id]?.duration || 0,
+      },
+    }));
+  };
+
+  const handleSeek = (id: string, nextTime: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    const video = videoRefs.current[id];
+    if (!video) return;
+    video.currentTime = nextTime;
+    setProgressStates((prev) => ({
+      ...prev,
+      [id]: {
+        current: nextTime,
+        duration: Number.isFinite(video.duration) ? video.duration : prev[id]?.duration || 0,
+      },
+    }));
+  };
+
+  const handleTimeUpdate = (id: string) => {
+    const video = videoRefs.current[id];
+    if (!video) return;
+    setProgressStates((prev) => ({
+      ...prev,
+      [id]: {
+        current: video.currentTime,
+        duration: Number.isFinite(video.duration) ? video.duration : prev[id]?.duration || 0,
+      },
+    }));
+  };
 
   useEffect(() => {
     const cat = searchParams.get("categoria") as PortfolioCategory | null;
@@ -227,10 +279,14 @@ export default function Portfolio() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.98 }}
                     transition={{ duration: 0.35, delay: index * 0.04 }}
-                    className="group relative flex flex-col overflow-hidden rounded-xl border border-border/60 bg-card/60 transition-all duration-300 hover:border-primary/40 hover:bg-card/90"
+                    className="group relative flex flex-col overflow-hidden rounded-xl border border-border/60 bg-card/60 transition-all duration-300 hover:border-primary/40 hover:bg-card/90 cursor-pointer"
                   >
                     {/* CONTAINER DE MÍDIA EDITORIAL (Sem cortes de enquadramento) */}
-                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/60 flex items-center justify-center">
+                    <div
+                      className={`relative aspect-[16/10] w-full overflow-hidden bg-black/60 flex items-center justify-center ${
+                        isVideo ? "z-10" : ""
+                      }`}
+                    >
                       {project.format === "vertical" ? (
                         <>
                           {/* Ambient glow backdrop para mídias verticais */}
@@ -252,6 +308,10 @@ export default function Portfolio() {
                               playsInline
                               muted={isMuted}
                               loop
+                              onTimeUpdate={() => handleTimeUpdate(project.id)}
+                              onLoadedMetadata={() => handleTimeUpdate(project.id)}
+                              onPlay={() => setPlayingId(project.id)}
+                              onPause={() => setPlayingId((prev) => (prev === project.id ? null : prev))}
                               className="relative z-10 h-full w-auto max-h-full aspect-[9/16] object-contain shadow-2xl cursor-pointer"
                               onClick={() => togglePlay(project.id)}
                             />
@@ -274,6 +334,10 @@ export default function Portfolio() {
                           playsInline
                           muted={isMuted}
                           loop
+                          onTimeUpdate={() => handleTimeUpdate(project.id)}
+                          onLoadedMetadata={() => handleTimeUpdate(project.id)}
+                          onPlay={() => setPlayingId(project.id)}
+                          onPause={() => setPlayingId((prev) => (prev === project.id ? null : prev))}
                           className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-102 cursor-pointer"
                           onClick={() => togglePlay(project.id)}
                         />
@@ -316,30 +380,97 @@ export default function Portfolio() {
                             )}
                           </button>
 
-                          {/* Controles de Áudio e Duração */}
-                          <div className="absolute bottom-3.5 left-3.5 right-3.5 z-20 flex items-center justify-between text-white pointer-events-none">
-                            <div className="flex items-center gap-2 pointer-events-auto">
-                              <button
-                                onClick={(e) => toggleMute(project.id, e)}
-                                aria-label={isMuted ? "Ativar som" : "Desativar som"}
-                                className="flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-zinc-300 backdrop-blur-md border border-white/10 hover:text-white transition-colors"
-                              >
-                                {isMuted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
-                              </button>
-                              {project.duration && (
-                                <span className="rounded-full bg-black/60 px-2.5 py-0.5 text-[11px] font-mono tracking-wider backdrop-blur-md border border-white/10 text-zinc-300">
-                                  {project.duration}
-                                </span>
-                              )}
-                            </div>
+                          {/* Barra Inferior Completa: Play/Pause, Voltar 10s, Avançar 10s, Timeline, Áudio e Tela Cheia */}
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="absolute bottom-3 left-3 right-3 z-20 flex flex-col gap-2 text-white pointer-events-auto"
+                          >
+                            {/* Barra de Progresso Clicável */}
+                            {(isPlaying || (progressStates[project.id]?.current ?? 0) > 0) && (
+                              <input
+                                type="range"
+                                min={0}
+                                max={progressStates[project.id]?.duration || 100}
+                                step={0.1}
+                                value={progressStates[project.id]?.current || 0}
+                                onChange={(e) => handleSeek(project.id, parseFloat(e.target.value), e)}
+                                aria-label="Progresso do vídeo"
+                                className="w-full h-1.5 rounded-lg appearance-none bg-white/25 accent-primary cursor-pointer"
+                              />
+                            )}
 
-                            <button
-                              onClick={(e) => toggleFullscreen(project.id, e)}
-                              aria-label="Tela cheia"
-                              className="pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-zinc-300 backdrop-blur-md border border-white/10 hover:text-white transition-colors"
-                            >
-                              <Maximize2 className="h-3.5 w-3.5" />
-                            </button>
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    togglePlay(project.id);
+                                  }}
+                                  aria-label={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
+                                  title={isPlaying ? "Pausar" : "Reproduzir"}
+                                  className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-primary backdrop-blur-md border border-primary/40 hover:bg-primary hover:text-primary-foreground transition-colors"
+                                >
+                                  {isPlaying ? (
+                                    <Pause className="h-3.5 w-3.5 fill-current" />
+                                  ) : (
+                                    <Play className="h-3.5 w-3.5 fill-current translate-x-0.5" />
+                                  )}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={(e) => skipVideo(project.id, -10, e)}
+                                  aria-label="Voltar 10 segundos"
+                                  title="Voltar 10s"
+                                  className="flex h-7 px-2 items-center justify-center gap-1 rounded-full bg-black/65 text-zinc-200 backdrop-blur-md border border-white/15 hover:text-primary hover:border-primary/50 transition-colors text-[10px] font-mono"
+                                >
+                                  <RotateCcw className="h-3 w-3" />
+                                  <span>-10s</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={(e) => skipVideo(project.id, 10, e)}
+                                  aria-label="Avançar 10 segundos"
+                                  title="Avançar 10s"
+                                  className="flex h-7 px-2 items-center justify-center gap-1 rounded-full bg-black/65 text-zinc-200 backdrop-blur-md border border-white/15 hover:text-primary hover:border-primary/50 transition-colors text-[10px] font-mono"
+                                >
+                                  <RotateCw className="h-3 w-3" />
+                                  <span>+10s</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={(e) => toggleMute(project.id, e)}
+                                  aria-label={isMuted ? "Ativar som" : "Desativar som"}
+                                  title={isMuted ? "Ativar som" : "Desativar som"}
+                                  className="flex h-7 w-7 items-center justify-center rounded-full bg-black/65 text-zinc-300 backdrop-blur-md border border-white/15 hover:text-white transition-colors"
+                                >
+                                  {isMuted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+                                </button>
+
+                                <span className="rounded-full bg-black/65 px-2.5 py-0.5 text-[11px] font-mono tracking-wider backdrop-blur-md border border-white/15 text-zinc-300">
+                                  {(progressStates[project.id]?.current ?? 0) > 0
+                                    ? `${formatTime(progressStates[project.id].current)} / ${
+                                        progressStates[project.id]?.duration
+                                          ? formatTime(progressStates[project.id].duration)
+                                          : project.duration || "0:00"
+                                      }`
+                                    : project.duration}
+                                </span>
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={(e) => toggleFullscreen(project.id, e)}
+                                aria-label="Tela cheia"
+                                title="Tela cheia"
+                                className="flex h-7 w-7 items-center justify-center rounded-full bg-black/65 text-zinc-300 backdrop-blur-md border border-white/15 hover:text-white transition-colors"
+                              >
+                                <Maximize2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
                           </div>
                         </>
                       )}
@@ -367,7 +498,8 @@ export default function Portfolio() {
                       <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-between">
                         <Link
                           to={`/servicos/${project.serviceSlug}`}
-                          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary hover:text-foreground transition-colors"
+                          aria-label={`${project.title}: Conhecer este serviço`}
+                          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary group-hover:text-foreground transition-colors after:content-[''] after:absolute after:inset-0 after:z-0"
                         >
                           <span>Conhecer este serviço</span>
                           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
