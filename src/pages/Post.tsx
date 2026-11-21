@@ -687,7 +687,7 @@ function CommunitySidebar({ author, onGoogleLogin, user }: CommunitySidebarProps
         <div className="mt-5 rounded-2xl border border-[#D5CBBA] bg-[#ECE5D7] p-4">
           <div className="flex items-center gap-3">
             <Avatar className="h-12 w-12 ring-2 ring-[#1B3022]/30 shrink-0">
-              <AvatarImage src="/covers/real/fabiano-avatar.png" alt="Fabiano Pereira" className="object-cover" />
+              <AvatarImage src="/covers/real/fabiano-avatar.webp" alt="Fabiano Pereira" className="object-cover" />
               <AvatarFallback className="bg-[#1B3022] text-[#F5D061] font-bold">FP</AvatarFallback>
             </Avatar>
             <div className="min-w-0">
