@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
+  ArrowDownCircle,
   ArrowRight,
   Bookmark,
   Check,
@@ -116,6 +117,39 @@ const Post = () => {
     })();
     // eslint-disable-next-line
   }, [slug, user?.id]);
+
+  // Adiciona botão de cópia com 1 clique para blocos de código dentro do conteúdo editorial
+  useEffect(() => {
+    if (!post?.content) return;
+    const timeout = setTimeout(() => {
+      const preElements = document.querySelectorAll(".prose-editorial pre");
+      preElements.forEach((pre) => {
+        if (pre.querySelector(".code-copy-btn")) return;
+        const btn = document.createElement("button");
+        btn.className =
+          "code-copy-btn absolute top-3 right-3 px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-white/10 hover:bg-white/20 text-[#F5D061] transition-all cursor-pointer flex items-center gap-1 z-10";
+        btn.innerHTML = `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>Copiar</span>`;
+        btn.onclick = async (e) => {
+          e.stopPropagation();
+          const codeEl = pre.querySelector("code");
+          const codeText = codeEl ? codeEl.innerText : pre.innerText.replace(/Copiar|Copiado!/g, "").trim();
+          try {
+            await navigator.clipboard.writeText(codeText.trim());
+            btn.innerHTML = `<svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span class="text-emerald-400">Copiado!</span>`;
+            toast.success("Código copiado!");
+            setTimeout(() => {
+              btn.innerHTML = `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>Copiar</span>`;
+            }, 2000);
+          } catch {
+            toast.error("Falha ao copiar código.");
+          }
+        };
+        (pre as HTMLElement).style.position = "relative";
+        pre.appendChild(btn);
+      });
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [post?.content, post?.slug]);
 
   const loadComments = async (postId: string) => {
     const { data, error } = await supabase
@@ -401,28 +435,81 @@ const Post = () => {
                     />
                   </div>
                 )}
-                {post.prompt_text && (
-                  <div className="glass rounded-2xl p-6 border border-primary/20 bg-black/40">
-                    <div className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3 font-semibold">
-                      Comando de Inicialização
-                    </div>
-                    <pre className="whitespace-pre-wrap text-sm font-mono text-foreground/90 overflow-x-auto">
-                      {post.prompt_text}
-                    </pre>
-                  </div>
-                )}
                 {post.slug === "setup-segundo-cerebro-ia" ? (
-                  <NotionTutorialView
-                    promptBox={<InteractivePromptBox />}
-                    onScrollToForum={scrollToForum}
-                  />
-                ) : (
-                  post.content && (
-                    <div
-                      className="prose prose-invert max-w-none font-sans text-[15px] sm:text-base leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: post.content }}
+                  <>
+                    {post.prompt_text && (
+                      <div className="glass rounded-2xl p-6 border border-primary/20 bg-black/40">
+                        <div className="text-xs uppercase tracking-[0.22em] text-primary/80 mb-3 font-semibold">
+                          Comando de Inicialização
+                        </div>
+                        <pre className="whitespace-pre-wrap text-sm font-mono text-foreground/90 overflow-x-auto">
+                          {post.prompt_text}
+                        </pre>
+                      </div>
+                    )}
+                    <NotionTutorialView
+                      promptBox={<InteractivePromptBox />}
+                      onScrollToForum={scrollToForum}
                     />
-                  )
+                  </>
+                ) : (
+                  <div className="space-y-8 font-sans">
+                    {/* Barra de Topo: Comunidade e Atalho */}
+                    <div className="flex items-center justify-between flex-wrap gap-4 py-3.5 px-6 rounded-2xl bg-[#EDE7DA] border border-[#DDD5C5] text-[#1B3022] shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-600 animate-pulse" />
+                        <span className="text-xs sm:text-sm font-bold text-[#142318] tracking-tight">
+                          Ateliê Aberto · 160+ membros ativos
+                        </span>
+                        <span className="text-xs text-[#142318]/80 font-medium hidden sm:inline">
+                          · Dúvidas respondidas em ~24h
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={scrollToForum}
+                        className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-extrabold text-[#1B3022] hover:text-[#C5A059] transition-colors cursor-pointer"
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                        <span>Fórum de Dúvidas</span>
+                        <ArrowDownCircle className="h-3.5 w-3.5 opacity-80" />
+                      </button>
+                    </div>
+
+                    {/* DOCUMENTO PRINCIPAL EM PAPEL VERGÊ MARFIM */}
+                    <div className="rounded-3xl border border-[#DDD5C5] bg-[#F7F5EE] text-[#142318] p-6 sm:p-10 md:p-12 space-y-8 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.5),0_0_40px_-20px_rgba(201,168,76,0.25)]">
+                      {/* Cabeçalho do Documento */}
+                      <div className="space-y-4 border-b border-[#E3DCCF] pb-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#1B3022] text-[#F5D061] font-mono text-xs font-bold uppercase tracking-wider">
+                          <Sparkles className="h-3.5 w-3.5" />
+                          <span>{post.category || "Editorial Speculum"} · {post.type}</span>
+                        </div>
+
+                        <h2 className="font-sans text-2xl sm:text-3xl md:text-4xl text-[#142318] font-extrabold tracking-tight leading-tight">
+                          {post.title}
+                        </h2>
+
+                        {post.excerpt && (
+                          <p className="text-sm sm:text-base text-[#142318] leading-relaxed font-medium">
+                            {post.excerpt}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Prompt Pronto com Botão de Cópia em 1 Clique */}
+                      {post.prompt_text && (
+                        <PromptCopyCard promptText={post.prompt_text} />
+                      )}
+
+                      {/* Corpo do Artigo com Tipografia Editorial Tinta Negra */}
+                      {post.content && (
+                        <div
+                          className="prose-editorial max-w-none font-sans text-base sm:text-[16.5px] leading-relaxed text-[#142318]"
+                          dangerouslySetInnerHTML={{ __html: post.content }}
+                        />
+                      )}
+                    </div>
+                  </div>
                 )}
               </>
             )}
@@ -808,6 +895,49 @@ const BROWSER_PROJECTS_PROMPT = `Você é o assistente oficial do meu Segundo C�
 2. Escreva sempre com linguagem direta, autêntica e sem clichês de inteligência artificial. Nunca use travessões soltos no meio do texto.
 3. Seja cirúrgico: entregue a resposta ou o rascunho completo na primeira mensagem, sem introduções genéricas.
 4. Ao final de cada sessão, me pergunte se desejo registrar o aprendizado do dia na nota do projeto.`;
+
+function PromptCopyCard({ promptText }: { promptText: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(promptText);
+        setCopied(true);
+        toast.success("Comando copiado com sucesso!");
+        window.setTimeout(() => setCopied(false), 2400);
+      }
+    } catch {
+      toast.error("Não foi possível copiar.");
+    }
+  };
+
+  return (
+    <div className="rounded-2xl border border-primary/30 bg-[#0A0D0A] p-5 sm:p-6 shadow-[0_12px_36px_-12px_rgba(0,0,0,0.6)] my-6">
+      <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+        <div className="text-xs uppercase tracking-[0.22em] text-[#F5D061] font-bold flex items-center gap-2">
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          <span>Comando / Prompt Pronto</span>
+        </div>
+        <button
+          type="button"
+          onClick={handleCopy}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            copied
+              ? "bg-emerald-500 text-white"
+              : "bg-gradient-gold text-primary-foreground hover:scale-105 active:scale-95 shadow-sm"
+          }`}
+        >
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+          <span>{copied ? "Copiado!" : "Copiar Prompt"}</span>
+        </button>
+      </div>
+      <pre className="whitespace-pre-wrap text-xs sm:text-sm font-mono text-[#F7F5EE] overflow-x-auto leading-relaxed select-all">
+        {promptText}
+      </pre>
+    </div>
+  );
+}
 
 function InteractivePromptBox() {
   const [tab, setTab] = useState<"terminal" | "browser">("terminal");
