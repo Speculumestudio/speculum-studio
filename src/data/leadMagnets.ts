@@ -48,7 +48,7 @@ export const leadMagnets: LeadMagnetConfig[] = [
     seoTitle: "Acesso Gratuito: Mapa e Comandos do Segundo Cérebro | Speculum Studio",
     seoDescription:
       "Receba o mapa das 6 pastas e os 2 comandos de inicialização para estruturar o seu Segundo Cérebro no Claude Code ou Codex.",
-    ogImage: "/covers/article-brand.webp",
+    ogImage: "/covers/cover_segundo_cerebro.png",
   },
 ];
 

@@ -98,5 +98,10 @@
     "source": "https://mhxwcdxepodoxnofoiya.supabase.co/storage/v1/object/public/media/claude_obsidian_thumb_1779841354.png",
     "small": "/covers/optimized/memoria-infinita-claude-obsidian-480.webp",
     "large": "/covers/optimized/memoria-infinita-claude-obsidian-960.webp"
+  },
+  "setup-segundo-cerebro-ia": {
+    "source": "https://speculumstudio.com/covers/cover_segundo_cerebro.png",
+    "small": "/covers/optimized/setup-segundo-cerebro-ia-480.webp",
+    "large": "/covers/optimized/setup-segundo-cerebro-ia-960.webp"
   }
 }

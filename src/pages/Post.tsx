@@ -28,6 +28,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
+import { getCoverImage } from "@/lib/cover-images";
 import { CaptureBrainVisual } from "@/components/CaptureBrainVisual";
 import { NotionTutorialView } from "@/components/content/NotionTutorialView";
 import logo from "@/assets/logo-speculum.png";
@@ -401,7 +402,7 @@ const Post = () => {
             {post.cover_image_url && (
               <div className="flex justify-center rounded-2xl overflow-hidden border border-white/[0.08] bg-black/40">
                 <img
-                  src={post.cover_image_url}
+                  {...getCoverImage(post.slug, post.cover_image_url, true)}
                   alt={post.title}
                   className="w-full max-w-[640px] h-auto object-contain"
                   loading="lazy"
