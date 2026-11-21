@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
 import { CaptureBrainVisual } from "@/components/CaptureBrainVisual";
+import { NotionTutorialView } from "@/components/content/NotionTutorialView";
 import logo from "@/assets/logo-speculum.png";
 
 interface PostFull {
@@ -80,6 +81,11 @@ const Post = () => {
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [progress, setProgress] = useState<number>(0);
   const [submittingComment, setSubmittingComment] = useState(false);
+  const forumRef = useRef<HTMLElement>(null);
+
+  const scrollToForum = () => {
+    forumRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (!slug) return;
@@ -406,24 +412,10 @@ const Post = () => {
                   </div>
                 )}
                 {post.slug === "setup-segundo-cerebro-ia" ? (
-                  <>
-                    <div className="my-6">
-                      <div className="text-[11px] uppercase tracking-[0.2em] text-primary font-semibold mb-3 flex items-center gap-1.5">
-                        <Sparkles className="h-3.5 w-3.5" />
-                        Simulador de Arquitetura · 6 Pastas e Motores em Tempo Real
-                      </div>
-                      <CaptureBrainVisual />
-                    </div>
-
-                    {post.content && (
-                      <div
-                        className="prose prose-invert max-w-none font-sans text-[15px] sm:text-base leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: post.content }}
-                      />
-                    )}
-
-                    <InteractivePromptBox />
-                  </>
+                  <NotionTutorialView
+                    promptBox={<InteractivePromptBox />}
+                    onScrollToForum={scrollToForum}
+                  />
                 ) : (
                   post.content && (
                     <div
@@ -465,7 +457,7 @@ const Post = () => {
             </div>
 
             {/* Fórum da Comunidade / Seção de Discussão */}
-            <section className="pt-10 border-t border-white/[0.08] space-y-6">
+            <section id="forum-comunidade" ref={forumRef} className="pt-10 border-t border-white/[0.08] space-y-6">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-2.5">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary">
@@ -640,109 +632,143 @@ interface CommunitySidebarProps {
 
 function CommunitySidebar({ author, onGoogleLogin, user }: CommunitySidebarProps) {
   return (
-    <div className="space-y-5">
-      {/* Card Principal da Comunidade */}
-      <div className="rounded-3xl border border-primary/25 bg-[#0F120F]/90 p-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8),0_0_35px_-20px_rgba(201,168,76,0.22)] backdrop-blur-xl">
-        <div className="flex items-center gap-2">
-          <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-primary">
-            Comunidade Ativa
-          </span>
+    <div className="space-y-6">
+      {/* Card Principal da Comunidade em Papel Vergê Marfim */}
+      <div className="rounded-3xl border border-[#DDD5C5] bg-[#F7F5EE] p-6 sm:p-7 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5),0_0_35px_-20px_rgba(201,168,76,0.2)] text-[#1C201D]">
+        
+        {/* Status Superior da Comunidade */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-600 animate-pulse ring-2 ring-emerald-600/20" />
+            <span className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-[#1B3022]">
+              Comunidade Ativa
+            </span>
+          </div>
+          <Badge className="bg-[#1B3022] text-[#F5D061] text-[10px] font-bold py-0.5 px-2.5">
+            Acesso Livre
+          </Badge>
         </div>
 
-        <h3 className="mt-2.5 font-display text-2xl text-foreground">Ateliê de IA</h3>
-        <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-          Espaço da Speculum Studio para criadores, agências, designers e desenvolvedores trocarem códigos e fluxos práticos de IA.
+        {/* Título com Fonte Quadrada e Encorpada */}
+        <h3 className="mt-3 font-sans text-2xl font-extrabold text-[#142318] tracking-tight">
+          Ateliê de IA
+        </h3>
+        <p className="mt-1 text-xs sm:text-sm text-[#142318] font-medium leading-relaxed">
+          O ponto de encontro da Speculum Studio para criadores, agências e desenvolvedores trocarem códigos e fluxos práticos de inteligência artificial.
         </p>
 
-        {/* Metricas da Comunidade */}
-        <div className="mt-5 grid grid-cols-2 gap-3 border-y border-white/[0.08] py-4">
-          <div className="rounded-xl bg-black/40 border border-white/[0.06] p-3 text-center">
-            <div className="font-display text-2xl text-foreground">160+</div>
-            <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground mt-0.5">
-              Membros
+        {/* Métricas e Prova Social */}
+        <div className="mt-5 grid grid-cols-2 gap-3 border-y border-[#E3DCCF] py-4">
+          <div className="rounded-2xl bg-[#EDE7DA] border border-[#DDD5C5] p-3 text-center space-y-1">
+            <div className="font-sans text-2xl font-extrabold text-[#142318] tracking-tight">160+</div>
+            <div className="text-[10.5px] uppercase tracking-wider font-extrabold text-[#142318]">
+              Membros Ativos
+            </div>
+            <div className="flex items-center justify-center -space-x-1.5 pt-0.5">
+              <img className="inline-block h-5 w-5 rounded-full ring-1.5 ring-[#EDE7DA] object-cover" src="/covers/real/servico-retratos-roger.webp" alt="Membro" />
+              <img className="inline-block h-5 w-5 rounded-full ring-1.5 ring-[#EDE7DA] object-cover" src="/covers/real/servico-conteudo-nicolle.webp" alt="Membro" />
+              <img className="inline-block h-5 w-5 rounded-full ring-1.5 ring-[#EDE7DA] object-cover" src="/covers/real/servico-retratos-felipe.webp" alt="Membro" />
+              <img className="inline-block h-5 w-5 rounded-full ring-1.5 ring-[#EDE7DA] object-cover" src="/covers/real/servico-retratos-charles.webp" alt="Membro" />
             </div>
           </div>
-          <div className="rounded-xl bg-black/40 border border-white/[0.06] p-3 text-center">
-            <div className="font-display text-2xl text-primary">24h</div>
-            <div className="text-[10.5px] uppercase tracking-wider text-muted-foreground mt-0.5">
+          <div className="rounded-2xl bg-[#EDE7DA] border border-[#DDD5C5] p-3 text-center space-y-1">
+            <div className="font-sans text-2xl font-extrabold text-[#1B3022] tracking-tight">~24h</div>
+            <div className="text-[10.5px] uppercase tracking-wider font-extrabold text-[#142318]">
               Resposta Média
+            </div>
+            <div className="text-[10px] font-bold text-emerald-800 pt-0.5 flex items-center justify-center gap-1">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse" />
+              Fórum moderado
             </div>
           </div>
         </div>
 
         {/* Card do Instrutor */}
-        <div className="mt-5 rounded-2xl border border-white/[0.06] bg-black/40 p-4">
+        <div className="mt-5 rounded-2xl border border-[#D5CBBA] bg-[#ECE5D7] p-4">
           <div className="flex items-center gap-3">
-            <Avatar className="h-11 w-11 ring-1 ring-primary/40">
-              <AvatarImage src={author?.avatar_url || logo} />
-              <AvatarFallback>FP</AvatarFallback>
+            <Avatar className="h-12 w-12 ring-2 ring-[#1B3022]/30 shrink-0">
+              <AvatarImage src="/covers/real/fabiano-avatar.png" alt="Fabiano Pereira" className="object-cover" />
+              <AvatarFallback className="bg-[#1B3022] text-[#F5D061] font-bold">FP</AvatarFallback>
             </Avatar>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-sm font-semibold text-foreground">
-                  {author?.full_name ?? "Fabiano Pereira"}
+                <span className="text-sm font-extrabold text-[#142318] tracking-tight">
+                  Fabiano Pereira
                 </span>
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <Sparkles className="h-3.5 w-3.5 text-[#C5A059] shrink-0" />
               </div>
-              <div className="text-[11px] text-primary/80 uppercase tracking-wider font-medium">
-                Diretor Criativo
+              <div className="text-[10.5px] text-[#1B3022] font-bold uppercase tracking-wider leading-tight">
+                Diretor Criativo · Speculum
               </div>
             </div>
           </div>
-          <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+          <p className="mt-3 text-xs leading-relaxed text-[#142318] font-medium">
             Compartilho os códigos, motores de vídeo e fluxos de IA que usamos na agência todos os dias para produzir sem depender de templates genéricos.
           </p>
         </div>
 
-        {/* Regras de Troca no Fórum */}
+        {/* Regras e Conteúdos do Fórum */}
         <div className="mt-5 space-y-2.5">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-foreground/80">
+          <div className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#142318]">
             O que você encontra aqui:
           </div>
-          <ul className="space-y-2 text-xs text-muted-foreground">
+          <ul className="space-y-2 text-xs text-[#142318] font-medium">
             <li className="flex items-start gap-2">
-              <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+              <Check className="h-3.5 w-3.5 text-[#1B3022] shrink-0 mt-0.5 stroke-[2.5]" />
               <span>Dúvidas de instalação de terminais, Claude Code e Codex</span>
             </li>
             <li className="flex items-start gap-2">
-              <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+              <Check className="h-3.5 w-3.5 text-[#1B3022] shrink-0 mt-0.5 stroke-[2.5]" />
               <span>Roteiros, comandos e códigos prontos para download</span>
             </li>
             <li className="flex items-start gap-2">
-              <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+              <Check className="h-3.5 w-3.5 text-[#1B3022] shrink-0 mt-0.5 stroke-[2.5]" />
               <span>Votação das próximas matérias e skills abertas</span>
             </li>
           </ul>
         </div>
 
-        {!user && (
-          <div className="mt-6 pt-5 border-t border-white/[0.08]">
+        {/* Botão de Acesso com Google ou Status de Logado */}
+        {!user ? (
+          <div className="mt-6 pt-5 border-t border-[#E3DCCF] space-y-2">
             <Button
               onClick={onGoogleLogin}
-              className="w-full bg-gradient-gold text-primary-foreground font-semibold h-11 text-xs"
+              className="w-full bg-[#1B3022] text-[#F5D061] hover:bg-[#253F2D] font-extrabold h-11 text-xs shadow-md transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
             >
               <Users className="h-4 w-4 mr-2" />
               Entrar na Comunidade com Google
             </Button>
+            <p className="text-[10.5px] text-center text-[#142318] font-medium">
+              Acesso livre e imediato com sua conta Google
+            </p>
+          </div>
+        ) : (
+          <div className="mt-6 pt-4 border-t border-[#E3DCCF] flex items-center justify-between text-xs">
+            <span className="font-bold text-[#1B3022] flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              Você é membro ativo
+            </span>
+            <a href="#forum-comunidade" className="text-xs font-bold text-[#142318] underline hover:text-[#C5A059]">
+              Fazer uma pergunta
+            </a>
           </div>
         )}
       </div>
 
-      {/* Card de Proximo Degrau / Explorar */}
-      <div className="rounded-2xl border border-white/[0.08] bg-black/30 p-5">
-        <div className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+      {/* Card de Próximo Degrau / Explorar em Harmonia Marfim */}
+      <div className="rounded-3xl border border-[#DDD5C5] bg-[#F7F5EE] p-6 text-[#1C201D] shadow-sm">
+        <div className="text-xs font-mono font-bold uppercase tracking-[0.16em] text-[#9A7B38]">
           Série IA na Prática
         </div>
-        <div className="mt-1 font-display text-lg text-foreground">
+        <div className="mt-1 font-sans text-lg font-extrabold text-[#142318] tracking-tight">
           Explore outros tutoriais do estúdio
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="mt-1 text-xs text-[#142318] leading-relaxed font-medium">
           Direção de arte com IA, motores de carrossel em código e workflows avançados.
         </p>
         <Link
           to="/explore"
-          className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+          className="mt-4 inline-flex items-center gap-1.5 text-xs font-extrabold text-[#1B3022] hover:text-[#C5A059] transition-colors"
         >
           Ver todas as matérias
           <ArrowRight className="h-3.5 w-3.5" />
