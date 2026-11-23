@@ -527,10 +527,10 @@ function CaptureFormCard({
               Desbloqueio imediato
             </p>
             <h2 className="mt-1.5 font-display text-3xl leading-tight text-foreground">
-              Para onde enviamos o seu acesso?
+              Preencha os dados para liberar o seu acesso
             </h2>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              Preencha os 3 campos abaixo para abrir o tutorial completo com o mapa e os comandos prontos.
+              Informe seus dados abaixo para abrir o tutorial completo com o mapa e os comandos prontos.
             </p>
           </div>
 
